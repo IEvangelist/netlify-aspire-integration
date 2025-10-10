@@ -1,15 +1,3 @@
-using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using Aspire.Hosting.ApplicationModel;
-using Aspire.Hosting.Publishing;
-using CliWrap.Buffered;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-
-// Need an alias, both Aspire.Hosting.Cli and CliWrap.Cli exist
-using CliWrapper = CliWrap.Cli;
-using CommandOnPath = (bool IsFound, string? Path);
-
 namespace Aspire.Hosting;
 
 #pragma warning disable ASPIREINTERACTION001
@@ -62,16 +50,46 @@ public static partial class NodeJSHostingExtensions
     /// </remarks>
     /// </summary>
     /// <param name="builder">The Node.js app resource builder.</param>
-    /// <param name="siteId">The Netlify Site ID value.</param>
     /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
-    public static IResourceBuilder<NodeAppResource> WithEnvironmentSiteId(
-        this IResourceBuilder<NodeAppResource> builder,
-        IResourceBuilder<ParameterResource> siteId)
+    public static IResourceBuilder<NodeAppResource> WithNetlifySiteIdEnvironment(
+        this IResourceBuilder<NodeAppResource> builder)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(siteId);
 
-        return builder.WithEnvironment("NETLIFY_SITE_ID", siteId);
+        return builder.WithEnvironmentFromConfiguration("NETLIFY_SITE_ID");
+    }
+
+    /// <summary>
+    /// Sets the <c>NETLIFY_AUTH_TOKEN</c> environment variable for the Node.js app.
+    /// For more information, see <see href="https://docs.netlify.com/api/get-started/#authentication">Netlify API documentation: Authentication</see>.
+    /// </summary>
+    /// <param name="builder">The Node.js app resource builder.</param>
+    /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
+    public static IResourceBuilder<NodeAppResource> WithNetlifyAuthTokenEnvironment(
+        this IResourceBuilder<NodeAppResource> builder)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+
+        return builder.WithEnvironmentFromConfiguration("NETLIFY_AUTH_TOKEN");
+    }
+
+    /// <summary>
+    /// Forwards an environment variable from the application configuration to the underlying <see cref="IResourceWithEnvironment"/>
+    /// </summary>
+    /// <param name="builder">The resource builder.</param>
+    /// <param name="name">The environment variable name.</param>
+    /// <typeparam name="TResource">The resource type.</typeparam>
+    /// <returns>A reference to the <see cref="IResourceBuilder{TResource}"/>.</returns>
+    public static IResourceBuilder<TResource> WithEnvironmentFromConfiguration<TResource>(
+        this IResourceBuilder<TResource> builder,
+        string name) where TResource : IResourceWithEnvironment
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        return builder.WithEnvironment(
+            name,
+            builder.ApplicationBuilder.Configuration.GetValue<string>(name));
     }
 
     /// <summary>
@@ -106,11 +124,13 @@ public static partial class NodeJSHostingExtensions
     /// </summary>
     /// <param name="builder">The Node.js app resource builder.</param>
     /// <param name="options">The Netlify deployment options.</param>
+    /// <param name="authToken">An optional parameter resource containing the Netlify authentication token.
     /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the Netlify CLI is not installed or not found in PATH.</exception>
     public static IResourceBuilder<NodeAppResource> PublishAsNetlifySite(
         this IResourceBuilder<NodeAppResource> builder,
-        NetlifyDeployOptions options)
+        NetlifyDeployOptions options,
+        IResourceBuilder<ParameterResource>? authToken = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(options);
@@ -118,14 +138,14 @@ public static partial class NodeJSHostingExtensions
         if (builder.ApplicationBuilder.ExecutionContext.IsPublishMode)
         {
             var deployerName = $"{builder.Resource.Name}-netlify-deploy";
+
             var deployer = new NetlifyDeployerResource(
                 deployerName,
-                builder.Resource.WorkingDirectory,
-                options.Dir ?? "dist",
-                options.Site,
-                "custom");
+                builder.Resource,
+                options,
+                authToken);
 
-            var deployerBuilder = builder.ApplicationBuilder.AddResource(deployer)
+            _ = builder.ApplicationBuilder.AddResource(deployer)
                 .WithParentRelationship(builder.Resource)
                 .ExcludeFromManifest();
 
@@ -134,7 +154,6 @@ public static partial class NodeJSHostingExtensions
                 await PerformNetlifyDeployment(
                     deployer,
                     context,
-                    options,
                     CancellationToken.None);
             }));
 
@@ -284,15 +303,14 @@ public static partial class NodeJSHostingExtensions
     /// </summary>
     /// <param name="deployer">The Netlify deployer resource.</param>
     /// <param name="context">The deployment context.</param>
-    /// <param name="options">The Netlify deployment options.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     private static async Task PerformNetlifyDeployment(
         NetlifyDeployerResource deployer,
         DeployingContext context,
-        NetlifyDeployOptions options,
         CancellationToken cancellationToken = default)
     {
         var logger = context.Logger;
+        var options = deployer.Options;
         var reporter = context.ActivityReporter;
         var interaction = context.Services.GetRequiredService<IInteractionService>();
 
@@ -300,14 +318,25 @@ public static partial class NodeJSHostingExtensions
         var commandInfo = await IsNetlifyCliAvailableAsync(reporter);
         if (commandInfo is { IsFound: false })
         {
-            await InstallNetlifyCliAsync(reporter, logger, cancellationToken);
-
-            // throw new InvalidOperationException("""
-            //     Netlify CLI is not installed or not available in PATH. Please install it using 'npm install -g netlify-cli' or visit https://docs.netlify.com/cli/get-started/
-            //     """);
+            var installPath = await InstallNetlifyCliAsync(reporter, logger, cancellationToken);
+            if (installPath is not null)
+            {
+                commandInfo = (true, installPath);
+            }
         }
 
-        if (interaction.IsAvailable)
+        await PerformNetlifyCliLoginAsync(
+            context, deployer, reporter, logger, cancellationToken);
+
+        var siteIdEnvVar = context.Services.GetRequiredService<IConfiguration>()
+            .GetValue<string>("NETLIFY_SITE_ID");
+
+        if (!string.IsNullOrWhiteSpace(siteIdEnvVar))
+        {
+            options.Site = siteIdEnvVar;
+        }
+
+        if (options.Site is null && interaction.IsAvailable)
         {
             var result = await PromptForProjectIdAsync(interaction, cancellationToken);
             if (result.Data is not null && result.Data.Value is { } siteId)
@@ -326,17 +355,18 @@ public static partial class NodeJSHostingExtensions
             var resolvedWorkingDir = ResolveFullPath(deployer.WorkingDirectory);
             var resolvedBuildDir = ResolveFullPath(options.Dir ?? deployer.BuildDirectory, resolvedWorkingDir);
 
-            await task.CompleteAsync($"Build directory: {resolvedBuildDir}", cancellationToken: cancellationToken);
+            await task.CompleteAsync(
+                $"Build directory: {resolvedBuildDir}", cancellationToken: cancellationToken);
 
             task = await step.CreateTaskAsync("Preparing deployment command", cancellationToken);
 
             var args = options.ToArguments(resolvedBuildDir);
 
-            await task.CompleteAsync($"Command: ntl {string.Join(" ", args)}", cancellationToken: cancellationToken);
+            await task.CompleteAsync(
+                $"Command: ntl {string.Join(" ", args.Redacted)}", cancellationToken: cancellationToken);
 
-            // Execute deployment
             await ExecuteNetlifyDeploymentAsync(
-                commandInfo.Path!, args, resolvedWorkingDir, step, logger, cancellationToken);
+                commandInfo.Path!, args.Raw, resolvedWorkingDir, step, logger, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -348,13 +378,93 @@ public static partial class NodeJSHostingExtensions
         }
     }
 
+    private static async Task PerformNetlifyCliLoginAsync(
+        DeployingContext context,
+        NetlifyDeployerResource deployer,
+        IPublishingActivityReporter reporter,
+        ILogger logger,
+        CancellationToken cancellationToken)
+    {
+        var options = deployer.Options;
+
+        // If an auth token resource is provided, resolve its value
+        if (deployer.AuthToken is not null)
+        {
+            var authToken = await deployer.AuthToken.Resource.GetValueAsync(cancellationToken);
+            if (!string.IsNullOrWhiteSpace(authToken))
+            {
+                options.Auth = authToken;
+            }
+        }
+
+        // If the NETLIFY_AUTH_TOKEN env var is set, use that
+        var authTokenEnvVar = context.Services.GetRequiredService<IConfiguration>()
+            .GetValue<string>("NETLIFY_AUTH_TOKEN");
+
+        if (!string.IsNullOrWhiteSpace(authTokenEnvVar))
+        {
+            options.Auth = authTokenEnvVar;
+        }
+
+        // If an auth token is provided, no need to perform `ntl login`
+        if (!string.IsNullOrWhiteSpace(options.Auth))
+        {
+            logger.LogInformation("Using provided Netlify auth token, skipping login step.");
+
+            return;
+        }
+
+        var step = await reporter.CreateStepAsync("Calling Netlify CLI login", cancellationToken);
+
+        try
+        {
+            var task = await step.CreateTaskAsync("Verifying Netlify CLI authentication", cancellationToken);
+            BufferedCommandResult? result;
+
+            try
+            {
+                result = await CliWrapper.Wrap("ntl")
+                    .WithArguments("login")
+                    .ExecuteBufferedAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                await task.FailAsync($"Failed to execute Netlify CLI login: {ex.Message}", cancellationToken);
+
+                throw;
+            }
+
+            if (result.IsSuccess)
+            {
+                await task.CompleteAsync("Netlify CLI login succeeded", cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await task.FailAsync("Netlify CLI login failed", cancellationToken: cancellationToken);
+            }
+        }
+        catch
+        {
+            await step.FailAsync("Netlify CLI authentication check failed", cancellationToken: cancellationToken);
+
+            throw;
+        }
+
+        await step.CompleteAsync("Netlify CLI authentication check completed", cancellationToken: cancellationToken);
+    }
+
     private static async Task<InteractionResult<InteractionInput>> PromptForProjectIdAsync(
         IInteractionService interaction,
         CancellationToken cancellationToken)
     {
         return await interaction.PromptInputAsync(
             title: "Netlify project/site ID",
-            message: "Please provide the Netlify project/site ID",
+            message: """
+                Please provide the Netlify Project/Site ID...
+
+                It can be found in your project configuration, under "Project information".
+                Copy the "Project ID" value, and paste it here:
+                """,
             inputLabel: "Netlify Project ID",
             placeHolder: Guid.Empty.ToString(),
             options: new InputsDialogInteractionOptions()
@@ -376,52 +486,75 @@ public static partial class NodeJSHostingExtensions
             cancellationToken: cancellationToken);
     }
 
-    private static async Task InstallNetlifyCliAsync(
+    private static async Task<string?> InstallNetlifyCliAsync(
         IPublishingActivityReporter reporter,
         ILogger logger,
         CancellationToken cancellationToken)
     {
-        var command = CliWrapper.Wrap("npm")
-            .WithArguments(["install", "-g", "netlify-cli"])
-            .WithStandardOutputPipe(CliWrap.PipeTarget.ToDelegate(line =>
-            {
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    return;
-                }
+        var step = await reporter.CreateStepAsync("Installing Netlify CLI using npm", cancellationToken);
 
-                if (logger.IsEnabled(LogLevel.Information))
-                {
-                    logger.LogInformation("npm: {Output}", line);
-                }
-            }))
-            .WithStandardErrorPipe(CliWrap.PipeTarget.ToDelegate(line =>
-            {
-                if (string.IsNullOrWhiteSpace(line))
-                {
-                    return;
-                }
-
-                if (logger.IsEnabled(LogLevel.Warning))
-                {
-                    logger.LogWarning("npm: {Error}", line);
-                }
-            }));
-
-        var result = await command.ExecuteBufferedAsync(cancellationToken);
-        if (result.ExitCode is not 0)
+        try
         {
-            var errorMessage = result.StandardError.Length > 0
-                ? result.StandardError
-                : $"npm install exited with code {result.ExitCode}";
+            var task = await step.CreateTaskAsync("Installing Netlify CLI globally", cancellationToken);
 
-            if (logger.IsEnabled(LogLevel.Error))
+            var command = CliWrapper.Wrap("npm")
+                .WithArguments(["install", "-g", "netlify-cli"])
+                .WithStandardOutputPipe(CliWrap.PipeTarget.ToDelegate(async line =>
+                {
+                    if (string.IsNullOrWhiteSpace(line))
+                    {
+                        return;
+                    }
+
+                    await task.UpdateAsync(line);
+
+                    if (logger.IsEnabled(LogLevel.Information))
+                    {
+                        logger.LogInformation("npm: {Output}", line);
+                    }
+                }))
+                .WithStandardErrorPipe(CliWrap.PipeTarget.ToDelegate(line =>
+                {
+                    if (string.IsNullOrWhiteSpace(line))
+                    {
+                        return;
+                    }
+
+                    if (logger.IsEnabled(LogLevel.Warning))
+                    {
+                        logger.LogWarning("npm: {Error}", line);
+                    }
+                }));
+
+            var result = await command.ExecuteBufferedAsync(cancellationToken);
+            if (result.ExitCode is not 0)
             {
-                logger.LogError("Failed to install Netlify CLI: {Error}", errorMessage);
-            }
+                var errorMessage = result.StandardError.Length > 0
+                    ? result.StandardError
+                    : $"npm install exited with code {result.ExitCode}";
 
-            throw new InvalidOperationException($"Failed to install Netlify CLI: {errorMessage}");
+                if (logger.IsEnabled(LogLevel.Error))
+                {
+                    logger.LogError("Failed to install Netlify CLI: {Error}", errorMessage);
+                }
+
+                throw new InvalidOperationException($"Failed to install Netlify CLI: {errorMessage}");
+            }
         }
+        catch (Exception ex)
+        {
+            await step.FailAsync(
+                $"Failed to install Netlify CLI: {ex.Message}", cancellationToken: cancellationToken);
+
+            logger.LogError(ex, "Failed to install Netlify CLI");
+
+            throw;
+        }
+
+        await step.CompleteAsync(
+            "Netlify CLI installation step completed", cancellationToken: cancellationToken);
+
+        return "ntl";
     }
 
     /// <summary>
@@ -429,7 +562,7 @@ public static partial class NodeJSHostingExtensions
     /// </summary>
     private static async Task ExecuteNetlifyDeploymentAsync(
         string ntlPath,
-        List<string> args,
+        IEnumerable<string> args,
         string workingDirectory,
         IPublishingStep step,
         ILogger logger,

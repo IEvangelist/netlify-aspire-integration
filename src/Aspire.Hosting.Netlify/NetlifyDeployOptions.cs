@@ -107,105 +107,145 @@ public sealed class NetlifyDeployOptions
     /// </summary>
     public bool? Trigger { get; set; }
 
-    internal List<string> ToArguments(string? resolvedBuildDir = null)
+    internal CliArgs ToArguments(string? resolvedBuildDir = null)
     {
         List<string> args = ["deploy"];
+        List<string> redactedArgs = ["deploy"];
 
         // Add directory
         args.AddRange(["--dir", resolvedBuildDir ?? Dir ?? "."]);
+        redactedArgs.AddRange(["--dir", resolvedBuildDir ?? Dir ?? "."]);
 
         // Add all option flags
         if (!string.IsNullOrEmpty(Alias))
         {
             args.AddRange(["--alias", Alias]);
+            redactedArgs.AddRange(["--alias", Alias]);
         }
 
         if (!string.IsNullOrEmpty(Context))
         {
             args.AddRange(["--context", Context]);
+            redactedArgs.AddRange(["--context", Context]);
         }
 
         if (!string.IsNullOrEmpty(CreateSite))
         {
             args.AddRange(["--create-site", CreateSite]);
+            redactedArgs.AddRange(["--create-site", CreateSite]);
         }
 
         if (!string.IsNullOrEmpty(Filter))
         {
             args.AddRange(["--filter", Filter]);
+            redactedArgs.AddRange(["--filter", Filter]);
         }
 
         if (!string.IsNullOrEmpty(Functions))
         {
             args.AddRange(["--functions", Functions]);
+            redactedArgs.AddRange(["--functions", Functions]);
         }
 
         if (Json is true)
         {
             args.Add("--json");
+            redactedArgs.Add("--json");
         }
 
         if (!string.IsNullOrEmpty(Message))
         {
             args.AddRange(["--message", Message]);
+            redactedArgs.AddRange(["--message", Message]);
         }
 
         if (NoBuild is true)
         {
             args.Add("--no-build");
+            redactedArgs.Add("--no-build");
         }
 
         if (Open is true)
         {
             args.Add("--open");
+            redactedArgs.Add("--open");
         }
 
         if (ProdIfUnlocked is true)
         {
             args.Add("--prod-if-unlocked");
+            redactedArgs.Add("--prod-if-unlocked");
         }
 
         if (Debug is true)
         {
             args.Add("--debug");
+            redactedArgs.Add("--debug");
         }
 
         if (!string.IsNullOrEmpty(Auth))
         {
             args.AddRange(["--auth", Auth]);
+            redactedArgs.AddRange(["--auth", Redact(Auth)]);
         }
 
         if (Prod is true)
         {
             args.Add("--prod");
+            redactedArgs.Add("--prod");
         }
 
         if (!string.IsNullOrEmpty(Site))
         {
             args.AddRange(["--site", Site]);
+            redactedArgs.AddRange(["--site", Redact(Site)]);
         }
 
         if (SkipFunctionsCache is true)
         {
             args.Add("--skip-functions-cache");
+            redactedArgs.Add("--skip-functions-cache");
         }
 
         if (!string.IsNullOrEmpty(Team))
         {
             args.AddRange(["--team", Team]);
+            redactedArgs.AddRange(["--team", Redact(Team)]);
         }
 
         if (!string.IsNullOrEmpty(Timeout))
         {
             args.AddRange(["--timeout", Timeout]);
+            redactedArgs.AddRange(["--timeout", Timeout]);
         }
 
         if (Trigger is true)
         {
             args.Add("--trigger");
+            redactedArgs.Add("--trigger");
         }
 
-        return args;
+        return ([.. args], [.. redactedArgs]);
+
+        static string Redact(string? value, char redactChar = '*', int maxLength = 5)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return "";
+            }
+
+            // If the value is shorter than the max length, just redact the whole thing
+            if (value.Length <= maxLength)
+            {
+                return new string(redactChar, maxLength);
+            }
+
+            // Otherwise, redact the middle of the string
+            var start = value[..2];
+            var end = value[^2..];
+
+            return $"{start}{new string(redactChar, maxLength)}{end}";
+        }
     }
 
     internal string ToEnvironmentDescription()

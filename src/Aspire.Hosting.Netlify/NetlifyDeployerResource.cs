@@ -1,30 +1,47 @@
-using Aspire.Hosting.ApplicationModel;
-
 namespace Aspire.Hosting.ApplicationModel;
 
 /// <summary>
 /// A resource that represents a Netlify site deployer.
 /// </summary>
 /// <param name="name">The name of the resource.</param>
-/// <param name="workingDirectory">The working directory to use for the deployment.</param>
-/// <param name="buildDirectory">The directory containing the built static files to deploy.</param>
-/// <param name="siteName">Optional site name for the Netlify site.</param>
-/// <param name="deploymentEnvironment">The deployment environment (prod, staging, preview). Defaults to "prod".</param>
-public class NetlifyDeployerResource(string name, string workingDirectory, string buildDirectory, string? siteName = null, string deploymentEnvironment = "prod")
-    : ExecutableResource(name, "netlify", workingDirectory)
+/// <param name="nodeAppResource">The Node.js application resource to deploy.</param>
+/// <param name="deployOptions">The deployment options.</param>
+/// <param name="authToken">An optional parameter resource containing the Netlify authentication token.</param>
+public class NetlifyDeployerResource(
+    string name,
+    NodeAppResource nodeAppResource,
+    NetlifyDeployOptions deployOptions,
+    IResourceBuilder<ParameterResource>? authToken = null)
+    : ExecutableResource(name, "netlify", nodeAppResource.WorkingDirectory)
 {
+    /// <summary>
+    /// Gets the Node.js application resource to deploy.
+    /// </summary>
+    public NodeAppResource NodeAppResource { get; } = nodeAppResource;
+
+    /// <summary>
+    /// Gets the deployment options.
+    /// </summary>
+    public NetlifyDeployOptions Options { get; } = deployOptions;
+
     /// <summary>
     /// Gets the directory containing the built static files to deploy.
     /// </summary>
-    public string BuildDirectory { get; } = buildDirectory;
+    public string BuildDirectory => Options.Dir ?? "dist";
 
     /// <summary>
     /// Gets the optional site name for the Netlify site.
     /// </summary>
-    public string? SiteName { get; } = siteName;
+    public string? SiteName => Options.Site;
 
     /// <summary>
-    /// Gets the deployment environment (prod, staging, preview, etc.).
+    /// Gets the deployment environment (prod or draft preview).
     /// </summary>
-    public string DeploymentEnvironment { get; } = deploymentEnvironment;
+    public string DeploymentEnvironment => Options.Prod is true ? "prod" : "preview";
+
+    /// <summary>
+    /// Gets the optional parameter resource containing the Netlify authentication token.
+    /// When provided, this token is used in place of the interactive <c>netlify login</c> command.
+    /// </summary>
+    public IResourceBuilder<ParameterResource>? AuthToken { get; } = authToken;
 }
