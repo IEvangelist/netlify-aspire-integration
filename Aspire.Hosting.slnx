@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Aspire.Hosting.Netlify.Tests/Aspire.Hosting.Netlify.Tests.csproj" />
+    <Project Path="src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj" />
+    <Project Path="src/Nextflix.AppHost/Nextflix.AppHost.csproj" />
+  </Folder>
+</Solution>
