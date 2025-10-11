@@ -41,56 +41,56 @@ public static partial class NodeJSHostingExtensions
         return builder;
     }
 
-    /// <summary>
-    /// Sets the <c>NETLIFY_SITE_ID</c> environment variable for the Node.js app.
-    /// For more information, see <see href="https://docs.netlify.com/api-and-cli-guides/cli-guides/get-started-with-cli/#link-with-an-environment-variable">Netlify CLI documentation: Link with an environment variable</see>.
-    /// <remarks>
-    /// Go to <b>Project configuration</b> > <b>General</b> > <b>Project details</b> > <b>Project information</b>,
-    /// and copy the value for <b>Project ID</b>. (Also known as Site ID.)
-    /// </remarks>
-    /// </summary>
-    /// <param name="builder">The Node.js app resource builder.</param>
-    /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
-    public static IResourceBuilder<NodeAppResource> WithNetlifySiteIdEnvironment(
-        this IResourceBuilder<NodeAppResource> builder)
-    {
-        ArgumentNullException.ThrowIfNull(builder);
+    // /// <summary>
+    // /// Sets the <c>NETLIFY_SITE_ID</c> environment variable for the Node.js app.
+    // /// For more information, see <see href="https://docs.netlify.com/api-and-cli-guides/cli-guides/get-started-with-cli/#link-with-an-environment-variable">Netlify CLI documentation: Link with an environment variable</see>.
+    // /// <remarks>
+    // /// Go to <b>Project configuration</b> > <b>General</b> > <b>Project details</b> > <b>Project information</b>,
+    // /// and copy the value for <b>Project ID</b>. (Also known as Site ID.)
+    // /// </remarks>
+    // /// </summary>
+    // /// <param name="builder">The Node.js app resource builder.</param>
+    // /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
+    // public static IResourceBuilder<NodeAppResource> WithNetlifySiteIdEnvironment(
+    //     this IResourceBuilder<NodeAppResource> builder)
+    // {
+    //     ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.WithEnvironmentFromConfiguration("NETLIFY_SITE_ID");
-    }
+    //     return builder.WithEnvironmentFromConfiguration("NETLIFY_SITE_ID");
+    // }
 
-    /// <summary>
-    /// Sets the <c>NETLIFY_AUTH_TOKEN</c> environment variable for the Node.js app.
-    /// For more information, see <see href="https://docs.netlify.com/api/get-started/#authentication">Netlify API documentation: Authentication</see>.
-    /// </summary>
-    /// <param name="builder">The Node.js app resource builder.</param>
-    /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
-    public static IResourceBuilder<NodeAppResource> WithNetlifyAuthTokenEnvironment(
-        this IResourceBuilder<NodeAppResource> builder)
-    {
-        ArgumentNullException.ThrowIfNull(builder);
+    // /// <summary>
+    // /// Sets the <c>NETLIFY_AUTH_TOKEN</c> environment variable for the Node.js app.
+    // /// For more information, see <see href="https://docs.netlify.com/api/get-started/#authentication">Netlify API documentation: Authentication</see>.
+    // /// </summary>
+    // /// <param name="builder">The Node.js app resource builder.</param>
+    // /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
+    // public static IResourceBuilder<NodeAppResource> WithNetlifyAuthTokenEnvironment(
+    //     this IResourceBuilder<NodeAppResource> builder)
+    // {
+    //     ArgumentNullException.ThrowIfNull(builder);
 
-        return builder.WithEnvironmentFromConfiguration("NETLIFY_AUTH_TOKEN");
-    }
+    //     return builder.WithEnvironmentFromConfiguration("NETLIFY_AUTH_TOKEN");
+    // }
 
-    /// <summary>
-    /// Forwards an environment variable from the application configuration to the underlying <see cref="IResourceWithEnvironment"/>
-    /// </summary>
-    /// <param name="builder">The resource builder.</param>
-    /// <param name="name">The environment variable name.</param>
-    /// <typeparam name="TResource">The resource type.</typeparam>
-    /// <returns>A reference to the <see cref="IResourceBuilder{TResource}"/>.</returns>
-    public static IResourceBuilder<TResource> WithEnvironmentFromConfiguration<TResource>(
-        this IResourceBuilder<TResource> builder,
-        string name) where TResource : IResourceWithEnvironment
-    {
-        ArgumentNullException.ThrowIfNull(builder);
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+    // /// <summary>
+    // /// Forwards an environment variable from the application configuration to the underlying <see cref="IResourceWithEnvironment"/>
+    // /// </summary>
+    // /// <param name="builder">The resource builder.</param>
+    // /// <param name="name">The environment variable name.</param>
+    // /// <typeparam name="TResource">The resource type.</typeparam>
+    // /// <returns>A reference to the <see cref="IResourceBuilder{TResource}"/>.</returns>
+    // public static IResourceBuilder<TResource> WithEnvironmentFromConfiguration<TResource>(
+    //     this IResourceBuilder<TResource> builder,
+    //     string name) where TResource : IResourceWithEnvironment
+    // {
+    //     ArgumentNullException.ThrowIfNull(builder);
+    //     ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        return builder.WithEnvironment(
-            name,
-            builder.ApplicationBuilder.Configuration.GetValue<string>(name));
-    }
+    //     return builder.WithEnvironment(
+    //         name,
+    //         builder.ApplicationBuilder.Configuration.GetValue<string>(name));
+    // }
 
     /// <summary>
     /// Configures the Node.js app to be deployed to Netlify using the Netlify CLI
@@ -124,7 +124,7 @@ public static partial class NodeJSHostingExtensions
     /// </summary>
     /// <param name="builder">The Node.js app resource builder.</param>
     /// <param name="options">The Netlify deployment options.</param>
-    /// <param name="authToken">An optional parameter resource containing the Netlify authentication token.
+    /// <param name="authToken">An optional parameter resource containing the Netlify authentication token.</param>
     /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the Netlify CLI is not installed or not found in PATH.</exception>
     public static IResourceBuilder<NodeAppResource> PublishAsNetlifySite(

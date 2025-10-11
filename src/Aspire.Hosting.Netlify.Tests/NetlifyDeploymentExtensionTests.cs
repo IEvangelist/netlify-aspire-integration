@@ -17,7 +17,11 @@ public class NetlifyDeploymentExtensionTests
         var nodeApp = builder.AddNpmApp("test-app", "./test-app");
 
         // Act
-        nodeApp.PublishAsNetlifySite("dist", "test-site");
+        nodeApp.PublishAsNetlifySite(new NetlifyDeployOptions
+        {
+            Dir = "dist",
+            Alias = "test-site"
+        });
 
         using var app = builder.Build();
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
@@ -38,7 +42,7 @@ public class NetlifyDeploymentExtensionTests
         var nodeApp = builder.AddNpmApp("test-app", "./test-app");
 
         // Act
-        nodeApp.PublishAsNetlifySite();
+        nodeApp.PublishAsNetlifySite(new NetlifyDeployOptions());
 
         using var app = builder.Build();
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
@@ -49,11 +53,9 @@ public class NetlifyDeploymentExtensionTests
     }
 
     [Theory]
-    [InlineData("prod")]
-    [InlineData("staging")]
-    [InlineData("preview")]
-    [InlineData("custom-env")]
-    public void WithNetlifyDeployment_ConfiguresDeploymentEnvironment_Correctly(string environment)
+    [InlineData(true, "prod")]
+    [InlineData(false, "preview")]
+    public void WithNetlifyDeployment_ConfiguresDeploymentEnvironment_Correctly(bool isProd, string expectedEnvironment)
     {
         // Arrange
         var builder = DistributedApplication.CreateBuilder([
@@ -64,7 +66,10 @@ public class NetlifyDeploymentExtensionTests
         var nodeApp = builder.AddNpmApp("test-app", "./test-app");
 
         // Act
-        nodeApp.PublishAsNetlifySite(deploymentEnvironment: environment);
+        nodeApp.PublishAsNetlifySite(new NetlifyDeployOptions
+        {
+            Prod = isProd
+        });
 
         using var app = builder.Build();
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
@@ -73,7 +78,7 @@ public class NetlifyDeploymentExtensionTests
         var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
         Assert.True(nodeResource.TryGetAnnotationsOfType<NetlifyDeploymentAnnotation>(out var annotations));
         var annotation = Assert.Single(annotations);
-        Assert.Equal(environment, annotation.Resource.DeploymentEnvironment);
+        Assert.Equal(expectedEnvironment, annotation.Resource.DeploymentEnvironment);
     }
 
     [Fact]
@@ -88,7 +93,7 @@ public class NetlifyDeploymentExtensionTests
         var nodeApp = builder.AddNpmApp("test-app", "./test-app");
 
         // Act
-        nodeApp.PublishAsNetlifySite();
+        nodeApp.PublishAsNetlifySite(new NetlifyDeployOptions());
 
         using var app = builder.Build();
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
@@ -103,21 +108,29 @@ public class NetlifyDeploymentExtensionTests
     [Fact]
     public void NetlifyDeployerResource_StoresAllConfigurationCorrectly()
     {
-        // Arrange & Act
+        // Arrange
+        var builder = DistributedApplication.CreateBuilder();
+        var nodeApp = builder.AddNpmApp("test-app", "test-app-dir");
+        var options = new NetlifyDeployOptions
+        {
+            Dir = "build",
+            Site = "test-site",
+            Prod = false // staging means not prod, will result in "preview" environment
+        };
+
+        // Act
         var deployer = new NetlifyDeployerResource(
             "test-deployer",
-            "/path/to/working/dir",
-            "build",
-            "test-site",
-            "staging"
+            nodeApp.Resource,
+            options
         );
 
         // Assert
         Assert.Equal("test-deployer", deployer.Name);
-        Assert.Equal("/path/to/working/dir", deployer.WorkingDirectory);
+        Assert.EndsWith("test-app-dir", deployer.WorkingDirectory);
         Assert.Equal("build", deployer.BuildDirectory);
         Assert.Equal("test-site", deployer.SiteName);
-        Assert.Equal("staging", deployer.DeploymentEnvironment);
+        Assert.Equal("preview", deployer.DeploymentEnvironment);
         Assert.Equal("netlify", deployer.Command);
     }
 

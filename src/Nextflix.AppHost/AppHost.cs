@@ -3,9 +3,19 @@ var builder = DistributedApplication.CreateBuilder(args);
 // Complete workflow:
 // - Run    →   npm run dev
 // - Deploy →   netlify deploy
-builder.AddNpmApp("sample", "../sample-site", "dev")
+   builder.AddNpmApp("sample", "../sample-site", "dev")
+       .WithNpmPackageInstallation()
        .WithHttpEndpoint(targetPort: 4321)
        .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "dist" });
+
+builder.AddNpmApp("sample-2", "../sample-site", "dev")
+       .WithNpmPackageInstallation()
+       .WithNpmRunCommand("build:prod")
+       .PublishAsNetlifySite(new NetlifyDeployOptions()
+       {
+           Dir = "dist",
+           NoBuild = true, // Skip the build step since we already built it above.
+       });
 
 builder.Build().Run();
 
