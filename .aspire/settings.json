@@ -1,3 +1,3 @@
 {
-  "appHostPath": "../src/Nextflix.AppHost/Nextflix.AppHost.csproj"
+  "appHostPath": "../src/Netlify.AppHost/Nextflix.AppHost.csproj"
 }

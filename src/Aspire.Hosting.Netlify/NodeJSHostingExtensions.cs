@@ -360,13 +360,13 @@ public static partial class NodeJSHostingExtensions
 
             task = await step.CreateTaskAsync("Preparing deployment command", cancellationToken);
 
-            var args = options.ToArguments(resolvedBuildDir);
+            var (rawArgs, redactedArgs) = options.ToArguments(resolvedBuildDir);
 
             await task.CompleteAsync(
-                $"Command: ntl {string.Join(" ", args.Redacted)}", cancellationToken: cancellationToken);
+                $"Command: ntl {string.Join(" ", redactedArgs)}", cancellationToken: cancellationToken);
 
             await ExecuteNetlifyDeploymentAsync(
-                commandInfo.Path!, args.Raw, resolvedWorkingDir, step, logger, cancellationToken);
+                commandInfo.Path!, rawArgs, resolvedWorkingDir, step, logger, cancellationToken);
         }
         catch (Exception ex)
         {
