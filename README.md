@@ -30,11 +30,13 @@ That's it! 🎉
 ## 🔄 How It Works
 
 ### During Development (`aspire run`)
+
 - Runs `npm run dev` in your astro directory
 - Exposes your app on port 4321
 - Hot reload and all your favorite dev features work as expected
 
 ### During Deployment (`aspire deploy`)
+
 - Builds your static site
 - Deploys the `dist` folder to Netlify
 - Your site goes live automatically
@@ -49,11 +51,13 @@ That's it! 🎉
 ## 🛠️ Setup
 
 1. **Install the package** (when published):
+
    ```bash
    dotnet add package Aspire.Hosting.Netlify
    ```
 
 2. **Configure your AppHost**:
+
    ```csharp
    builder.AddNpmApp("myapp", "../path-to-frontend", "dev")
           .WithHttpEndpoint(targetPort: 4321)
@@ -64,11 +68,13 @@ That's it! 🎉
    ```
 
 3. **Run locally**:
+
    ```bash
    aspire run
    ```
 
 4. **Deploy to Netlify**:
+
    ```bash
    aspire deploy
    ```
@@ -76,6 +82,7 @@ That's it! 🎉
 ## 🎨 Example Projects
 
 This works great with:
+
 - ⚡ **Astro** (like our astro example)
 - ⚛️ **React** (Create React App, Vite)
 - 💚 **Vue** (Vite, Nuxt)
@@ -97,4 +104,4 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ---
 
-**Made with ❤️ for the Aspire community**
+### Made with ❤️ for the Aspire community
