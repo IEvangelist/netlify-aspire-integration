@@ -1,21 +1,40 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-// Complete workflow:
-// - Run    →   npm run dev
-// - Deploy →   netlify deploy
-   builder.AddNpmApp("sample", "../sample-site", "dev")
-       .WithNpmPackageInstallation()
-       .WithHttpEndpoint(targetPort: 4321)
-       .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "dist" });
+// Astro app - Static Site Generator
+builder.AddNpmApp("astro", "../astro", "dev")
+    .WithNpmPackageInstallation()
+    .WithHttpEndpoint(targetPort: 4321, env: "PORT")
+    .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "dist" });
 
-builder.AddNpmApp("sample-2", "../sample-site", "dev")
-       .WithNpmPackageInstallation()
-       .WithNpmRunCommand("build:prod")
-       .PublishAsNetlifySite(new NetlifyDeployOptions()
-       {
-           Dir = "dist",
-           NoBuild = true, // Skip the build step since we already built it above.
-       });
+// React app - Vite + TypeScript
+builder.AddNpmApp("react", "../react", "dev")
+    .WithNpmPackageInstallation()
+    .WithHttpEndpoint(targetPort: 5173, env: "PORT")
+    .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "dist" });
+
+// Vue app - Vite
+builder.AddNpmApp("vue", "../vue", "dev")
+    .WithNpmPackageInstallation()
+    .WithHttpEndpoint(targetPort: 5174, env: "PORT")
+    .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "dist" });
+
+// Svelte app - Vite + TypeScript
+builder.AddNpmApp("svelte", "../svelte", "dev")
+    .WithNpmPackageInstallation()
+    .WithHttpEndpoint(targetPort: 5175, env: "PORT")
+    .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "dist" });
+
+// Angular app - Angular CLI
+builder.AddNpmApp("angular", "../angular", "start")
+    .WithNpmPackageInstallation()
+    .WithHttpEndpoint(targetPort: 4200, env: "PORT")
+    .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "dist/angular/browser" });
+
+// Next.js app - Static Export (requires next.config.js with output: 'export')
+builder.AddNpmApp("next", "../next", "dev")
+    .WithNpmPackageInstallation()
+    .WithHttpEndpoint(targetPort: 3000, env: "PORT")
+    .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "out" });
 
 builder.Build().Run();
 

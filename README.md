@@ -18,7 +18,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 // Complete workflow:
 // - Run    →   npm run dev
 // - Deploy →   netlify deploy
-builder.AddNpmApp("sample", "../sample-site", "dev")
+builder.AddNpmApp("sample", "../astro", "dev")
        .WithHttpEndpoint(targetPort: 4321)
        .PublishAsNetlifySite(new NetlifyDeployOptions() { Dir = "dist" });
 
@@ -30,7 +30,7 @@ That's it! 🎉
 ## 🔄 How It Works
 
 ### During Development (`aspire run`)
-- Runs `npm run dev` in your sample-site directory
+- Runs `npm run dev` in your astro directory
 - Exposes your app on port 4321
 - Hot reload and all your favorite dev features work as expected
 
@@ -76,7 +76,7 @@ That's it! 🎉
 ## 🎨 Example Projects
 
 This works great with:
-- ⚡ **Astro** (like our sample-site)
+- ⚡ **Astro** (like our astro example)
 - ⚛️ **React** (Create React App, Vite)
 - 💚 **Vue** (Vite, Nuxt)
 - 🅰️ **Angular**
