@@ -1,0 +1,180 @@
+name: Aspire Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+        default: 'development'
+
+permissions:
+  contents: read
+  deployments: write
+
+env:
+  DOTNET_VERSION: '9.0.x'
+  ENVIRONMENT: ${{ github.event.inputs.environment || 'development' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'development' }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+        
+    - name: Install Aspire CLI
+      run: |
+        curl -sSL https://aspire.dev/install.sh | bash
+        echo "$HOME/.aspire/bin" >> $GITHUB_PATH
+      shell: bash
+      
+    - name: Verify Aspire CLI installation
+      run: aspire --version
+      shell: bash
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build AppHost
+      run: dotnet build src/Netlify.AppHost/Netlify.AppHost.csproj --configuration Release --no-restore
+      
+    - name: Calculate AppHost SHA256
+      id: apphost-sha
+      run: |
+        # Calculate SHA256 of the AppHost project name
+        APPHOST_PROJECT_NAME="Netlify.AppHost"
+        SHA256=$(echo -n "$APPHOST_PROJECT_NAME" | sha256sum | awk '{print $1}')
+        echo "sha256=$SHA256" >> $GITHUB_OUTPUT
+        echo "AppHost Project Name: $APPHOST_PROJECT_NAME"
+        echo "AppHost SHA256: $SHA256"
+      shell: bash
+      
+    - name: Set deployment state path
+      id: state-path
+      run: |
+        SHA256="${{ steps.apphost-sha.outputs.sha256 }}"
+        ENV_NAME="${{ env.ENVIRONMENT }}"
+        
+        # Construct the deployment state path
+        ASPIRE_DIR="$HOME/.aspire/deployments/$SHA256"
+        STATE_FILE="$ASPIRE_DIR/${ENV_NAME}.json"
+        
+        echo "aspire-dir=$ASPIRE_DIR" >> $GITHUB_OUTPUT
+        echo "state-file=$STATE_FILE" >> $GITHUB_OUTPUT
+        echo "cache-key=aspire-deploy-state-$SHA256-$ENV_NAME" >> $GITHUB_OUTPUT
+        
+        echo "Deployment state directory: $ASPIRE_DIR"
+        echo "Deployment state file: $STATE_FILE"
+      shell: bash
+      
+    - name: Restore deployment state from cache
+      id: cache-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ steps.state-path.outputs.aspire-dir }}
+        key: ${{ steps.state-path.outputs.cache-key }}
+        restore-keys: |
+          aspire-deploy-state-${{ steps.apphost-sha.outputs.sha256 }}-
+      
+    - name: Display restored state (if exists)
+      if: steps.cache-restore.outputs.cache-hit == 'true'
+      run: |
+        echo "Deployment state restored from cache"
+        if [ -f "${{ steps.state-path.outputs.state-file }}" ]; then
+          echo "State file contents:"
+          cat "${{ steps.state-path.outputs.state-file }}"
+        else
+          echo "State file not found, this will be a fresh deployment"
+        fi
+      shell: bash
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: |
+          src/angular/package-lock.json
+          src/astro/package-lock.json
+          src/next/package-lock.json
+          src/react/package-lock.json
+          src/svelte/package-lock.json
+          src/vue/package-lock.json
+      
+    - name: Run Aspire Deploy
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        ASPNETCORE_ENVIRONMENT: ${{ env.ENVIRONMENT }}
+        AppHost__Sha256: ${{ steps.apphost-sha.outputs.sha256 }}
+      run: |
+        cd src/Netlify.AppHost
+        aspire deploy --non-interactive --output-path ./deploy-output
+      shell: bash
+      continue-on-error: false
+      
+    - name: Verify deployment state
+      id: verify-state
+      run: |
+        STATE_FILE="${{ steps.state-path.outputs.state-file }}"
+        if [ -f "$STATE_FILE" ]; then
+          echo "state-exists=true" >> $GITHUB_OUTPUT
+          echo "Deployment state file created/updated:"
+          ls -lh "$STATE_FILE"
+          echo "State file contents:"
+          cat "$STATE_FILE"
+        else
+          echo "state-exists=false" >> $GITHUB_OUTPUT
+          echo "Warning: Deployment state file was not created"
+        fi
+      shell: bash
+      
+    - name: Save deployment state to cache
+      if: steps.verify-state.outputs.state-exists == 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ steps.state-path.outputs.aspire-dir }}
+        key: ${{ steps.state-path.outputs.cache-key }}
+      
+    - name: Upload deployment artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: aspire-deployment-${{ env.ENVIRONMENT }}-${{ github.run_number }}
+        path: |
+          src/Netlify.AppHost/deploy-output/
+          ${{ steps.state-path.outputs.state-file }}
+        retention-days: 30
+        if-no-files-found: warn
+        
+    - name: Create deployment summary
+      if: always()
+      run: |
+        echo "## Aspire Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Environment**: ${{ env.ENVIRONMENT }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **AppHost SHA256**: ${{ steps.apphost-sha.outputs.sha256 }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **State Restored**: ${{ steps.cache-restore.outputs.cache-hit == 'true' && '✅ Yes' || '❌ No' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **State Saved**: ${{ steps.verify-state.outputs.state-exists == 'true' && '✅ Yes' || '❌ No' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployment Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Deployed Applications" >> $GITHUB_STEP_SUMMARY
+        echo "- Astro" >> $GITHUB_STEP_SUMMARY
+        echo "- React" >> $GITHUB_STEP_SUMMARY
+        echo "- Vue" >> $GITHUB_STEP_SUMMARY
+        echo "- Svelte" >> $GITHUB_STEP_SUMMARY
+        echo "- Angular" >> $GITHUB_STEP_SUMMARY
+        echo "- Next.js" >> $GITHUB_STEP_SUMMARY
+      shell: bash
