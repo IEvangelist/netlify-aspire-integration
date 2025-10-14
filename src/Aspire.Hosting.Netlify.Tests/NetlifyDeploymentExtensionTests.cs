@@ -119,7 +119,7 @@ public class NetlifyDeploymentExtensionTests
         };
 
         // Act
-        var deployer = new NetlifyDeployerResource(
+        var deployer = new NetlifyDeploymentResource(
             "test-deployer",
             nodeApp.Resource,
             options
@@ -131,7 +131,6 @@ public class NetlifyDeploymentExtensionTests
         Assert.Equal("build", deployer.BuildDirectory);
         Assert.Equal("test-site", deployer.SiteName);
         Assert.Equal("preview", deployer.DeploymentEnvironment);
-        Assert.Equal("netlify", deployer.Command);
     }
 
     [Fact]

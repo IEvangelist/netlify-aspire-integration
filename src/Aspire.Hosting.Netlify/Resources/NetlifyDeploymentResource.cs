@@ -7,17 +7,28 @@ namespace Aspire.Hosting.ApplicationModel;
 /// <param name="nodeAppResource">The Node.js application resource to deploy.</param>
 /// <param name="deployOptions">The deployment options.</param>
 /// <param name="authToken">An optional parameter resource containing the Netlify authentication token.</param>
-public class NetlifyDeployerResource(
+public class NetlifyDeploymentResource(
     string name,
     NodeAppResource nodeAppResource,
     NetlifyDeployOptions deployOptions,
-    IResourceBuilder<ParameterResource>? authToken = null)
-    : ExecutableResource(name, "netlify", nodeAppResource.WorkingDirectory)
+    IResourceBuilder<ParameterResource>? authToken = null) : IComputeEnvironmentResource
 {
+    private readonly NodeAppResource _nodeAppResource = nodeAppResource;
+
     /// <summary>
-    /// Gets the Node.js application resource to deploy.
+    /// Gets the name of the resource.
     /// </summary>
-    public NodeAppResource NodeAppResource { get; } = nodeAppResource;
+    public string Name { get; } = name;
+
+    /// <summary>
+    /// Gets the annotations associated with the resource.
+    /// </summary>
+    public ResourceAnnotationCollection Annotations { get; } = [];
+
+    /// <summary>
+    /// Gets the working directory of the Node.js application resource.
+    /// </summary>
+    public string WorkingDirectory => _nodeAppResource.WorkingDirectory;
 
     /// <summary>
     /// Gets the deployment options.
