@@ -156,8 +156,13 @@ public sealed class NetlifyDeployOptions
             redactedArgs.Add("--json");
         }
 
-        args.AddRange(["--message", Message ?? "'aspire deploy'"]);
-        redactedArgs.AddRange(["--message", Message ?? "'aspire deploy'"]);
+        if (string.IsNullOrWhiteSpace(Message))
+        {
+            Message = $"'aspire deploy {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC'";
+        }
+
+        args.AddRange(["--message", Message]);
+        redactedArgs.AddRange(["--message", Message]);
 
         if (NoBuild is true)
         {
