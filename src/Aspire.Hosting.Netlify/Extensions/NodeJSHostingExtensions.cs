@@ -1,3 +1,6 @@
+// Copyright (c) David Pine. All rights reserved.
+// Licensed under the MIT License.
+
 namespace Aspire.Hosting;
 
 public static partial class NodeJSHostingExtensions
@@ -39,7 +42,9 @@ public static partial class NodeJSHostingExtensions
     }
 
     /// <summary>
-    /// Configures the Node.js app to be deployed to Netlify using the Netlify CLI with custom deployment options.
+    /// Configures the Node.js app for deployment to Netlify using the Netlify CLI.
+    /// Use together with <see cref="NetlifyDistributedApplicationPipelineExtensions.AddNetlifyDeployPipeline"/>.
+    /// When that pipeline is added and this method is applied, the app is deployed with the provided options.
     /// </summary>
     /// <param name="builder">The Node.js app resource builder.</param>
     /// <param name="options">The Netlify deployment options.</param>

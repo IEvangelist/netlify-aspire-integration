@@ -1,3 +1,6 @@
+// Copyright (c) David Pine. All rights reserved.
+// Licensed under the MIT License.
+
 namespace Aspire.Hosting;
 
 /// <summary>
@@ -107,14 +110,14 @@ public sealed class NetlifyDeployOptions
     /// </summary>
     public bool? Trigger { get; set; }
 
-    internal CliArgs ToArguments(string? resolvedBuildDir = null)
+    internal CliArgs ToArguments()
     {
         List<string> args = ["deploy"];
         List<string> redactedArgs = ["deploy"];
 
         // Add directory
-        args.AddRange(["--dir", resolvedBuildDir ?? Dir ?? "."]);
-        redactedArgs.AddRange(["--dir", resolvedBuildDir ?? Dir ?? "."]);
+        args.AddRange(["--dir", Dir ?? "./dist"]);
+        redactedArgs.AddRange(["--dir", Dir ?? "./dist"]);
 
         // Add all option flags
         if (!string.IsNullOrEmpty(Alias))

@@ -1,3 +1,6 @@
+// Copyright (c) David Pine. All rights reserved.
+// Licensed under the MIT License.
+
 namespace Aspire.Hosting.ApplicationModel;
 
 /// <summary>
@@ -19,6 +22,11 @@ public class NetlifyDeploymentResource(
     /// Gets the name of the resource.
     /// </summary>
     public string Name { get; } = name;
+
+    /// <summary>
+    /// Gets the name of the associated Node.js application resource.
+    /// </summary>
+    internal string NodeAppResourceName => _nodeAppResource.Name;
 
     /// <summary>
     /// Gets the annotations associated with the resource.

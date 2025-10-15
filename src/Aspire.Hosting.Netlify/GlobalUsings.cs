@@ -1,3 +1,6 @@
+// Copyright (c) David Pine. All rights reserved.
+// Licensed under the MIT License.
+
 global using System.Runtime.InteropServices;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
@@ -16,4 +19,3 @@ global using static Aspire.Hosting.PathUtilities;
 global using CliArgs = (string[] Raw, string[] Redacted);
 // Need an alias, both Aspire.Hosting.Cli and CliWrap.Cli exist
 global using CliWrapper = CliWrap.Cli;
-global using CommandOnPath = (bool IsFound, string? Path);

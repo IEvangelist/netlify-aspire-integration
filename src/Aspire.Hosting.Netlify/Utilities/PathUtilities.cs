@@ -1,3 +1,6 @@
+// Copyright (c) David Pine. All rights reserved.
+// Licensed under the MIT License.
+
 namespace Aspire.Hosting;
 
 internal static class PathUtilities
@@ -33,7 +36,7 @@ internal static class PathUtilities
             jsonTypeInfo: NetlifyWebJsonContext.Default.NetlifyDeployState);
     }
 
-    internal static string ResolveOnPath(string name)
+    internal static string ResolveFullPathFromEnvironment(string name)
     {
         var paths = (Environment.GetEnvironmentVariable("PATH") ?? "")
             .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries);
