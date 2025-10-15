@@ -1,77 +1,102 @@
 namespace Aspire.Hosting;
 
-internal partial class NetlifyDeployPipelineStepFactory(params NetlifyDeploymentResource[] deployments)
+internal partial class NetlifyDeploymentManager(params NetlifyDeploymentResource[] deployments)
 {
     private readonly NetlifyDeploymentResource[] _deployments = deployments;
     private CommandOnPath _commandOnPath = (false, null);
 
-    public IEnumerable<PipelineStep> CreatePipelineSteps()
+    public async Task PerformDeployAsync(DeployingContext context)
     {
-        var checkForNetlifyCliStep = new PipelineStep
+        // Check for Netlify CLI
+        _commandOnPath = await IsNetlifyCliAvailableAsync(context);
+        
+        if (!_commandOnPath.IsFound)
         {
-            Name = " Check for Netlify CLI",
-            Action = async context =>
+            //Install Netlify CLI
+            var installPath = await InstallNetlifyCliAsync(context);
+            if (installPath is not null)
             {
-                _commandOnPath = await IsNetlifyCliAvailableAsync(context);
+                _commandOnPath = (true, installPath);
             }
-        };
+        }
 
-        var installNetlifyCliStep = new PipelineStep
-        {
-            Name = " Install Netlify CLI",
-            Action = async context =>
-            {
-                var installPath = await InstallNetlifyCliAsync(context);
-                if (installPath is not null)
-                {
-                    _commandOnPath = (true, installPath);
-                }
-            }
-        };
+        // Netlify CLI Login (or use auth token)
+        await PerformNetlifyCliLoginAsync(context, _deployments);
 
-        installNetlifyCliStep.DependsOn(checkForNetlifyCliStep);
+        // Finding Site ID (or prompting for it)
+        await FindSiteIdAsync(context, _deployments);
 
-        var netlifyLoginStep = new PipelineStep
-        {
-            Name = $"Netlify CLI Login (or use auth token)",
-            Action = async context =>
-            {
-                await PerformNetlifyCliLoginAsync(context, _deployments);
-            }
-        };
-
-        netlifyLoginStep.DependsOn(checkForNetlifyCliStep);
-        netlifyLoginStep.DependsOn(installNetlifyCliStep);
-
-        var determineSiteIdStep = new PipelineStep
-        {
-            Name = "Finding Site ID (or prompting for it)",
-            Action = async context =>
-            {
-                await FindSiteIdAsync(context, _deployments);
-            }
-        };
-
-        var deployStep = new PipelineStep
-        {
-            Name = $"Deploy to Netlify",
-            Action = async context =>
-            {
-                await CallNetlifyDeployAsync(_commandOnPath.Path!, _deployments, context);
-            }
-        };
-
-        deployStep.DependsOn(netlifyLoginStep);
-
-        return
-        [
-            checkForNetlifyCliStep,
-            installNetlifyCliStep,
-            netlifyLoginStep,
-            determineSiteIdStep,
-            deployStep
-        ];
+        // Deploy to Netlify
+        await CallNetlifyDeployAsync(_commandOnPath.Path!, _deployments, context);
     }
+
+    // public IEnumerable<PipelineStep> CreatePipelineSteps()
+    // {
+    //     var checkForNetlifyCliStep = new PipelineStep
+    //     {
+    //         Name = " Check for Netlify CLI",
+    //         Action = async context =>
+    //         {
+    //             _commandOnPath = await IsNetlifyCliAvailableAsync(context);
+    //         }
+    //     };
+
+    //     var installNetlifyCliStep = new PipelineStep
+    //     {
+    //         Name = " Install Netlify CLI",
+    //         Action = async context =>
+    //         {
+    //             var installPath = await InstallNetlifyCliAsync(context);
+    //             if (installPath is not null)
+    //             {
+    //                 _commandOnPath = (true, installPath);
+    //             }
+    //         }
+    //     };
+
+    //     installNetlifyCliStep.DependsOn(checkForNetlifyCliStep);
+
+    //     var netlifyLoginStep = new PipelineStep
+    //     {
+    //         Name = $"Netlify CLI Login (or use auth token)",
+    //         Action = async context =>
+    //         {
+    //             await PerformNetlifyCliLoginAsync(context, _deployments);
+    //         }
+    //     };
+
+    //     netlifyLoginStep.DependsOn(checkForNetlifyCliStep);
+    //     netlifyLoginStep.DependsOn(installNetlifyCliStep);
+
+    //     var determineSiteIdStep = new PipelineStep
+    //     {
+    //         Name = "Finding Site ID (or prompting for it)",
+    //         Action = async context =>
+    //         {
+    //             await FindSiteIdAsync(context, _deployments);
+    //         }
+    //     };
+
+    //     var deployStep = new PipelineStep
+    //     {
+    //         Name = $"Deploy to Netlify",
+    //         Action = async context =>
+    //         {
+    //             await CallNetlifyDeployAsync(_commandOnPath.Path!, _deployments, context);
+    //         }
+    //     };
+
+    //     deployStep.DependsOn(netlifyLoginStep);
+
+    //     return
+    //     [
+    //         checkForNetlifyCliStep,
+    //         installNetlifyCliStep,
+    //         netlifyLoginStep,
+    //         determineSiteIdStep,
+    //         deployStep
+    //     ];
+    // }
 
     private static async Task<CommandOnPath> IsNetlifyCliAvailableAsync(DeployingContext context)
     {

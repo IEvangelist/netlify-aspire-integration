@@ -16,10 +16,9 @@ builder.AddNpmApp("astro", "../astro", "dev")
 // React app - Vite + TypeScript
 builder.AddNpmApp("react", "../react", "dev")
     .WithNpmPackageInstallation()
-    .WithNpmRunCommand("build")
     .WithHttpEndpoint(targetPort: 5173, env: "PORT")
     .PublishAsNetlifySite(
-        options: new NetlifyDeployOptions() { Dir = "dist", CreateSite = "react", NoBuild = true },
+        options: new NetlifyDeployOptions() { Dir = "dist", CreateSite = "react" },
         authToken: authToken);
 
 // Vue app - Vite

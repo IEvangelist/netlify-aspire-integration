@@ -12,14 +12,12 @@ public static class NetlifyDistributedApplicationPipelineExtensions
     {
         pipeline.AddStep(
             name: "netlify-deploy",
-            action: context => DeployNetlifySitesAsync(context, pipeline));
+            action: DeployNetlifySitesAsync);
 
         return pipeline;
     }
 
-    private static async Task DeployNetlifySitesAsync(
-        DeployingContext context,
-        IDistributedApplicationPipeline pipeline)
+    private static async Task DeployNetlifySitesAsync(DeployingContext context)
     {
         List<NetlifyDeploymentResource> netlifyDeployments =
         [
@@ -31,11 +29,8 @@ public static class NetlifyDistributedApplicationPipelineExtensions
             return;
         }
 
-        var factory = new NetlifyDeployPipelineStepFactory([.. netlifyDeployments]);
+        var deployManager = new NetlifyDeploymentManager([.. netlifyDeployments]);
 
-        foreach (var step in factory.CreatePipelineSteps())
-        {
-            pipeline.AddStep(step.Name, step.Action, step.DependsOnSteps);
-        }
+        await deployManager.PerformDeployAsync(context);
     }
 }
