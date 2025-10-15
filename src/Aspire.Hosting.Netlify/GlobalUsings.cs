@@ -8,6 +8,7 @@ global using System.Text.RegularExpressions;
 global using Aspire.Hosting.ApplicationModel;
 global using Aspire.Hosting.Pipelines;
 global using Aspire.Hosting.Publishing;
+global using CliWrap;
 global using CliWrap.Buffered;
 global using Json.More;
 global using Microsoft.Extensions.Configuration;

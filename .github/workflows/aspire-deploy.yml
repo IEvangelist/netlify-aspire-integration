@@ -44,13 +44,7 @@ jobs:
     - name: Verify Aspire CLI installation
       run: aspire --version
       shell: bash
-        
-    - name: Restore dependencies
-      run: dotnet restore
-      
-    - name: Build AppHost
-      run: dotnet build src/Netlify.AppHost/Netlify.AppHost.csproj --configuration Release --no-restore
-      
+     
     - name: Calculate AppHost SHA256
       id: apphost-sha
       run: |
@@ -121,7 +115,7 @@ jobs:
         AppHost__Sha256: ${{ steps.apphost-sha.outputs.sha256 }}
       run: |
         cd src/Netlify.AppHost
-        aspire deploy --non-interactive --output-path ./deploy-output
+        aspire deploy --output-path ./deploy-output
       shell: bash
       continue-on-error: false
       

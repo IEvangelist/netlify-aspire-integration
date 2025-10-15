@@ -37,7 +37,15 @@ builder.AddNpmApp("angular", "../angular", "start")
     .WithNpmPackageInstallation()
     .WithHttpEndpoint(targetPort: 4200, env: "PORT")
     .PublishAsNetlifySite(
-        options: new NetlifyDeployOptions() { Dir = "dist/angular" },
+        options: new NetlifyDeployOptions() { Dir = "dist/angular/browser", CreateSite = "angular" },
+        authToken: authToken);
+
+// Svelte app - Vite + TypeScript
+builder.AddNpmApp("svelte", "../svelte", "dev")
+    .WithNpmPackageInstallation()
+    .WithHttpEndpoint(targetPort: 5175, env: "PORT")
+    .PublishAsNetlifySite(
+        options: new NetlifyDeployOptions() { Dir = "dist", CreateSite = "svelte" },
         authToken: authToken);
 
 // Next.js app - Static Export (requires next.config.js with output: 'export')

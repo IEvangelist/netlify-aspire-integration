@@ -48,7 +48,7 @@ public sealed class NetlifyDeployOptions
     /// <summary>
     /// Output deployment data as JSON.
     /// </summary>
-    public bool? Json { get; set; }
+    public bool Json { get; set; }
 
     /// <summary>
     /// A short message to include in the deploy log.
@@ -58,22 +58,22 @@ public sealed class NetlifyDeployOptions
     /// <summary>
     /// Do not run build command before deploying. Only use this if you have no need for a build or your project has already been built.
     /// </summary>
-    public bool? NoBuild { get; set; }
+    public bool NoBuild { get; set; }
 
     /// <summary>
     /// Open project after deploy.
     /// </summary>
-    public bool? Open { get; set; }
+    public bool Open { get; set; }
 
     /// <summary>
     /// Deploy to production if unlocked, create a draft otherwise.
     /// </summary>
-    public bool? ProdIfUnlocked { get; set; }
+    public bool ProdIfUnlocked { get; set; }
 
     /// <summary>
     /// Print debugging information.
     /// </summary>
-    public bool? Debug { get; set; }
+    public bool Debug { get; set; }
 
     /// <summary>
     /// Netlify auth token - can be used to run this command without logging in.
@@ -83,7 +83,7 @@ public sealed class NetlifyDeployOptions
     /// <summary>
     /// Deploy to production.
     /// </summary>
-    public bool? Prod { get; set; }
+    public bool Prod { get; set; }
 
     /// <summary>
     /// A project name or ID to deploy to.
@@ -93,7 +93,7 @@ public sealed class NetlifyDeployOptions
     /// <summary>
     /// Ignore any functions created as part of a previous build or deploy commands, forcing them to be bundled again as part of the deployment.
     /// </summary>
-    public bool? SkipFunctionsCache { get; set; }
+    public bool SkipFunctionsCache { get; set; }
 
     /// <summary>
     /// Specify team slug when creating a site. Only works with <see cref="CreateSite"/> flag.
@@ -108,7 +108,7 @@ public sealed class NetlifyDeployOptions
     /// <summary>
     /// Trigger a new build of your project on Netlify without uploading local files.
     /// </summary>
-    public bool? Trigger { get; set; }
+    public bool Trigger { get; set; }
 
     internal CliArgs ToArguments()
     {
@@ -120,31 +120,31 @@ public sealed class NetlifyDeployOptions
         redactedArgs.AddRange(["--dir", Dir ?? "./dist"]);
 
         // Add all option flags
-        if (!string.IsNullOrEmpty(Alias))
+        if (!string.IsNullOrWhiteSpace(Alias))
         {
             args.AddRange(["--alias", Alias]);
             redactedArgs.AddRange(["--alias", Alias]);
         }
 
-        if (!string.IsNullOrEmpty(Context))
+        if (!string.IsNullOrWhiteSpace(Context))
         {
             args.AddRange(["--context", Context]);
             redactedArgs.AddRange(["--context", Context]);
         }
 
-        if (!string.IsNullOrEmpty(CreateSite))
+        if (!string.IsNullOrWhiteSpace(CreateSite))
         {
-            args.AddRange(["--create-site", CreateSite]);
-            redactedArgs.AddRange(["--create-site", CreateSite]);
+            args.AddRange(["--create-site"]);
+            redactedArgs.AddRange(["--create-site"]);
         }
 
-        if (!string.IsNullOrEmpty(Filter))
+        if (!string.IsNullOrWhiteSpace(Filter))
         {
             args.AddRange(["--filter", Filter]);
             redactedArgs.AddRange(["--filter", Filter]);
         }
 
-        if (!string.IsNullOrEmpty(Functions))
+        if (!string.IsNullOrWhiteSpace(Functions))
         {
             args.AddRange(["--functions", Functions]);
             redactedArgs.AddRange(["--functions", Functions]);
@@ -156,11 +156,8 @@ public sealed class NetlifyDeployOptions
             redactedArgs.Add("--json");
         }
 
-        if (!string.IsNullOrEmpty(Message))
-        {
-            args.AddRange(["--message", Message]);
-            redactedArgs.AddRange(["--message", Message]);
-        }
+        args.AddRange(["--message", Message ?? "'aspire deploy'"]);
+        redactedArgs.AddRange(["--message", Message ?? "'aspire deploy'"]);
 
         if (NoBuild is true)
         {
@@ -186,7 +183,7 @@ public sealed class NetlifyDeployOptions
             redactedArgs.Add("--debug");
         }
 
-        if (!string.IsNullOrEmpty(Auth))
+        if (!string.IsNullOrWhiteSpace(Auth))
         {
             args.AddRange(["--auth", Auth]);
             redactedArgs.AddRange(["--auth", Redact(Auth)]);
@@ -198,7 +195,7 @@ public sealed class NetlifyDeployOptions
             redactedArgs.Add("--prod");
         }
 
-        if (!string.IsNullOrEmpty(Site))
+        if (!string.IsNullOrWhiteSpace(Site))
         {
             args.AddRange(["--site", Site]);
             redactedArgs.AddRange(["--site", Redact(Site)]);
@@ -210,13 +207,13 @@ public sealed class NetlifyDeployOptions
             redactedArgs.Add("--skip-functions-cache");
         }
 
-        if (!string.IsNullOrEmpty(Team))
+        if (!string.IsNullOrWhiteSpace(Team))
         {
             args.AddRange(["--team", Team]);
             redactedArgs.AddRange(["--team", Redact(Team)]);
         }
 
-        if (!string.IsNullOrEmpty(Timeout))
+        if (!string.IsNullOrWhiteSpace(Timeout))
         {
             args.AddRange(["--timeout", Timeout]);
             redactedArgs.AddRange(["--timeout", Timeout]);
@@ -232,7 +229,7 @@ public sealed class NetlifyDeployOptions
 
         static string Redact(string? value, char redactChar = '*', int maxLength = 5)
         {
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 return "";
             }
