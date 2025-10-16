@@ -1,6 +1,6 @@
 # 🚀 `Aspire.Hosting.Netlify`
 
-[![PR Validation](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml)
+[![PR Validation](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml) [![Aspire Deploy](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/aspire-deploy.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/aspire-deploy.yml)
 
 Deploy your frontend projects to Netlify directly from your Aspire AppHost. Build, run locally, and publish to production—all from a single, elegant configuration.
 
