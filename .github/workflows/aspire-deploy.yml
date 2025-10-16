@@ -211,7 +211,7 @@ jobs:
       with:
         name: aspire-deployment-${{ env.ENVIRONMENT }}-${{ github.run_number }}
         path: |
-          src/Netlify.AppHost/deploy-output/
+          deploy-output/
           ${{ steps.state-path.outputs.state-file }}
         retention-days: 30
         if-no-files-found: warn
@@ -229,8 +229,8 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         
         # Add deployment URLs if available
-        if [ -f "src/Netlify.AppHost/urls.md" ]; then
-          cat src/Netlify.AppHost/urls.md >> $GITHUB_STEP_SUMMARY
+        if [ -f "urls.md" ]; then
+          cat urls.md >> $GITHUB_STEP_SUMMARY
         else
           echo "### Deployed Applications" >> $GITHUB_STEP_SUMMARY
           echo "- Astro" >> $GITHUB_STEP_SUMMARY
