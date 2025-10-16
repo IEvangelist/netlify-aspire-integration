@@ -126,12 +126,10 @@ jobs:
         NO_COLOR: 1
         TERM: dumb
       run: |
-        cd src/Netlify.AppHost
-        
         # Ensure netlify-cli is in PATH after installation
         export PATH="$HOME/.npm-global/bin:/usr/local/bin:$PATH"
         
-        # Run aspire deploy and capture output, stripping ANSI codes
+        # Run aspire deploy from root (it will discover the AppHost)
         aspire deploy --output-path ./deploy-output 2>&1 | tee deploy-raw.log
         
         # Strip ANSI escape codes from the log for easier parsing
@@ -142,8 +140,6 @@ jobs:
     - name: Extract deployment URLs
       id: extract-urls
       run: |
-        cd src/Netlify.AppHost
-        
         # Extract URLs from the deployment log
         echo "## Deployment URLs" > urls.md
         echo "" >> urls.md
