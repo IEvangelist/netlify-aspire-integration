@@ -1,11 +1,10 @@
 // Copyright (c) David Pine. All rights reserved.
 // Licensed under the MIT License.
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var authToken = builder.AddParameterFromConfiguration(
    "netlify-token", "NETLIFY_AUTH_TOKEN", secret: true);
-
-var createSites = true;
 
 builder.Pipeline.AddNetlifyDeployPipeline();
 
