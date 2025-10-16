@@ -116,6 +116,53 @@ jobs:
         echo "npm global bin location:"
         npm config get prefix
       shell: bash
+    
+    - name: Install dependencies and build all frontend apps
+      run: |
+        # Build Angular app
+        echo "Building Angular app..."
+        cd src/angular
+        npm ci
+        npm run build
+        cd ../..
+        
+        # Build Astro app
+        echo "Building Astro app..."
+        cd src/astro
+        npm ci
+        npm run build
+        cd ../..
+        
+        # Build Next.js app
+        echo "Building Next.js app..."
+        cd src/next
+        npm ci
+        npm run build
+        cd ../..
+        
+        # Build React app
+        echo "Building React app..."
+        cd src/react
+        npm ci
+        npm run build
+        cd ../..
+        
+        # Build Svelte app
+        echo "Building Svelte app..."
+        cd src/svelte
+        npm ci
+        npm run build
+        cd ../..
+        
+        # Build Vue app
+        echo "Building Vue app..."
+        cd src/vue
+        npm ci
+        npm run build
+        cd ../..
+        
+        echo "All frontend apps built successfully!"
+      shell: bash
       
     - name: Run Aspire Deploy
       id: aspire-deploy
