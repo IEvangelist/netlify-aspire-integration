@@ -48,11 +48,11 @@ jobs:
     - name: Calculate AppHost SHA256
       id: apphost-sha
       run: |
-        # Calculate SHA256 of the AppHost project name
-        APPHOST_PROJECT_NAME="Netlify.AppHost"
-        SHA256=$(echo -n "$APPHOST_PROJECT_NAME" | sha256sum | awk '{print $1}')
+        # Calculate SHA256 of the AppHost project file name
+        APPHOST_PROJECT_FILE="Netlify.AppHost.csproj"
+        SHA256=$(echo -n "$APPHOST_PROJECT_FILE" | sha256sum | awk '{print $1}')
         echo "sha256=$SHA256" >> $GITHUB_OUTPUT
-        echo "AppHost Project Name: $APPHOST_PROJECT_NAME"
+        echo "AppHost Project File: $APPHOST_PROJECT_FILE"
         echo "AppHost SHA256: $SHA256"
       shell: bash
       
@@ -107,17 +107,84 @@ jobs:
           src/react/package-lock.json
           src/svelte/package-lock.json
           src/vue/package-lock.json
+    
+    - name: Install Netlify CLI globally
+      run: |
+        npm install -g netlify-cli
+        echo "Netlify CLI installed at:"
+        which netlify || which ntl || echo "netlify not found in PATH"
+        echo "npm global bin location:"
+        npm config get prefix
+      shell: bash
       
     - name: Run Aspire Deploy
+      id: aspire-deploy
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         ASPNETCORE_ENVIRONMENT: ${{ env.ENVIRONMENT }}
         AppHost__Sha256: ${{ steps.apphost-sha.outputs.sha256 }}
+        NO_COLOR: 1
+        TERM: dumb
       run: |
         cd src/Netlify.AppHost
-        aspire deploy --output-path ./deploy-output
+        
+        # Ensure netlify-cli is in PATH after installation
+        export PATH="$HOME/.npm-global/bin:/usr/local/bin:$PATH"
+        
+        # Run aspire deploy and capture output, stripping ANSI codes
+        aspire deploy --output-path ./deploy-output 2>&1 | tee deploy-raw.log
+        
+        # Strip ANSI escape codes from the log for easier parsing
+        sed 's/\x1b\[[0-9;]*m//g' deploy-raw.log | sed 's/\x1b\]9;4;[0-9]*\\//g' > deploy.log
       shell: bash
       continue-on-error: false
+      
+    - name: Extract deployment URLs
+      id: extract-urls
+      run: |
+        cd src/Netlify.AppHost
+        
+        # Extract URLs from the deployment log
+        echo "## Deployment URLs" > urls.md
+        echo "" >> urls.md
+        
+        # Use grep and awk to parse the cleaned log file
+        # First, ensure the log exists
+        if [ ! -f deploy.log ]; then
+          echo "⚠️ Deploy log not found" >> urls.md
+          cat urls.md
+          exit 0
+        fi
+        
+        # Extract URLs using a simpler approach
+        grep -E "🚀 Deploy to Netlify —|🔗 URL:" deploy.log | \
+        awk '
+          /🚀 Deploy to Netlify —/ {
+            # Extract app name between "—" and ")"
+            match($0, /— ([a-z]+)\)/, arr)
+            app = arr[1]
+            # Capitalize first letter
+            if (app != "") {
+              app = toupper(substr(app, 1, 1)) substr(app, 2)
+            }
+          }
+          /🔗 URL:/ {
+            # Extract URL
+            match($0, /https:\/\/[^[:space:]]+/, arr)
+            url = arr[0]
+            if (app != "" && url != "") {
+              print "- **" app "**: " url
+              app = ""
+              url = ""
+            }
+          }
+        ' >> urls.md
+        
+        # Display the extracted URLs
+        echo "Extracted URLs:"
+        cat urls.md
+      shell: bash
+      continue-on-error: true
       
     - name: Verify deployment state
       id: verify-state
@@ -164,11 +231,17 @@ jobs:
         echo "- **State Saved**: ${{ steps.verify-state.outputs.state-exists == 'true' && '✅ Yes' || '❌ No' }}" >> $GITHUB_STEP_SUMMARY
         echo "- **Deployment Status**: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Deployed Applications" >> $GITHUB_STEP_SUMMARY
-        echo "- Astro" >> $GITHUB_STEP_SUMMARY
-        echo "- React" >> $GITHUB_STEP_SUMMARY
-        echo "- Vue" >> $GITHUB_STEP_SUMMARY
-        echo "- Svelte" >> $GITHUB_STEP_SUMMARY
-        echo "- Angular" >> $GITHUB_STEP_SUMMARY
-        echo "- Next.js" >> $GITHUB_STEP_SUMMARY
+        
+        # Add deployment URLs if available
+        if [ -f "src/Netlify.AppHost/urls.md" ]; then
+          cat src/Netlify.AppHost/urls.md >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### Deployed Applications" >> $GITHUB_STEP_SUMMARY
+          echo "- Astro" >> $GITHUB_STEP_SUMMARY
+          echo "- React" >> $GITHUB_STEP_SUMMARY
+          echo "- Vue" >> $GITHUB_STEP_SUMMARY
+          echo "- Svelte" >> $GITHUB_STEP_SUMMARY
+          echo "- Angular" >> $GITHUB_STEP_SUMMARY
+          echo "- Next.js" >> $GITHUB_STEP_SUMMARY
+        fi
       shell: bash
