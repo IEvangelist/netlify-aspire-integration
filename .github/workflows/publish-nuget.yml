@@ -1,0 +1,73 @@
+name: Publish NuGet Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history for MinVer versioning
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+        dotnet-quality: 'preview'
+        
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build --no-restore --configuration Release
+      
+    - name: Run tests
+      run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --verbosity normal
+      
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: "**/test-results.trx"
+        retention-days: 30
+        if-no-files-found: warn
+      
+    - name: Pack NuGet package
+      run: |
+        dotnet pack src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj \
+          --configuration Release \
+          --no-build \
+          --output ./artifacts
+      
+    - name: Upload NuGet package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-package
+        path: ./artifacts/*.nupkg
+        retention-days: 90
+      
+    - name: Push to NuGet.org
+      run: |
+        dotnet nuget push ./artifacts/*.nupkg \
+          --api-key ${{ secrets.NUGET_API_KEY }} \
+          --source https://api.nuget.org/v3/index.json \
+          --skip-duplicate
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      
+    - name: Success notification
+      if: success()
+      run: |
+        echo "✅ Successfully published Aspire.Hosting.Netlify to NuGet.org"
+        echo "Package URL: https://www.nuget.org/packages/Aspire.Hosting.Netlify"
+        echo "Version determined by MinVer from git tags"

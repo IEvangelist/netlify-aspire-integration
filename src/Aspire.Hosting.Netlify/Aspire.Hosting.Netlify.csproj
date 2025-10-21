@@ -1,16 +1,45 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);ASPIREPUBLISHERS001;ASPIREPIPELINES001;ASPIREINTERACTION001;ASPIRECOMPUTE001</NoWarn>
+    
+    <!-- MinVer Versioning -->
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerMinimumMajorMinor>0.1</MinVerMinimumMajorMinor>
+    <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
+    
+    <!-- NuGet Package Metadata -->
+    <PackageId>Aspire.Hosting.Netlify</PackageId>
+    <Title>Aspire Hosting Integration for Netlify</Title>
+    <Description>A .NET Aspire hosting integration for deploying web applications to Netlify</Description>
+    <Authors>IEvangelist</Authors>
+    <Company>IEvangelist</Company>
+    <PackageTags>aspire;netlify;hosting;deployment;webdev</PackageTags>
+    <PackageProjectUrl>https://github.com/IEvangelist/netlify-aspire-integration</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/IEvangelist/netlify-aspire-integration</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting" />
     <PackageReference Include="Aspire.Hosting.NodeJS" />
     <PackageReference Include="CliWrap" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
 </Project>
