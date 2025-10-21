@@ -62,6 +62,8 @@ builder.AddNpmApp("angular", "../angular", "start")
 
 // Svelte app - Vite + TypeScript
 builder.AddNpmApp("svelte", "../svelte", "dev")
+    .WithNpmCommand("i")  // npm i
+    .WithNpmRunCommand("build")
     .WithNpmPackageInstallation()
     .WithHttpEndpoint(targetPort: 5175, env: "PORT")
     .PublishAsNetlifySite(

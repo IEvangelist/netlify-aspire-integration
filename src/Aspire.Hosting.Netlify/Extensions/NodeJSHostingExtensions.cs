@@ -6,6 +6,51 @@ namespace Aspire.Hosting;
 public static partial class NodeJSHostingExtensions
 {
     /// <summary>
+    /// Configures the Node.js app to run an arbitrary npm command before starting.
+    /// </summary>
+    /// <param name="builder">The Node.js app resource builder.</param>
+    /// <param name="args">The npm command arguments (e.g., "i", "run build:production", "ci --legacy-peer-deps").</param>
+    /// <param name="configureRunner">Configure the npm runner resource.</param>
+    /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
+    /// <remarks>
+    /// This method allows you to run any npm command before the app starts. For example:
+    /// <code>
+    /// builder.AddNpmApp("myapp", "../myapp", "dev")
+    ///     .WithNpmCommand("i")  // npm i
+    ///     .WithNpmCommand("run build:production");  // npm run build:production
+    /// </code>
+    /// </remarks>
+    public static IResourceBuilder<NodeAppResource> WithNpmCommand(
+        this IResourceBuilder<NodeAppResource> builder,
+        string args,
+        Action<IResourceBuilder<NpmCommandResource>>? configureRunner = null)
+    {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentException.ThrowIfNullOrWhiteSpace(args);
+
+        // Sanitize args for use in resource name (replace spaces and special chars)
+        var sanitizedArgs = args.Replace(" ", "-").Replace(":", "-");
+        var runnerName = $"{builder.Resource.Name}-npm-{sanitizedArgs}";
+        var runner = new NpmCommandResource(runnerName, builder.Resource.WorkingDirectory, args);
+
+        var argsArray = args.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        var runnerBuilder = builder.ApplicationBuilder.AddResource(runner)
+            .WithArgs(argsArray)
+            .WithParentRelationship(builder.Resource)
+            .ExcludeFromManifest();
+
+        // Make the parent resource wait for the runner to complete
+        builder.WaitForCompletion(runnerBuilder);
+
+        configureRunner?.Invoke(runnerBuilder);
+
+        builder.WithAnnotation(new NpmCommandAnnotation(runner));
+
+        return builder;
+    }
+
+    /// <summary>
     /// Configures the Node.js app to run an npm script before starting.
     /// </summary>
     /// <param name="builder">The Node.js app resource builder.</param>
@@ -15,28 +60,25 @@ public static partial class NodeJSHostingExtensions
     public static IResourceBuilder<NodeAppResource> WithNpmRunCommand(
         this IResourceBuilder<NodeAppResource> builder,
         string scriptName,
-        Action<IResourceBuilder<NpmRunnerResource>>? configureRunner = null)
+        Action<IResourceBuilder<NpmCommandResource>>? configureRunner = null)
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentException.ThrowIfNullOrWhiteSpace(scriptName);
 
-        if (!builder.ApplicationBuilder.ExecutionContext.IsPublishMode)
-        {
-            var runnerName = $"{builder.Resource.Name}-npm-run-{scriptName}";
-            var runner = new NpmRunnerResource(runnerName, builder.Resource.WorkingDirectory, scriptName);
+        var runnerName = $"{builder.Resource.Name}-npm-run-{scriptName}";
+        var runner = new NpmCommandResource(runnerName, builder.Resource.WorkingDirectory, scriptName);
 
-            var runnerBuilder = builder.ApplicationBuilder.AddResource(runner)
-                .WithArgs(["run", scriptName])
-                .WithParentRelationship(builder.Resource)
-                .ExcludeFromManifest();
+        var runnerBuilder = builder.ApplicationBuilder.AddResource(runner)
+            .WithArgs(["run", scriptName])
+            .WithParentRelationship(builder.Resource)
+            .ExcludeFromManifest();
 
-            // Make the parent resource wait for the runner to complete
-            builder.WaitForCompletion(runnerBuilder);
+        // Make the parent resource wait for the runner to complete
+        builder.WaitForCompletion(runnerBuilder);
 
-            configureRunner?.Invoke(runnerBuilder);
+        configureRunner?.Invoke(runnerBuilder);
 
-            builder.WithAnnotation(new NpmRunnerAnnotation(runner));
-        }
+        builder.WithAnnotation(new NpmCommandAnnotation(runner));
 
         return builder;
     }

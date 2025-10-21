@@ -29,9 +29,14 @@ public static class NetlifyDistributedApplicationPipelineExtensions
             dependsOn: NetlifyDeployStepNames.InstallNetlifyCli);
 
         pipeline.AddStep(
+            name: NetlifyDeployStepNames.RunNpmCommands,
+            action: NetlifyDeploymentPipelineSteps.RunNpmCommandsAsync,
+            dependsOn: NetlifyDeployStepNames.AuthenticateNetlifyCli);
+
+        pipeline.AddStep(
             name: NetlifyDeployStepNames.ResolveNetlifySiteId,
             action: NetlifyDeploymentPipelineSteps.ResolveNetlifySiteIdAsync,
-            dependsOn: NetlifyDeployStepNames.AuthenticateNetlifyCli);
+            dependsOn: NetlifyDeployStepNames.RunNpmCommands);
 
         pipeline.AddStep(
             name: NetlifyDeployStepNames.DeployToNetlify,

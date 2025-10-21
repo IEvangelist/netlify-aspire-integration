@@ -31,7 +31,7 @@ internal static partial class NetlifyDeploymentPipelineSteps
                 else
                 {
                     await resolveOnPathTask.CompleteAsync(
-                        $"Found Netlify CLI at: {ntlPath}", cancellationToken: context.CancellationToken);
+                        $"Found at {ntlPath}", cancellationToken: context.CancellationToken);
 
                     s_commandOnPath = ntlPath;
 
@@ -85,7 +85,7 @@ internal static partial class NetlifyDeploymentPipelineSteps
             if (s_commandOnPath.IsFound)
             {
                 await using (await step.CreateTaskAsync(
-                    "🟢 Skipped: Already installed...", cancellationToken))
+                    "Already installed, skipping", cancellationToken))
                 {
                     return;
                 }
@@ -115,13 +115,13 @@ internal static partial class NetlifyDeploymentPipelineSteps
                 else
                 {
                     await task.CompleteAsync(
-                        "Installed Netlify CLI", cancellationToken: cancellationToken);
+                        "Installation complete", cancellationToken: cancellationToken);
                 }
             }
             catch (Exception ex)
             {
                 await step.FailAsync(
-                    $"Failed to install Netlify CLI: {ex.Message}", cancellationToken: cancellationToken);
+                    $"Installation failed: {ex.Message}", cancellationToken: cancellationToken);
 
                 logger.LogError(ex, "Failed to install Netlify CLI");
 
@@ -129,7 +129,7 @@ internal static partial class NetlifyDeploymentPipelineSteps
             }
 
             await step.CompleteAsync(
-                "Netlify CLI installation step completed", cancellationToken: cancellationToken);
+                "Netlify CLI ready", cancellationToken: cancellationToken);
         }
     }
 
@@ -201,7 +201,7 @@ internal static partial class NetlifyDeploymentPipelineSteps
                     catch (Exception ex)
                     {
                         await task.FailAsync(
-                            $"☹️ ntl login failed with error: {ex.Message}", cancellationToken);
+                            $"Login failed: {ex.Message}", cancellationToken);
 
                         throw;
                     }
@@ -211,25 +211,25 @@ internal static partial class NetlifyDeploymentPipelineSteps
                         loggedIn = true;
 
                         await task.CompleteAsync(
-                            "🔓 Success: ntl login", cancellationToken: cancellationToken);
+                            "Authentication successful", cancellationToken: cancellationToken);
                     }
                     else
                     {
                         await task.FailAsync(
-                            $"☹️ ntl login exited with code: {result.ExitCode}",
+                            $"Login failed with exit code {result.ExitCode}",
                             cancellationToken: cancellationToken);
                     }
                 }
                 catch
                 {
                     await step.FailAsync(
-                        "🔒 Netlify CLI authentication check failed", cancellationToken: cancellationToken);
+                        "Authentication failed", cancellationToken: cancellationToken);
 
                     throw;
                 }
 
                 await step.CompleteAsync(
-                    "✅ Completed Netlify CLI authentication check", cancellationToken: cancellationToken);
+                    "Authentication complete", cancellationToken: cancellationToken);
             }
         }
     }
@@ -530,19 +530,90 @@ internal static partial class NetlifyDeploymentPipelineSteps
         }
     }
 
+    internal static async Task RunNpmCommandsAsync(PipelineStepContext context)
+    {
+        var reporter = context.Services.GetRequiredService<IPipelineActivityReporter>();
+        var cancellationToken = context.CancellationToken;
+
+        var step = await reporter.CreateStepAsync(
+            NetlifyDeployStepNames.GetFriendlyName(NetlifyDeployStepNames.RunNpmCommands),
+            cancellationToken);
+
+        await using (step.ConfigureAwait(false))
+        {
+            var deployments = context.GetNetlifyDeploymentResources();
+
+            foreach (var deployment in deployments)
+            {
+                var nodeApp = deployment.NodeAppResource;
+
+                // Get all NpmRunnerAnnotations for this node app
+                var npmRunners = nodeApp.Annotations
+                    .OfType<NpmCommandAnnotation>()
+                    .Select(a => a.Resource)
+                    .ToList();
+
+                if (npmRunners.Count == 0)
+                {
+                    continue;
+                }
+
+                foreach (var runner in npmRunners)
+                {
+                    var args = await runner.GetArgumentValuesAsync();
+
+                    var task = await step.CreateTaskAsync(
+                        $"npm {string.Join(" ", args)} ({nodeApp.Name})",
+                        cancellationToken);
+
+                    await using (task.ConfigureAwait(false))
+                    {
+                        try
+                        {
+                            var result = await CliWrapper.Wrap("npm")
+                                .WithArguments(args)
+                                .WithWorkingDirectory(runner.WorkingDirectory)
+                                .ExecuteBufferedAsync(cancellationToken);
+
+                            if (result.ExitCode is 0)
+                            {
+                                await task.CompleteAsync(
+                                    $"Command completed successfully",
+                                    cancellationToken: cancellationToken);
+                            }
+                            else
+                            {
+                                var errorMessage = result.StandardError.Length > 0
+                                    ? result.StandardError
+                                    : $"npm command exited with code {result.ExitCode}";
+
+                                await task.FailAsync(errorMessage, cancellationToken: cancellationToken);
+
+                                throw new InvalidOperationException($"npm command failed: {errorMessage}");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            context.Logger.LogError(ex, "Failed to execute npm command");
+                            throw;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private static string GetDeploymentCompletionMessage(string? deployUrl, string? deployLogsUrl)
     {
-        var message = (deployUrl, deployLogsUrl) switch
+                        var message = (deployUrl, deployLogsUrl) switch
         {
             (not null, not null) =>
-                $"Deployed successfully\n    🔗 URL: {deployUrl}\n    🪵 Logs: {deployLogsUrl}",
-            (not null, null) => $"Deployed successfully\n    🔗 URL: {deployUrl}",
-            (null, not null) => $"Deployed successfully\n    🪵 Logs: {deployLogsUrl}",
+                $"Deployment complete\n—URL: {deployUrl}\n—Logs: {deployLogsUrl}",
+            (not null, null) => $"Deployment complete\n—URL: {deployUrl}",
+            (null, not null) => $"Deployment complete\n—Logs: {deployLogsUrl}",
 
-            _ => "Deployed successfully"
-        };
-
-        return message;
+            _ => "Deployment complete"
+        };        return message;
     }
 
     [GeneratedRegex(@"https?://[A-Za-z0-9-]+(?:--[A-Za-z0-9-]+)?\.netlify\.app\b", RegexOptions.IgnoreCase, "en-US")]

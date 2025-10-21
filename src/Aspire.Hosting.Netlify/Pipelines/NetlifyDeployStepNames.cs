@@ -11,6 +11,8 @@ internal static class NetlifyDeployStepNames
 
     public const string AuthenticateNetlifyCli = "netlify-authenticate-cli";
 
+    public const string RunNpmCommands = "netlify-run-npm-commands";
+
     public const string ResolveNetlifySiteId = "netlify-resolve-site-id";
 
     public const string DeployToNetlify = "netlify-deploy";
@@ -20,6 +22,7 @@ internal static class NetlifyDeployStepNames
         CheckNetlifyCli => "🔍 Check for Netlify CLI",
         InstallNetlifyCli => "📦 Install Netlify CLI",
         AuthenticateNetlifyCli => "🔐 Authenticate with Netlify",
+        RunNpmCommands => "📦 Run npm commands",
         ResolveNetlifySiteId => "✅ Resolve Netlify Site ID",
         DeployToNetlify => "🚀 Deploy to Netlify",
 

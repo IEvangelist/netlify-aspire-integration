@@ -151,7 +151,7 @@ public class NetlifyDeploymentExtensionTests
 
         // Assert
         var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.True(nodeResource.TryGetAnnotationsOfType<NpmRunnerAnnotation>(out var annotations));
+        Assert.True(nodeResource.TryGetAnnotationsOfType<NpmCommandAnnotation>(out var annotations));
         var annotation = Assert.Single(annotations);
         Assert.NotNull(annotation.Resource);
         Assert.Equal("test-app-npm-run-build", annotation.Resource.Name);
@@ -176,7 +176,7 @@ public class NetlifyDeploymentExtensionTests
 
         // Assert
         var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.False(nodeResource.TryGetAnnotationsOfType<NpmRunnerAnnotation>(out _));
+        Assert.False(nodeResource.TryGetAnnotationsOfType<NpmCommandAnnotation>(out _));
     }
 
     [Theory]
@@ -198,7 +198,7 @@ public class NetlifyDeploymentExtensionTests
 
         // Assert
         var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.True(nodeResource.TryGetAnnotationsOfType<NpmRunnerAnnotation>(out var annotations));
+        Assert.True(nodeResource.TryGetAnnotationsOfType<NpmCommandAnnotation>(out var annotations));
         var annotation = Assert.Single(annotations);
         Assert.Equal(scriptName, annotation.Resource.ScriptName);
         Assert.Equal($"test-app-npm-run-{scriptName}", annotation.Resource.Name);
@@ -218,7 +218,7 @@ public class NetlifyDeploymentExtensionTests
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var runnerResource = Assert.Single(appModel.Resources.OfType<NpmRunnerResource>());
+        var runnerResource = Assert.Single(appModel.Resources.OfType<NpmCommandResource>());
         Assert.Equal("test-app-npm-run-build", runnerResource.Name);
         Assert.Equal("npm", runnerResource.Command);
         Assert.EndsWith("test-app", runnerResource.WorkingDirectory);
@@ -249,7 +249,7 @@ public class NetlifyDeploymentExtensionTests
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var runnerResource = Assert.Single(appModel.Resources.OfType<NpmRunnerResource>());
+        var runnerResource = Assert.Single(appModel.Resources.OfType<NpmCommandResource>());
 
         var args = await runnerResource.GetArgumentValuesAsync();
         Assert.Collection(args,
@@ -264,7 +264,7 @@ public class NetlifyDeploymentExtensionTests
     public void NpmRunnerResource_StoresAllConfigurationCorrectly()
     {
         // Arrange & Act
-        var runner = new NpmRunnerResource(
+        var runner = new NpmCommandResource(
             "test-runner",
             "/path/to/working/dir",
             "build"
