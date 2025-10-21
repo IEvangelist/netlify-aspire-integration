@@ -1,8 +1,14 @@
 # 🚀 `Aspire.Hosting.Netlify`
 
-[![PR Validation](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml) [![Aspire Deploy](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/aspire-deploy.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/aspire-deploy.yml)
+[![PR Validation](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml) [![Aspire Deploy](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/aspire-deploy.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/aspire-deploy.yml) [![Publish NuGet Package](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/publish-nuget.yml)
 
 Deploy your frontend projects to Netlify directly from your Aspire AppHost. Build, run locally, and publish to production—all from a single, elegant configuration.
+
+## 🖼️ See It In Action
+
+The terminal screenshot below shows the seamless deployment process in action—watch as your Astro site gets built and deployed to Netlify with simple, clear progress indicators. Notice how the process automatically handles the build steps and provides immediate feedback on the deployment status.
+
+![Terminal window showing a successful Netlify deployment process with green checkmarks indicating completed build steps and deploy confirmation messages](assets/deploy.png)
 
 ## ✨ Why This is Cool
 
