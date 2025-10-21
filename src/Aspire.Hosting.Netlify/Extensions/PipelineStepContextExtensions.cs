@@ -3,10 +3,10 @@
 
 namespace Aspire.Hosting;
 
-internal static class DeployingContextExtensions
+internal static class PipelineStepContextExtensions
 {
     public static IEnumerable<NetlifyDeploymentResource> GetNetlifyDeploymentResources(
-        this DeployingContext context)
+        this PipelineStepContext context)
     {
         return context.Model.Resources.OfType<NetlifyDeploymentResource>();
     }

@@ -7,9 +7,10 @@ internal static partial class NetlifyDeploymentPipelineSteps
 {
     private static CommandOnPath s_commandOnPath = false;
 
-    internal static async Task CheckForNetlifyCliAsync(DeployingContext context)
+    internal static async Task CheckForNetlifyCliAsync(PipelineStepContext context)
     {
-        var step = await context.ActivityReporter.CreateStepAsync(
+        var reporter = context.Services.GetRequiredService<IPipelineActivityReporter>();
+        var step = await reporter.CreateStepAsync(
             NetlifyDeployStepNames.GetFriendlyName(NetlifyDeployStepNames.CheckNetlifyCli),
             context.CancellationToken);
 
@@ -69,9 +70,9 @@ internal static partial class NetlifyDeploymentPipelineSteps
         }
     }
 
-    internal static async Task InstallNetlifyCliAsync(DeployingContext context)
+    internal static async Task InstallNetlifyCliAsync(PipelineStepContext context)
     {
-        var reporter = context.ActivityReporter;
+        var reporter = context.Services.GetRequiredService<IPipelineActivityReporter>();
         var cancellationToken = context.CancellationToken;
         var logger = context.Logger;
 
@@ -132,10 +133,10 @@ internal static partial class NetlifyDeploymentPipelineSteps
         }
     }
 
-    internal static async Task AuthenticateWithNetlifyAsync(DeployingContext context)
+    internal static async Task AuthenticateWithNetlifyAsync(PipelineStepContext context)
     {
         var loggedIn = false;
-        var reporter = context.ActivityReporter;
+        var reporter = context.Services.GetRequiredService<IPipelineActivityReporter>();
         var cancellationToken = context.CancellationToken;
 
         var deployments = context.GetNetlifyDeploymentResources();
@@ -233,16 +234,17 @@ internal static partial class NetlifyDeploymentPipelineSteps
         }
     }
 
-    internal static async Task ResolveNetlifySiteIdAsync(DeployingContext context)
+    internal static async Task ResolveNetlifySiteIdAsync(PipelineStepContext context)
     {
         var logger = context.Logger;
         var cancellationToken = context.CancellationToken;
         var stateManager = context.Services.GetRequiredService<IDeploymentStateManager>();
+        var reporter = context.Services.GetRequiredService<IPipelineActivityReporter>();
         var deployments = context.GetNetlifyDeploymentResources();
 
         var friendlyName = NetlifyDeployStepNames.GetFriendlyName(NetlifyDeployStepNames.ResolveNetlifySiteId);
 
-        var step = await context.ActivityReporter.CreateStepAsync(
+        var step = await reporter.CreateStepAsync(
             friendlyName, cancellationToken);
 
         await using (step.ConfigureAwait(false))
@@ -357,14 +359,14 @@ internal static partial class NetlifyDeploymentPipelineSteps
             cancellationToken: cancellationToken);
     }
 
-    internal static async Task DeployToNetlifyAsync(DeployingContext context)
+    internal static async Task DeployToNetlifyAsync(PipelineStepContext context)
     {
         var deployments = context.GetNetlifyDeploymentResources();
 
         foreach (var deployment in deployments)
         {
             var options = deployment.Options;
-            var reporter = context.ActivityReporter;
+            var reporter = context.Services.GetRequiredService<IPipelineActivityReporter>();
             var cancellationToken = context.CancellationToken;
 
             var friendlyName = NetlifyDeployStepNames.GetFriendlyName(NetlifyDeployStepNames.DeployToNetlify);
@@ -397,9 +399,9 @@ internal static partial class NetlifyDeploymentPipelineSteps
         string ntlPath,
         CliArgs cliArgs,
         string workingDirectory,
-        IPublishingStep step,
+        IReportingStep step,
         NetlifyDeploymentResource deployment,
-        DeployingContext context)
+        PipelineStepContext context)
     {
         var (rawArgs, redecatedArgs) = cliArgs;
         var logger = context.Logger;
