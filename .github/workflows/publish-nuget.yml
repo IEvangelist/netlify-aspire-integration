@@ -56,6 +56,19 @@ jobs:
         path: ./artifacts/*.nupkg
         retention-days: 90
       
+    - name: Validate NuGet API Key
+      run: |
+        if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
+          echo "::error::NUGET_API_KEY secret is not set. Please add it to repository secrets."
+          exit 1
+        fi
+        echo "✅ NuGet API Key is configured"
+      
+    - name: List packages to push
+      run: |
+        echo "Packages to be pushed:"
+        ls -la ./artifacts/*.nupkg
+      
     - name: Push to NuGet.org
       run: |
         dotnet nuget push ./artifacts/*.nupkg \
