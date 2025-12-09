@@ -6,6 +6,7 @@ global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using Aspire.Hosting.ApplicationModel;
+global using Aspire.Hosting.JavaScript;
 global using Aspire.Hosting.Pipelines;
 global using Aspire.Hosting.Publishing;
 global using CliWrap;
