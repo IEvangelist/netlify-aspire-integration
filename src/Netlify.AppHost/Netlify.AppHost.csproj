@@ -14,7 +14,7 @@
   <ItemGroup>
     <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.JavaScript" />
-    <PackageReference Include="CommunityToolkit.Aspire.Hosting.NodeJS.Extensions" />
+    <PackageReference Include="CommunityToolkit.Aspire.Hosting.JavaScript.Extensions" />
   </ItemGroup>
 
   <ItemGroup>
