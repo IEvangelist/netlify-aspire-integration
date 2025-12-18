@@ -260,11 +260,12 @@ internal static partial class NetlifyDeploymentPipelineSteps
                     continue;
                 }
 
-                var deployState = await stateManager.LoadStateAsync(cancellationToken);
+                var sectionName = $"netlify-{deployment.Name}";
+                var section = await stateManager.AcquireSectionAsync(sectionName, cancellationToken);
 
                 // Try loading site ID from deploy state file first.
-                if (deployState is not null &&
-                    deployState.TryGetValue(deployment.Name, out var siteIdFromState, out var ex) &&
+                if (section.Data is not null &&
+                    section.Data.TryGetValue("siteId", out var siteIdFromState, out var ex) &&
                     siteIdFromState is not null)
                 {
                     options.Site = siteIdFromState.ToString();
@@ -279,13 +280,13 @@ internal static partial class NetlifyDeploymentPipelineSteps
                     {
                         options.Site = state.SiteId;
 
-                        if (deployState is not null)
+                        if (section.Data is not null)
                         {
-                            // Upsert property named after the deployment with the SiteId
-                            deployState[deployment.Name] = state.SiteId;
+                            // Upsert property with the SiteId
+                            section.Data["siteId"] = state.SiteId;
 
                             // Persist updated state
-                            await stateManager.SaveStateAsync(deployState, context.CancellationToken);
+                            await stateManager.SaveSectionAsync(section, context.CancellationToken);
                         }
 
                         continue;
@@ -303,13 +304,13 @@ internal static partial class NetlifyDeploymentPipelineSteps
                     {
                         options.Site = siteId;
 
-                        if (deployState is not null)
+                        if (section.Data is not null)
                         {
-                            // Upsert property named after the deployment with the SiteId
-                            deployState[deployment.Name] = siteId;
+                            // Upsert property with the SiteId
+                            section.Data["siteId"] = siteId;
 
                             // Persist updated state
-                            await stateManager.SaveStateAsync(deployState, context.CancellationToken);
+                            await stateManager.SaveSectionAsync(section, context.CancellationToken);
                         }
 
                         continue;
@@ -446,21 +447,22 @@ internal static partial class NetlifyDeploymentPipelineSteps
                                 await task.SucceedAsync(message, cancellationToken: context.CancellationToken);
 
                                 var stateManager = context.Services.GetRequiredService<IDeploymentStateManager>();
-                                var state = await stateManager.LoadStateAsync(context.CancellationToken);
-                                if (state is not null && siteInfo.SiteId is not null)
+                                var sectionName = $"netlify-{deployment.Name}";
+                                var section = await stateManager.AcquireSectionAsync(sectionName, context.CancellationToken);
+                                if (section.Data is not null && siteInfo.SiteId is not null)
                                 {
-                                    // Upsert property named after the deployment with the SiteId
-                                    state[deployment.Name] = siteInfo.SiteId;
+                                    // Upsert property with the SiteId
+                                    section.Data["siteId"] = siteInfo.SiteId;
 
                                     // Persist updated state
-                                    await stateManager.SaveStateAsync(state, context.CancellationToken);
+                                    await stateManager.SaveSectionAsync(section, context.CancellationToken);
                                 }
                                 else
                                 {
                                     if (logger.IsEnabled(LogLevel.Warning))
                                     {
                                         logger.LogWarning(
-                                            "Failed to load deployment state or SiteId is null, not saving state.");
+                                            "Failed to acquire deployment state or SiteId is null, not saving state.");
                                     }
                                 }
                             }

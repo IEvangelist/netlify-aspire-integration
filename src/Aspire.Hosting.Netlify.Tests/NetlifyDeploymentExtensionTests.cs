@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 using Aspire.Hosting.ApplicationModel;
+using Aspire.Hosting.JavaScript;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Aspire.Hosting.Netlify.Tests;
