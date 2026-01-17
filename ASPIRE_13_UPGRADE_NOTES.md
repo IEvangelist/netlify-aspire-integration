@@ -1,13 +1,13 @@
-# Aspire 13.0 Upgrade Notes
+# Aspire 13.1 Upgrade Notes
 
 ## Summary
 
-The `Aspire.Hosting.Netlify` library has been successfully upgraded to **Aspire 13.0.2** (stable release).
+The `Aspire.Hosting.Netlify` library has been successfully upgraded to **Aspire 13.1.0** (stable release).
 
 ## Completed Changes
 
 ✅ **Core Library (`Aspire.Hosting.Netlify`)** - Successfully upgraded and builds without errors:
-- Updated from Aspire preview packages to stable 13.0.2
+- Updated from Aspire 13.0.2 packages to stable 13.1.0
 - Replaced `Aspire.Hosting.NodeJS` with `Aspire.Hosting.JavaScript`
 - Updated `IDeploymentStateManager` API calls:
   - `LoadStateAsync/SaveStateAsync` → `AcquireSectionAsync/SaveSectionAsync`
@@ -60,24 +60,24 @@ The old `AddNpmApp(name, path, scriptName)` needs to be replaced with one of the
 ## Package Changes
 
 ### Updated Packages:
-- `Aspire.Hosting`: `13.0.0-preview.1.25520.1` → `13.0.2`
-- `Aspire.Hosting.AppHost`: `13.0.0-preview.1.25520.1` → `13.0.2`  
-- `Aspire.Hosting.NodeJs`: (removed) → `Aspire.Hosting.JavaScript` `13.0.2`
-- `Aspire.Hosting.Testing`: `13.0.0-preview.1.25513.8` → `13.0.2`
-- `CommunityToolkit.Aspire.Hosting.NodeJS.Extensions`: `9.8.0` → `CommunityToolkit.Aspire.Hosting.JavaScript.Extensions` `13.0.0`
+- `Aspire.Hosting`: `13.0.2` → `13.1.0`
+- `Aspire.Hosting.AppHost`: `13.0.2` → `13.1.0`  
+- `Aspire.Hosting.JavaScript`: `13.0.2` → `13.1.0`
+- `Aspire.Hosting.Testing`: `13.0.2` → `13.1.0`
+- `Aspire.AppHost.Sdk`: `13.0.2` → `13.1.0`
+- `CommunityToolkit.Aspire.Hosting.JavaScript.Extensions`: `13.0.0` → `13.1.1`
 
 ### NuGet.config:
-- Removed preview package source (`dotnet9` feed)
 - Using only stable NuGet.org feed
 
 ##Status
 
-- ✅ **Core Library**: Builds successfully with Aspire 13.0.2
+- ✅ **Core Library**: Builds successfully with Aspire 13.1.0
 - ⚠️ **Sample AppHost**: Requires API migration (AddNpmApp → AddJavaScriptApp)
 - ⚠️ **Tests**: Require API migration (AddNpmApp → AddJavaScriptApp)
 
 ## Additional Resources
 
-- [Aspire 13.0 What's New](https://aspire.dev/whats-new/aspire-13/)
-- [Aspire 13.0 Breaking Changes](https://learn.microsoft.com/en-us/dotnet/aspire/compatibility/13.0/)
+- [What's new in Aspire 13.1](https://aspire.dev/whats-new/aspire-13-1/)
+- [Aspire SDK Getting Started](https://aspire.dev/get-started/aspire-sdk/)
 - [JavaScript Hosting Extensions API](https://learn.microsoft.com/en-us/dotnet/api/aspire.hosting.javascripthostingextensions?view=dotnet-aspire-13.0)
