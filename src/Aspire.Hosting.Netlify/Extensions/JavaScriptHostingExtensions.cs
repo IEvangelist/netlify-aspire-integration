@@ -3,12 +3,12 @@
 
 namespace Aspire.Hosting;
 
-public static partial class NodeJSHostingExtensions
+public static partial class JavaScriptHostingExtensions
 {
     /// <summary>
-    /// Configures the Node.js app to run an arbitrary npm command before starting.
+    /// Configures the JavaScript app to run an arbitrary npm command before starting.
     /// </summary>
-    /// <param name="builder">The Node.js app resource builder.</param>
+    /// <param name="builder">The JavaScript app resource builder.</param>
     /// <param name="args">The npm command arguments (e.g., "i", "run build:production", "ci --legacy-peer-deps").</param>
     /// <param name="configureRunner">Configure the npm runner resource.</param>
     /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
@@ -20,8 +20,8 @@ public static partial class NodeJSHostingExtensions
     ///     .WithNpmCommand("run build:production");  // npm run build:production
     /// </code>
     /// </remarks>
-    public static IResourceBuilder<NodeAppResource> WithNpmCommand(
-        this IResourceBuilder<NodeAppResource> builder,
+    public static IResourceBuilder<JavaScriptAppResource> WithNpmCommand(
+        this IResourceBuilder<JavaScriptAppResource> builder,
         string args,
         Action<IResourceBuilder<NpmCommandResource>>? configureRunner = null)
     {
@@ -51,14 +51,14 @@ public static partial class NodeJSHostingExtensions
     }
 
     /// <summary>
-    /// Configures the Node.js app to run an npm script before starting.
+    /// Configures the JavaScript app to run an npm script before starting.
     /// </summary>
-    /// <param name="builder">The Node.js app resource builder.</param>
+    /// <param name="builder">The JavaScript app resource builder.</param>
     /// <param name="scriptName">The npm script name to run (e.g., "build", "test", "lint").</param>
     /// <param name="configureRunner">Configure the npm runner resource.</param>
     /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
-    public static IResourceBuilder<NodeAppResource> WithNpmRunCommand(
-        this IResourceBuilder<NodeAppResource> builder,
+    public static IResourceBuilder<JavaScriptAppResource> WithNpmRunCommand(
+        this IResourceBuilder<JavaScriptAppResource> builder,
         string scriptName,
         Action<IResourceBuilder<NpmCommandResource>>? configureRunner = null)
     {
@@ -84,17 +84,17 @@ public static partial class NodeJSHostingExtensions
     }
 
     /// <summary>
-    /// Configures the Node.js app for deployment to Netlify using the Netlify CLI.
+    /// Configures the JavaScript app for deployment to Netlify using the Netlify CLI.
     /// Use together with <see cref="NetlifyDistributedApplicationPipelineExtensions.AddNetlifyDeployPipeline"/>.
     /// When that pipeline is added and this method is applied, the app is deployed with the provided options.
     /// </summary>
-    /// <param name="builder">The Node.js app resource builder.</param>
+    /// <param name="builder">The JavaScript app resource builder.</param>
     /// <param name="options">The Netlify deployment options.</param>
     /// <param name="authToken">An optional parameter resource containing the Netlify authentication token.</param>
     /// <returns>A reference to the <see cref="IResourceBuilder{T}"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown if the Netlify CLI is not installed or not found in PATH.</exception>
-    public static IResourceBuilder<NodeAppResource> PublishAsNetlifySite(
-        this IResourceBuilder<NodeAppResource> builder,
+    public static IResourceBuilder<JavaScriptAppResource> PublishAsNetlifySite(
+        this IResourceBuilder<JavaScriptAppResource> builder,
         NetlifyDeployOptions options,
         IResourceBuilder<ParameterResource>? authToken = null)
     {

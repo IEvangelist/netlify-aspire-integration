@@ -9,8 +9,7 @@ var authToken = builder.AddParameterFromConfiguration(
 builder.Pipeline.AddNetlifyDeployPipeline();
 
 // Astro app - Static Site Generator
-builder.AddNpmApp("astro", "../astro", "dev")
-    .WithNpmPackageInstallation()
+builder.AddJavaScriptApp("astro", "../astro")
     .WithHttpEndpoint(targetPort: 4321, env: "PORT")
     .PublishAsNetlifySite(
         options: new NetlifyDeployOptions()
@@ -22,8 +21,7 @@ builder.AddNpmApp("astro", "../astro", "dev")
         authToken: authToken);
 
 // React app - Vite + TypeScript
-builder.AddNpmApp("react", "../react", "dev")
-    .WithNpmPackageInstallation()
+builder.AddJavaScriptApp("react", "../react")
     .WithHttpEndpoint(targetPort: 5173, env: "PORT")
     .PublishAsNetlifySite(
         options: new NetlifyDeployOptions()
@@ -35,8 +33,7 @@ builder.AddNpmApp("react", "../react", "dev")
         authToken: authToken);
 
 // Vue app - Vite
-builder.AddNpmApp("vue", "../vue", "dev")
-    .WithNpmPackageInstallation()
+builder.AddJavaScriptApp("vue", "../vue")
     .WithHttpEndpoint(targetPort: 5174, env: "PORT")
     .PublishAsNetlifySite(
         options: new NetlifyDeployOptions()
@@ -48,8 +45,7 @@ builder.AddNpmApp("vue", "../vue", "dev")
         authToken: authToken);
 
 // Angular app - Angular CLI
-builder.AddNpmApp("angular", "../angular", "start")
-    .WithNpmPackageInstallation()
+builder.AddJavaScriptApp("angular", "../angular", "start")
     .WithHttpEndpoint(targetPort: 4200, env: "PORT")
     .PublishAsNetlifySite(
         options: new NetlifyDeployOptions()
@@ -61,10 +57,7 @@ builder.AddNpmApp("angular", "../angular", "start")
         authToken: authToken);
 
 // Svelte app - Vite + TypeScript
-builder.AddNpmApp("svelte", "../svelte", "dev")
-    .WithNpmCommand("i")  // npm i
-    .WithNpmRunCommand("build")
-    .WithNpmPackageInstallation()
+builder.AddJavaScriptApp("svelte", "../svelte")
     .WithHttpEndpoint(targetPort: 5175, env: "PORT")
     .PublishAsNetlifySite(
         options: new NetlifyDeployOptions()
@@ -76,8 +69,7 @@ builder.AddNpmApp("svelte", "../svelte", "dev")
         authToken: authToken);
 
 // Next.js app - Static Export (requires next.config.js with output: 'export')
-builder.AddNpmApp("next", "../next", "dev")
-    .WithNpmPackageInstallation()
+builder.AddJavaScriptApp("next", "../next")
     .WithHttpEndpoint(targetPort: 3000, env: "PORT")
     .PublishAsNetlifySite(
         options: new NetlifyDeployOptions()

@@ -184,8 +184,6 @@ internal static partial class NetlifyDeploymentPipelineSteps
                     continue;
                 }
 
-
-
                 try
                 {
                     var task = await step.CreateTaskAsync("ntl login", cancellationToken);
@@ -372,7 +370,7 @@ internal static partial class NetlifyDeploymentPipelineSteps
 
             var friendlyName = NetlifyDeployStepNames.GetFriendlyName(NetlifyDeployStepNames.DeployToNetlify);
             var deployStep = await reporter.CreateStepAsync(
-                $"{friendlyName} — {deployment.NodeAppResourceName}",
+                $"{friendlyName} — {deployment.JavaScriptAppResourceName}",
                 cancellationToken);
 
             await using (deployStep.ConfigureAwait(false))
@@ -534,6 +532,7 @@ internal static partial class NetlifyDeploymentPipelineSteps
 
     internal static async Task RunNpmCommandsAsync(PipelineStepContext context)
     {
+        var logger = context.Logger;
         var reporter = context.Services.GetRequiredService<IPipelineActivityReporter>();
         var cancellationToken = context.CancellationToken;
 
@@ -547,10 +546,10 @@ internal static partial class NetlifyDeploymentPipelineSteps
 
             foreach (var deployment in deployments)
             {
-                var nodeApp = deployment.NodeAppResource;
+                var javaScriptApp = deployment.JavaScriptAppResource;
 
-                // Get all NpmRunnerAnnotations for this node app
-                var npmRunners = nodeApp.Annotations
+                // Get all NpmRunnerAnnotations for this JavaScript app
+                var npmRunners = javaScriptApp.Annotations
                     .OfType<NpmCommandAnnotation>()
                     .Select(a => a.Resource)
                     .ToList();
@@ -562,10 +561,15 @@ internal static partial class NetlifyDeploymentPipelineSteps
 
                 foreach (var runner in npmRunners)
                 {
-                    var args = await runner.GetArgumentValuesAsync();
+                    var argumentConfiguration = await ExecutionConfigurationBuilder.Create(runner)
+                        .WithArgumentsConfig()
+                        .BuildAsync(new(DistributedApplicationOperation.Publish), logger, CancellationToken.None)
+                        .ConfigureAwait(false);
+
+                    var args = argumentConfiguration.Arguments.Select(a => a.Value).ToArray();
 
                     var task = await step.CreateTaskAsync(
-                        $"npm {string.Join(" ", args)} ({nodeApp.Name})",
+                        $"npm {string.Join(" ", args)} ({javaScriptApp.Name})",
                         cancellationToken);
 
                     await using (task.ConfigureAwait(false))
@@ -607,7 +611,7 @@ internal static partial class NetlifyDeploymentPipelineSteps
 
     private static string GetDeploymentCompletionMessage(string? deployUrl, string? deployLogsUrl)
     {
-                        var message = (deployUrl, deployLogsUrl) switch
+        var message = (deployUrl, deployLogsUrl) switch
         {
             (not null, not null) =>
                 $"Deployment complete\n—URL: {deployUrl}\n—Logs: {deployLogsUrl}",
@@ -615,7 +619,7 @@ internal static partial class NetlifyDeploymentPipelineSteps
             (null, not null) => $"Deployment complete\n—Logs: {deployLogsUrl}",
 
             _ => "Deployment complete"
-        };        return message;
+        }; return message;
     }
 
     [GeneratedRegex(@"https?://[A-Za-z0-9-]+(?:--[A-Za-z0-9-]+)?\.netlify\.app\b", RegexOptions.IgnoreCase, "en-US")]

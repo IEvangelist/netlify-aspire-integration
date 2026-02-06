@@ -7,12 +7,12 @@ namespace Aspire.Hosting.ApplicationModel;
 /// A resource that represents a Netlify site deployer.
 /// </summary>
 /// <param name="name">The name of the resource.</param>
-/// <param name="nodeAppResource">The Node.js application resource to deploy.</param>
+/// <param name="javaScriptAppResource">The JavaScript application resource to deploy.</param>
 /// <param name="deployOptions">The deployment options.</param>
 /// <param name="authToken">An optional parameter resource containing the Netlify authentication token.</param>
 public class NetlifyDeploymentResource(
     string name,
-    NodeAppResource nodeAppResource,
+    JavaScriptAppResource javaScriptAppResource,
     NetlifyDeployOptions deployOptions,
     IResourceBuilder<ParameterResource>? authToken = null) : IComputeEnvironmentResource
 {
@@ -22,14 +22,14 @@ public class NetlifyDeploymentResource(
     public string Name { get; } = name;
 
     /// <summary>
-    /// Gets the name of the associated Node.js application resource.
+    /// Gets the name of the associated JavaScript application resource.
     /// </summary>
-    internal string NodeAppResourceName => NodeAppResource.Name;
+    internal string JavaScriptAppResourceName => JavaScriptAppResource.Name;
 
     /// <summary>
-    /// Gets the associated Node.js application resource.
+    /// Gets the associated JavaScript application resource.
     /// </summary>
-    internal NodeAppResource NodeAppResource { get; } = nodeAppResource;
+    internal JavaScriptAppResource JavaScriptAppResource { get; } = javaScriptAppResource;
 
     /// <summary>
     /// Gets the annotations associated with the resource.
@@ -37,9 +37,9 @@ public class NetlifyDeploymentResource(
     public ResourceAnnotationCollection Annotations { get; } = [];
 
     /// <summary>
-    /// Gets the working directory of the Node.js application resource.
+    /// Gets the working directory of the JavaScript application resource.
     /// </summary>
-    public string WorkingDirectory => NodeAppResource.WorkingDirectory;
+    public string WorkingDirectory => JavaScriptAppResource.WorkingDirectory;
 
     /// <summary>
     /// Gets the deployment options.

@@ -7,7 +7,7 @@ public static class NetlifyDistributedApplicationPipelineExtensions
 {
     /// <summary>
     /// Adds the Netlify deployment pipeline to the distributed application pipeline.
-    /// Pairs with <see cref="NodeJSHostingExtensions.PublishAsNetlifySite"/> to deploy Node.js apps to Netlify.
+    /// Pairs with <see cref="JavaScriptHostingExtensions.PublishAsNetlifySite"/> to deploy Node.js apps to Netlify.
     /// </summary>
     /// <param name="pipeline">The distributed application pipeline.</param>
     /// <returns>The updated distributed application pipeline.</returns>
@@ -40,7 +40,7 @@ public static class NetlifyDistributedApplicationPipelineExtensions
 
         pipeline.AddStep(
             name: NetlifyDeployStepNames.DeployToNetlify,
-            action : NetlifyDeploymentPipelineSteps.DeployToNetlifyAsync,
+            action: NetlifyDeploymentPipelineSteps.DeployToNetlifyAsync,
             dependsOn: NetlifyDeployStepNames.ResolveNetlifySiteId);
 
         return pipeline;
