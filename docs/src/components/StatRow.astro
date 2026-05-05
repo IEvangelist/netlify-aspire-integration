@@ -7,11 +7,11 @@ interface Props { stats: Stat[]; }
 const { stats } = Astro.props;
 ---
 
-<dl class="statrow" role="list">
+<div class="statrow" role="list">
   {stats.map((s) => (
     <div class="statrow__item" role="listitem">
-      <dt class="statrow__value">{s.value}</dt>
-      <dd class="statrow__label">{s.label}</dd>
+      <span class="statrow__value">{s.value}</span>
+      <span class="statrow__label">{s.label}</span>
     </div>
   ))}
-</dl>
+</div>

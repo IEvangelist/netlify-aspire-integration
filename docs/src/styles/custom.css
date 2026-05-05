@@ -165,7 +165,10 @@ body::before {
 /* 3. Header + sidebar — flat, sharp, IDE-inspired                    */
 /* ------------------------------------------------------------------ */
 
-.header {
+/* Scope to the outer <header> element only — there are nested
+ * .header divs (search/title row, terminal frames) that should not
+ * also render a border-bottom. Prior `.header` selector was too broad. */
+header.header {
   background: var(--sl-color-bg-nav);
   backdrop-filter: blur(14px) saturate(1.2);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
@@ -433,7 +436,8 @@ site-search kbd {
 
 .statrow {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
+  align-items: stretch;
   gap: 1px;
   margin: 1.5rem 0 2.5rem;
   padding: 0;
@@ -442,14 +446,29 @@ site-search kbd {
   border-radius: 12px;
   overflow: hidden;
 }
+@media (max-width: 720px) {
+  .statrow { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 380px) {
+  .statrow { grid-template-columns: 1fr; }
+}
 .statrow__item {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 1.35rem 1.25rem 1.15rem;
+  padding: 1.2rem 1.25rem;
   background: var(--surface-1);
+  min-height: 100%;
+  /* Cancel any Starlight/MDX stack-margin between siblings — every cell
+   * starts at the grid track top, not 1em below the prior sibling. */
+  margin: 0 !important;
+}
+.statrow__item > * {
+  margin: 0 !important;
 }
 .statrow__value {
+  display: block;
   margin: 0;
   font-family: var(--sl-font-mono);
   font-size: 1.6rem;
@@ -464,9 +483,9 @@ site-search kbd {
   background-clip: text;
   color: transparent;
   line-height: 1.05;
-  padding-block-start: 0.15rem;
 }
 .statrow__label {
+  display: block;
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -765,9 +784,7 @@ starlight-theme-select {
 starlight-theme-select label {
   --sl-select-width: 0 !important;
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-block;
   width: 2.25rem;
   height: 2rem;
   padding: 0;
@@ -784,8 +801,15 @@ starlight-theme-select label:hover {
 }
 starlight-theme-select .label-icon {
   pointer-events: none;
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  --sl-icon-size: 1rem;
 }
 /* The native select stays clickable but visually invisible — the OS-rendered
  * dropdown still shows readable Light/Dark/Auto options when opened. */
@@ -853,6 +877,101 @@ starlight-theme-select .caret {
 .pagination-links a:hover {
   border-color: rgb(var(--ember-rgb) / 0.5);
   transform: translateY(-1px);
+}
+
+/* Hide pagination on the splash landing page (frontmatter prev/next: false
+ * hides the individual links but Starlight still emits the .pagination-links
+ * container). Use :has() to detect splash hero presence. */
+body:has(.hero) .pagination-links {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* 16b. Sidebar icons — Lucide-style SVG masks                         */
+/* ------------------------------------------------------------------ */
+
+.sidebar a[data-icon] {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.sidebar a[data-icon]::before {
+  content: "";
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  -webkit-mask: var(--si) center/contain no-repeat;
+  mask: var(--si) center/contain no-repeat;
+  opacity: 0.78;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+.sidebar a[data-icon]:hover::before,
+.sidebar a[data-icon][aria-current="page"]::before {
+  opacity: 1;
+}
+.sidebar a[aria-current="page"][data-icon]::before {
+  background-color: rgb(var(--ember-rgb));
+}
+
+/* Each icon below sets --si to a mask-image data URI (Lucide stroke icons). */
+.sidebar a[data-icon="home"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z'/><path d='M9 22V12h6v10'/></svg>");
+}
+.sidebar a[data-icon="package"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m7.5 4.27 9 5.15'/><path d='M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z'/><path d='m3.3 7 8.7 5 8.7-5'/><path d='M12 22V12'/></svg>");
+}
+.sidebar a[data-icon="rocket"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z'/><path d='m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z'/><path d='M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0'/><path d='M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5'/></svg>");
+}
+.sidebar a[data-icon="settings"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z'/></svg>");
+}
+.sidebar a[data-icon="shield"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z'/></svg>");
+}
+.sidebar a[data-icon="workflow"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='8' height='8' x='3' y='3' rx='2'/><path d='M7 11v4a2 2 0 0 0 2 2h4'/><rect width='8' height='8' x='13' y='13' rx='2'/></svg>");
+}
+.sidebar a[data-icon="languages"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m5 8 6 6'/><path d='m4 14 6-6 2-3'/><path d='M2 5h12'/><path d='M7 2h1'/><path d='m22 22-5-10-5 10'/><path d='M14 18h6'/></svg>");
+}
+.sidebar a[data-icon="server"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='20' height='8' x='2' y='2' rx='2' ry='2'/><rect width='20' height='8' x='2' y='14' rx='2' ry='2'/><line x1='6' x2='6.01' y1='6' y2='6'/><line x1='6' x2='6.01' y1='18' y2='18'/></svg>");
+}
+.sidebar a[data-icon="tag"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z'/><circle cx='7.5' cy='7.5' r='1.5'/></svg>");
+}
+.sidebar a[data-icon="lifebuoy"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='m4.93 4.93 4.24 4.24'/><path d='m14.83 9.17 4.24-4.24'/><path d='m14.83 14.83 4.24 4.24'/><path d='m9.17 14.83-4.24 4.24'/><circle cx='12' cy='12' r='4'/></svg>");
+}
+.sidebar a[data-icon="code"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='16 18 22 12 16 6'/><polyline points='8 6 2 12 8 18'/></svg>");
+}
+.sidebar a[data-icon="arrow-up-circle"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='m16 12-4-4-4 4'/><path d='M12 16V8'/></svg>");
+}
+.sidebar a[data-icon="list"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><line x1='8' x2='21' y1='6' y2='6'/><line x1='8' x2='21' y1='12' y2='12'/><line x1='8' x2='21' y1='18' y2='18'/><line x1='3' x2='3.01' y1='6' y2='6'/><line x1='3' x2='3.01' y1='12' y2='12'/><line x1='3' x2='3.01' y1='18' y2='18'/></svg>");
+}
+/* Framework icons — abstract geometric for visual variety. */
+.sidebar a[data-icon="angular"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2 3 5l1.5 13L12 22l7.5-4L21 5z'/><path d='M9 16 12 9l3 7'/><path d='M10 14h4'/></svg>");
+}
+.sidebar a[data-icon="astro"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 3 4 21h16L15 3z'/><path d='M9 18a3 3 0 0 0 6 0'/></svg>");
+}
+.sidebar a[data-icon="next"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M9 7v10'/><path d='m9 7 7 10'/></svg>");
+}
+.sidebar a[data-icon="react"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='2'/><ellipse cx='12' cy='12' rx='10' ry='4'/><ellipse cx='12' cy='12' rx='10' ry='4' transform='rotate(60 12 12)'/><ellipse cx='12' cy='12' rx='10' ry='4' transform='rotate(120 12 12)'/></svg>");
+}
+.sidebar a[data-icon="svelte"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M8.5 14.5C5.5 13 5 9 8 7l6-3.5c3-1.5 7 0 7 4 0 2-1 3-2.5 4l-6 3.5c-3 1.5-7 0-7-4 0-2 1-3 2.5-4'/></svg>");
+}
+.sidebar a[data-icon="vue"] {
+  --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2 4h4l6 10 6-10h4L12 22z'/><path d='M9 4h3l3 5 3-5h-3L12 8 9 4'/></svg>");
 }
 
 /* ------------------------------------------------------------------ */
