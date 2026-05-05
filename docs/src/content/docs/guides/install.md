@@ -42,7 +42,7 @@ aspire add Aspire.Hosting.Netlify
 aspire add Aspire.Hosting.JavaScript
 ```
 
-For a TypeScript AppHost, pass `--language typescript` to `aspire init`.
+For a TypeScript AppHost, choose `TypeScript` when `aspire init` prompts.
 `aspire add` regenerates the `.modules/` surface so the integration's exports
 become available to your `apphost.ts`.
 

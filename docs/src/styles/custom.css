@@ -756,6 +756,13 @@ main .sl-markdown-content a:not(.iconcard):not(.button):not(.site-title):hover {
 starlight-tabs [role="tablist"] {
   border-bottom: 1px solid var(--sl-color-hairline);
 }
+/* Starlight's .tablist-wrapper sets overflow: auto for narrow-viewport horizontal
+ * scrolling, but our 1px tablist border-bottom pushes scrollHeight 1px past
+ * clientHeight, triggering vertical scrollbar arrows on Windows. Keep horizontal
+ * auto-scroll, kill the spurious vertical scrollbar. */
+starlight-tabs .tablist-wrapper {
+  overflow-y: hidden;
+}
 starlight-tabs [role="tab"] {
   font-family: var(--sl-font-mono);
   font-size: 0.82rem;

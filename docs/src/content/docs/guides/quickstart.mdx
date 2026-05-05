@@ -28,15 +28,16 @@ hosting integrations (and updates the AppHost's `.csproj`).
 
 ```sh
 mkdir MyAppHost && cd MyAppHost
-aspire init --language typescript
+aspire init
 aspire add Aspire.Hosting.Netlify
 aspire add Aspire.Hosting.JavaScript
 ```
 
-`aspire init --language typescript` drops `apphost.ts`,
-`aspire.config.json`, `package.json`, `tsconfig.json`, and a `.modules/`
-folder for generated TypeScript surface bindings. `aspire add` registers
-each integration in `aspire.config.json` and regenerates `.modules/`.
+`aspire init` drops `apphost.ts`, `aspire.config.json`, `package.json`,
+`tsconfig.json`, and a `.modules/` folder for generated TypeScript surface
+bindings (the CLI will prompt you to choose TypeScript). `aspire add`
+registers each integration in `aspire.config.json` and regenerates
+`.modules/`.
 
   </TabItem>
 </Tabs>
