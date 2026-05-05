@@ -1,0 +1,126 @@
+---
+title: Aspire.Hosting.Netlify
+description: >-
+  Deploy any JavaScript frontend to Netlify with three lines of C#. A .NET
+  Aspire integration with first-class deploy pipeline support and multi-language
+  (TypeScript) AppHost compatibility.
+template: splash
+hero:
+  title: Deploy frontends to Netlify with .NET Aspire
+  tagline: >-
+    A first-party-feeling Aspire integration that turns `aspire deploy` into a
+    one-command Netlify deploy — for Angular, Astro, Next.js, React, Svelte,
+    Vue, and anything else `AddJavaScriptApp` understands.
+  image:
+    file: ../../assets/logo.svg
+  actions:
+    - text: Get started in 30 seconds
+      link: /guides/quickstart-csharp/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/IEvangelist/netlify-aspire-integration
+      icon: external
+      variant: minimal
+    - text: API reference
+      link: /api/
+      variant: minimal
+      attrs:
+        target: _self
+---
+
+import { Card, CardGrid, LinkCard, Tabs, TabItem, Code } from '@astrojs/starlight/components';
+
+## Three lines of C#
+
+<Tabs>
+  <TabItem label="C#">
+```csharp
+var builder = DistributedApplication.CreateBuilder(args);
+
+builder.Pipeline.AddNetlifyDeployPipeline();
+
+builder.AddJavaScriptApp("astro", "../astro")
+    .PublishAsNetlifySite("dist");
+
+builder.Build().Run();
+```
+  </TabItem>
+  <TabItem label="TypeScript">
+```ts
+import { Aspire } from "./.modules/aspire";
+
+const builder = Aspire.createBuilder();
+
+builder.pipeline.addNetlifyDeployPipeline();
+
+builder.addJavaScriptApp("astro", "../astro")
+  .publishAsNetlifySite({ dir: "dist", noBuild: true });
+
+builder.build().run();
+```
+  </TabItem>
+</Tabs>
+
+Then:
+
+```sh
+aspire deploy
+```
+
+That's it. The pipeline finds the Netlify CLI (auto-installs if needed),
+resolves your auth token, and ships your build to Netlify.
+
+## Why this integration?
+
+<CardGrid>
+  <Card title="Pipeline-aware" icon="rocket">
+    Hooks into Aspire's deploy pipeline. `aspire deploy` is the one command —
+    no bespoke shell scripts, no hand-rolled GitHub Actions.
+  </Card>
+  <Card title="Multi-language" icon="translate">
+    Annotated with the
+    [Aspire Type System](https://aspire.dev/architecture/multi-language-architecture/)
+    so a TypeScript AppHost gets fully-typed `publishAsNetlifySite(...)`,
+    `withNpmCommand`, and `withNpmRunCommand` exports.
+  </Card>
+  <Card title="Secret-safe auth" icon="approve-check">
+    Auth token resolves from a parameter, then `NETLIFY_AUTH_TOKEN`, then
+    interactive `ntl login`. Site IDs and tokens are redacted from logs.
+  </Card>
+  <Card title="Six framework demos" icon="puzzle">
+    [Angular](/frameworks/angular/), [Astro](/frameworks/astro/),
+    [Next.js](/frameworks/next/), [React](/frameworks/react/),
+    [Svelte](/frameworks/svelte/), and [Vue](/frameworks/vue/) — all wired up
+    in the repo under `samples/`.
+  </Card>
+  <Card title="OIDC-published" icon="seti:lock">
+    No long-lived NuGet API key. Releases are published via
+    [Trusted Publishing](/guides/ci-cd/) on every tagged release.
+  </Card>
+  <Card title="MinVer-driven semver" icon="setting">
+    Versions come straight from git tags via
+    [MinVer](/guides/versioning/) — no `Version.props`, no manual bumps.
+  </Card>
+</CardGrid>
+
+## Pick your path
+
+<CardGrid>
+  <LinkCard title="C# Quickstart" href="/guides/quickstart-csharp/" description="Drop the integration into a fresh C# AppHost." />
+  <LinkCard title="TypeScript Quickstart" href="/guides/quickstart-typescript/" description="Use the multi-language Aspire Type System surface." />
+  <LinkCard title="Configuration" href="/guides/configuration/" description="Every option on NetlifyDeployOptions." />
+  <LinkCard title="Authentication" href="/guides/auth/" description="Token precedence, secrets, and ntl login." />
+  <LinkCard title="Deploy pipeline" href="/guides/pipeline/" description="What AddNetlifyDeployPipeline actually does." />
+  <LinkCard title="Multi-language" href="/guides/multi-language/" description="How the [AspireExport] surface works." />
+  <LinkCard title="CI/CD" href="/guides/ci-cd/" description="OIDC publishing, Aspire Deploy, GitHub Actions." />
+  <LinkCard title="Troubleshooting" href="/guides/troubleshooting/" description="Common failure modes and fixes." />
+</CardGrid>
+
+## Install
+
+```sh
+dotnet add package Aspire.Hosting.Netlify
+```
+
+[Full install guide →](/guides/install/)

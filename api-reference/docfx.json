@@ -1,0 +1,49 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../src/Aspire.Hosting.Netlify",
+          "files": [ "Aspire.Hosting.Netlify.csproj" ]
+        }
+      ],
+      "dest": "api",
+      "outputFormat": "mref",
+      "includePrivateMembers": false,
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false,
+      "noRestore": false,
+      "namespaceLayout": "flattened",
+      "memberLayout": "samePage",
+      "EnumSortOrder": "alphabetic",
+      "allowCompilationErrors": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [ "api/**.{md,yml}", "index.md", "toc.yml" ],
+        "exclude": [ "_site/**", "api/.manifest" ]
+      }
+    ],
+    "output": "_site",
+    "globalMetadata": {
+      "_appName": "Aspire.Hosting.Netlify API",
+      "_appTitle": "Aspire.Hosting.Netlify API Reference",
+      "_appFooter": "<span>API reference generated from XML doc comments. <a href=\"https://ievangelist.github.io/netlify-aspire-integration/\">Back to docs</a> · <a href=\"https://github.com/IEvangelist/netlify-aspire-integration\">GitHub</a></span>",
+      "_disableContribution": false,
+      "_gitContribute": {
+        "repo": "https://github.com/IEvangelist/netlify-aspire-integration",
+        "branch": "main"
+      },
+      "_enableSearch": true
+    },
+    "template": [
+      "default",
+      "modern"
+    ],
+    "postProcessors": [],
+    "keepFileLink": false,
+    "disableGitFeatures": false
+  }
+}

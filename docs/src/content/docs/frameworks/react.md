@@ -1,0 +1,42 @@
+---
+title: React
+description: Wire up a Vite + React SPA for Netlify deploys via Aspire.Hosting.Netlify.
+---
+
+The React sample under [`samples/react`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/react)
+is a Vite + React + TypeScript SPA. `npm run build` writes a static bundle to
+`dist/`.
+
+## AppHost wiring
+
+```csharp
+builder.AddJavaScriptApp("react", "../react")
+    .WithHttpEndpoint(targetPort: 5173, env: "PORT")
+    .PublishAsNetlifySite(
+        options: new NetlifyDeployOptions
+        {
+            Dir = "dist",
+            NoBuild = true,
+            Site = "<your-site-id>"
+        },
+        authToken: authToken);
+```
+
+For a single-page app you usually want a Netlify `_redirects` file containing
+`/*  /index.html  200` so client-side routing works on hard refreshes — drop it
+into `samples/react/public/`.
+
+## Build & deploy locally
+
+```sh
+cd samples/react
+npm ci
+npm run build
+cd ../..
+aspire deploy --apphost samples/AllFrameworks.AppHost/AllFrameworks.AppHost.csproj
+```
+
+## See also
+
+- [Vite docs](https://vite.dev)
+- [Configuration](/guides/configuration/)

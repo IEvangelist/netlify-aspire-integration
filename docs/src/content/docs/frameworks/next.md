@@ -1,0 +1,44 @@
+---
+title: Next.js
+description: Wire up a Next.js static export for Netlify deploys via Aspire.Hosting.Netlify.
+---
+
+The Next.js sample under [`samples/next`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/next)
+uses Next's static export (`output: 'export'` in `next.config.js`). `npm run build`
+writes a fully static bundle to `out/`.
+
+## AppHost wiring
+
+```csharp
+builder.AddJavaScriptApp("next", "../next")
+    .WithHttpEndpoint(targetPort: 3000, env: "PORT")
+    .PublishAsNetlifySite(
+        options: new NetlifyDeployOptions
+        {
+            Dir = "out",
+            NoBuild = true,
+            Site = "<your-site-id>"
+        },
+        authToken: authToken);
+```
+
+:::caution
+Server-rendered Next routes aren't supported by this directory-deploy flow.
+If you need ISR or middleware, use Netlify's official Next adapter instead of
+`output: 'export'`.
+:::
+
+## Build & deploy locally
+
+```sh
+cd samples/next
+npm ci
+npm run build
+cd ../..
+aspire deploy --apphost samples/AllFrameworks.AppHost/AllFrameworks.AppHost.csproj
+```
+
+## See also
+
+- [Next.js static export docs](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
+- [Configuration](/guides/configuration/)

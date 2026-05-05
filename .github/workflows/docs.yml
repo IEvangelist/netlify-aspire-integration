@@ -1,0 +1,88 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'api-reference/**'
+      - 'src/Aspire.Hosting.Netlify/**'
+      - '.github/workflows/docs.yml'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+          dotnet-quality: 'preview'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Restore + build library (for API metadata)
+        run: |
+          dotnet restore
+          dotnet build src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj \
+            -c Release --no-restore
+
+      - name: Install DocFX
+        run: dotnet tool install --global docfx
+
+      - name: Generate API metadata
+        run: docfx metadata api-reference/docfx.json
+
+      - name: Build API reference (DocFX)
+        run: docfx build api-reference/docfx.json
+
+      - name: Install docs site dependencies
+        working-directory: docs
+        run: npm ci
+
+      - name: Build docs site (Astro + Starlight)
+        working-directory: docs
+        run: npm run build
+
+      - name: Merge API reference into docs site
+        run: |
+          mkdir -p docs/dist/api
+          cp -R api-reference/_site/. docs/dist/api/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

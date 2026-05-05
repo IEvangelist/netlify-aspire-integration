@@ -7,32 +7,40 @@ on:
 
 permissions:
   contents: read
+  id-token: write   # Required for OIDC trusted publishing to NuGet.org
 
 jobs:
   build-test-publish:
     runs-on: ubuntu-latest
-    
+    # The `production` environment is referenced by the NuGet.org Trusted Publisher
+    # policy. The OIDC id-token claim only includes `environment: production`
+    # when the job runs under it, so this binding is required for `NuGet/login@v1`
+    # to exchange the OIDC token for a short-lived API key.
+    environment:
+      name: production
+      url: https://www.nuget.org/packages/Aspire.Hosting.Netlify
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Fetch all history for MinVer versioning
-      
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
         dotnet-quality: 'preview'
-        
+
     - name: Restore dependencies
       run: dotnet restore
-      
+
     - name: Build
       run: dotnet build --no-restore --configuration Release
-      
+
     - name: Run tests
       run: dotnet test --no-build --configuration Release --logger "trx;LogFileName=test-results.trx" --verbosity normal
-      
+
     - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v4
@@ -41,46 +49,49 @@ jobs:
         path: "**/test-results.trx"
         retention-days: 30
         if-no-files-found: warn
-      
+
     - name: Pack NuGet package
       run: |
         dotnet pack src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj \
           --configuration Release \
           --no-build \
           --output ./artifacts
-      
+
     - name: Upload NuGet package artifact
       uses: actions/upload-artifact@v4
       with:
         name: nuget-package
         path: ./artifacts/*.nupkg
         retention-days: 90
-      
-    - name: Validate NuGet API Key
-      run: |
-        if [ -z "${{ secrets.NUGET_API_KEY }}" ]; then
-          echo "::error::NUGET_API_KEY secret is not set. Please add it to repository secrets."
-          exit 1
-        fi
-        echo "✅ NuGet API Key is configured"
-      
+
     - name: List packages to push
       run: |
         echo "Packages to be pushed:"
         ls -la ./artifacts/*.nupkg
-      
+
+    # Trusted Publishing via OIDC: requires a one-time policy setup on NuGet.org
+    # (Account → Trusted Publishers → Add → GitHub Actions). The 'user' input below
+    # is the NuGet.org username, kept as a non-secret repository variable so it can be
+    # rotated/changed without re-running secret rotation. No long-lived API key is needed.
+    - name: NuGet login (OIDC → short-lived API key)
+      id: nuget-login
+      uses: NuGet/login@v1
+      with:
+        user: ${{ vars.NUGET_USER }}
+
     - name: Push to NuGet.org
       run: |
         dotnet nuget push ./artifacts/*.nupkg \
-          --api-key ${{ secrets.NUGET_API_KEY }} \
+          --api-key "$NUGET_API_KEY" \
           --source https://api.nuget.org/v3/index.json \
           --skip-duplicate
       env:
-        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      
+        NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+
     - name: Success notification
       if: success()
       run: |
         echo "✅ Successfully published Aspire.Hosting.Netlify to NuGet.org"
         echo "Package URL: https://www.nuget.org/packages/Aspire.Hosting.Netlify"
         echo "Version determined by MinVer from git tags"
+

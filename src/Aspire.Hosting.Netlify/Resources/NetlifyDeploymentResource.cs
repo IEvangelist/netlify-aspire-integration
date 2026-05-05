@@ -10,6 +10,7 @@ namespace Aspire.Hosting.ApplicationModel;
 /// <param name="javaScriptAppResource">The JavaScript application resource to deploy.</param>
 /// <param name="deployOptions">The deployment options.</param>
 /// <param name="authToken">An optional parameter resource containing the Netlify authentication token.</param>
+[AspireExport(ExposeProperties = true)]
 public class NetlifyDeploymentResource(
     string name,
     JavaScriptAppResource javaScriptAppResource,
@@ -34,6 +35,7 @@ public class NetlifyDeploymentResource(
     /// <summary>
     /// Gets the annotations associated with the resource.
     /// </summary>
+    [AspireExportIgnore]
     public ResourceAnnotationCollection Annotations { get; } = [];
 
     /// <summary>
@@ -65,5 +67,6 @@ public class NetlifyDeploymentResource(
     /// Gets the optional parameter resource containing the Netlify authentication token.
     /// When provided, this token is used in place of the interactive <c>netlify login</c> command.
     /// </summary>
+    [AspireExportIgnore]
     public IResourceBuilder<ParameterResource>? AuthToken { get; } = authToken;
 }

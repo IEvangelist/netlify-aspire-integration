@@ -51,7 +51,7 @@ jobs:
       id: apphost-sha
       run: |
         # Calculate SHA256 of the AppHost project file name
-        APPHOST_PROJECT_FILE="Netlify.AppHost.csproj"
+        APPHOST_PROJECT_FILE="AllFrameworks.AppHost.csproj"
         SHA256=$(echo -n "$APPHOST_PROJECT_FILE" | sha256sum | awk '{print $1}')
         echo "sha256=$SHA256" >> $GITHUB_OUTPUT
         echo "AppHost Project File: $APPHOST_PROJECT_FILE"
@@ -103,12 +103,12 @@ jobs:
         node-version: '20'
         cache: 'npm'
         cache-dependency-path: |
-          src/angular/package-lock.json
-          src/astro/package-lock.json
-          src/next/package-lock.json
-          src/react/package-lock.json
-          src/svelte/package-lock.json
-          src/vue/package-lock.json
+          samples/angular/package-lock.json
+          samples/astro/package-lock.json
+          samples/next/package-lock.json
+          samples/react/package-lock.json
+          samples/svelte/package-lock.json
+          samples/vue/package-lock.json
     
     - name: Install Netlify CLI globally
       run: |
@@ -123,42 +123,42 @@ jobs:
       run: |
         # Build Angular app
         echo "Building Angular app..."
-        cd src/angular
+        cd samples/angular
         npm ci
         npm run build
         cd ../..
         
         # Build Astro app
         echo "Building Astro app..."
-        cd src/astro
+        cd samples/astro
         npm ci
         npm run build
         cd ../..
         
         # Build Next.js app
         echo "Building Next.js app..."
-        cd src/next
+        cd samples/next
         npm ci
         npm run build
         cd ../..
         
         # Build React app
         echo "Building React app..."
-        cd src/react
+        cd samples/react
         npm ci
         npm run build
         cd ../..
         
         # Build Svelte app
         echo "Building Svelte app..."
-        cd src/svelte
+        cd samples/svelte
         npm ci
         npm run build
         cd ../..
         
         # Build Vue app
         echo "Building Vue app..."
-        cd src/vue
+        cd samples/vue
         npm ci
         npm run build
         cd ../..
@@ -201,20 +201,23 @@ jobs:
           exit 0
         fi
         
-        # Extract URLs using a simpler approach
-        grep -E "🚀 Deploy to Netlify —|🔗 URL:" deploy.log | \
+        # Extract URLs using a simpler approach. The library emits step headers like
+        # "🚀 Deploy to Netlify — angular" followed by completion messages containing
+        # "—URL: https://..." and "—Logs: https://...". See
+        # src/Aspire.Hosting.Netlify/Pipelines/NetlifyDeploymentPipelineSteps.cs:GetDeploymentCompletionMessage.
+        grep -E "🚀 Deploy to Netlify —|—URL:" deploy.log | \
         awk '
           /🚀 Deploy to Netlify —/ {
-            # Extract app name between "—" and ")"
-            match($0, /— ([a-z]+)\)/, arr)
+            # Extract app name after the em-dash separator.
+            match($0, /— ([a-z][a-z0-9-]*)/, arr)
             app = arr[1]
             # Capitalize first letter
             if (app != "") {
               app = toupper(substr(app, 1, 1)) substr(app, 2)
             }
           }
-          /🔗 URL:/ {
-            # Extract URL
+          /—URL:/ {
+            # Extract the deploy URL.
             match($0, /https:\/\/[^[:space:]]+/, arr)
             url = arr[0]
             if (app != "" && url != "") {

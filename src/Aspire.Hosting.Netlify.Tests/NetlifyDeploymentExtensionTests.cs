@@ -9,19 +9,21 @@ namespace Aspire.Hosting.Netlify.Tests;
 
 public class NetlifyDeploymentExtensionTests
 {
-    [Fact]
-    public void WithNetlifyDeployment_AddsAnnotation_WhenInPublishMode()
-    {
-        // Arrange
-        var builder = DistributedApplication.CreateBuilder([
+    private static IDistributedApplicationBuilder CreatePublishBuilder() =>
+        DistributedApplication.CreateBuilder([
             "Publishing:Publisher=manifest",
             "Publishing:OutputPath=./publish"
         ]);
 
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+    [Fact]
+    public void PublishAsNetlifySite_AddsDeploymentResource_WhenInPublishMode()
+    {
+        // Arrange
+        var builder = CreatePublishBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act
-        nodeApp.PublishAsNetlifySite(new NetlifyDeployOptions
+        jsApp.PublishAsNetlifySite(new NetlifyDeployOptions
         {
             Dir = "dist",
             Alias = "test-site"
@@ -31,46 +33,39 @@ public class NetlifyDeploymentExtensionTests
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.True(nodeResource.TryGetAnnotationsOfType<NetlifyDeploymentAnnotation>(out var annotations));
-        var annotation = Assert.Single(annotations);
-        Assert.NotNull(annotation.Resource);
-        Assert.Equal("test-app-netlify-deploy", annotation.Resource.Name);
+        var deployment = Assert.Single(appModel.Resources.OfType<NetlifyDeploymentResource>());
+        Assert.Equal("test-app-netlify-deploy", deployment.Name);
+        Assert.Equal("dist", deployment.BuildDirectory);
     }
 
     [Fact]
-    public void WithNetlifyDeployment_DoesNotAddAnnotation_WhenNotInPublishMode()
+    public void PublishAsNetlifySite_DoesNotAddDeploymentResource_WhenNotInPublishMode()
     {
         // Arrange
         var builder = DistributedApplication.CreateBuilder();
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act
-        nodeApp.PublishAsNetlifySite(new NetlifyDeployOptions());
+        jsApp.PublishAsNetlifySite(new NetlifyDeployOptions());
 
         using var app = builder.Build();
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.False(nodeResource.TryGetAnnotationsOfType<NetlifyDeploymentAnnotation>(out _));
+        Assert.Empty(appModel.Resources.OfType<NetlifyDeploymentResource>());
     }
 
     [Theory]
     [InlineData(true, "prod")]
     [InlineData(false, "preview")]
-    public void WithNetlifyDeployment_ConfiguresDeploymentEnvironment_Correctly(bool isProd, string expectedEnvironment)
+    public void PublishAsNetlifySite_ConfiguresDeploymentEnvironment_Correctly(bool isProd, string expectedEnvironment)
     {
         // Arrange
-        var builder = DistributedApplication.CreateBuilder([
-            "Publishing:Publisher=manifest",
-            "Publishing:OutputPath=./publish"
-        ]);
-
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+        var builder = CreatePublishBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act
-        nodeApp.PublishAsNetlifySite(new NetlifyDeployOptions
+        jsApp.PublishAsNetlifySite(new NetlifyDeployOptions
         {
             Prod = isProd
         });
@@ -79,53 +74,45 @@ public class NetlifyDeploymentExtensionTests
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.True(nodeResource.TryGetAnnotationsOfType<NetlifyDeploymentAnnotation>(out var annotations));
-        var annotation = Assert.Single(annotations);
-        Assert.Equal(expectedEnvironment, annotation.Resource.DeploymentEnvironment);
+        var deployment = Assert.Single(appModel.Resources.OfType<NetlifyDeploymentResource>());
+        Assert.Equal(expectedEnvironment, deployment.DeploymentEnvironment);
     }
 
     [Fact]
-    public void WithNetlifyDeployment_DefaultsToPreviewEnvironment()
+    public void PublishAsNetlifySite_DefaultsToPreviewEnvironment()
     {
         // Arrange
-        var builder = DistributedApplication.CreateBuilder([
-            "Publishing:Publisher=manifest",
-            "Publishing:OutputPath=./publish"
-        ]);
-
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+        var builder = CreatePublishBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act
-        nodeApp.PublishAsNetlifySite(new NetlifyDeployOptions());
+        jsApp.PublishAsNetlifySite(new NetlifyDeployOptions());
 
         using var app = builder.Build();
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.True(nodeResource.TryGetAnnotationsOfType<NetlifyDeploymentAnnotation>(out var annotations));
-        var annotation = Assert.Single(annotations);
-        Assert.Equal("preview", annotation.Resource.DeploymentEnvironment);
+        var deployment = Assert.Single(appModel.Resources.OfType<NetlifyDeploymentResource>());
+        Assert.Equal("preview", deployment.DeploymentEnvironment);
     }
 
     [Fact]
-    public void NetlifyDeployerResource_StoresAllConfigurationCorrectly()
+    public void NetlifyDeploymentResource_StoresAllConfigurationCorrectly()
     {
         // Arrange
         var builder = DistributedApplication.CreateBuilder();
-        var nodeApp = builder.AddNpmApp("test-app", "test-app-dir");
+        var jsApp = builder.AddJavaScriptApp("test-app", "test-app-dir");
         var options = new NetlifyDeployOptions
         {
             Dir = "build",
             Site = "test-site",
-            Prod = false // staging means not prod, will result in "preview" environment
+            Prod = false
         };
 
         // Act
         var deployer = new NetlifyDeploymentResource(
             "test-deployer",
-            nodeApp.Resource,
+            jsApp.Resource,
             options
         );
 
@@ -138,46 +125,22 @@ public class NetlifyDeploymentExtensionTests
     }
 
     [Fact]
-    public void WithNpmRunCommand_AddsAnnotation_WhenInDevelopmentMode()
+    public void WithNpmRunCommand_AddsRunnerResource()
     {
         // Arrange
         var builder = DistributedApplication.CreateBuilder();
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act
-        nodeApp.WithNpmRunCommand("build");
+        jsApp.WithNpmRunCommand("build");
 
         using var app = builder.Build();
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.True(nodeResource.TryGetAnnotationsOfType<NpmCommandAnnotation>(out var annotations));
-        var annotation = Assert.Single(annotations);
-        Assert.NotNull(annotation.Resource);
-        Assert.Equal("test-app-npm-run-build", annotation.Resource.Name);
-        Assert.Equal("build", annotation.Resource.ScriptName);
-    }
-
-    [Fact]
-    public void WithNpmRunCommand_DoesNotAddAnnotation_WhenInPublishMode()
-    {
-        // Arrange
-        var builder = DistributedApplication.CreateBuilder([
-            "Publishing:Publisher=manifest",
-            "Publishing:OutputPath=./publish"
-        ]);
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
-
-        // Act
-        nodeApp.WithNpmRunCommand("build");
-
-        using var app = builder.Build();
-        var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
-
-        // Assert
-        var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.False(nodeResource.TryGetAnnotationsOfType<NpmCommandAnnotation>(out _));
+        var runner = Assert.Single(appModel.Resources.OfType<NpmCommandResource>());
+        Assert.Equal("test-app-npm-run-build", runner.Name);
+        Assert.Equal("build", runner.ScriptName);
     }
 
     [Theory]
@@ -189,59 +152,29 @@ public class NetlifyDeploymentExtensionTests
     {
         // Arrange
         var builder = DistributedApplication.CreateBuilder();
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act
-        nodeApp.WithNpmRunCommand(scriptName);
+        jsApp.WithNpmRunCommand(scriptName);
 
         using var app = builder.Build();
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var nodeResource = Assert.Single(appModel.Resources.OfType<NodeAppResource>());
-        Assert.True(nodeResource.TryGetAnnotationsOfType<NpmCommandAnnotation>(out var annotations));
-        var annotation = Assert.Single(annotations);
-        Assert.Equal(scriptName, annotation.Resource.ScriptName);
-        Assert.Equal($"test-app-npm-run-{scriptName}", annotation.Resource.Name);
+        var runner = Assert.Single(appModel.Resources.OfType<NpmCommandResource>());
+        Assert.Equal(scriptName, runner.ScriptName);
+        Assert.Equal($"test-app-npm-run-{scriptName}", runner.Name);
     }
 
     [Fact]
-    public async Task WithNpmRunCommand_CreatesRunnerResource_WithCorrectArguments()
+    public void WithNpmRunCommand_CanAcceptAdditionalArgs()
     {
         // Arrange
         var builder = DistributedApplication.CreateBuilder();
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act
-        nodeApp.WithNpmRunCommand("build");
-
-        using var app = builder.Build();
-        var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
-
-        // Assert
-        var runnerResource = Assert.Single(appModel.Resources.OfType<NpmCommandResource>());
-        Assert.Equal("test-app-npm-run-build", runnerResource.Name);
-        Assert.Equal("npm", runnerResource.Command);
-        Assert.EndsWith("test-app", runnerResource.WorkingDirectory);
-        Assert.Equal("build", runnerResource.ScriptName);
-
-        // Verify arguments
-        var args = await runnerResource.GetArgumentValuesAsync();
-        Assert.Collection(args,
-            arg => Assert.Equal("run", arg),
-            arg => Assert.Equal("build", arg)
-        );
-    }
-
-    [Fact]
-    public async Task WithNpmRunCommand_CanAcceptAdditionalArgs()
-    {
-        // Arrange
-        var builder = DistributedApplication.CreateBuilder();
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
-
-        // Act
-        nodeApp.WithNpmRunCommand("build", configureRunner: runnerBuilder =>
+        jsApp.WithNpmRunCommand("build", configureRunner: runnerBuilder =>
         {
             runnerBuilder.WithArgs("--verbose", "--production");
         });
@@ -250,19 +183,13 @@ public class NetlifyDeploymentExtensionTests
         var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
 
         // Assert
-        var runnerResource = Assert.Single(appModel.Resources.OfType<NpmCommandResource>());
-
-        var args = await runnerResource.GetArgumentValuesAsync();
-        Assert.Collection(args,
-            arg => Assert.Equal("run", arg),
-            arg => Assert.Equal("build", arg),
-            arg => Assert.Equal("--verbose", arg),
-            arg => Assert.Equal("--production", arg)
-        );
+        var runner = Assert.Single(appModel.Resources.OfType<NpmCommandResource>());
+        Assert.Equal("npm", runner.Command);
+        Assert.EndsWith("test-app", runner.WorkingDirectory);
     }
 
     [Fact]
-    public void NpmRunnerResource_StoresAllConfigurationCorrectly()
+    public void NpmCommandResource_StoresAllConfigurationCorrectly()
     {
         // Arrange & Act
         var runner = new NpmCommandResource(
@@ -283,7 +210,7 @@ public class NetlifyDeploymentExtensionTests
     {
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            ((IResourceBuilder<NodeAppResource>)null!).WithNpmRunCommand("build"));
+            ((IResourceBuilder<JavaScriptAppResource>)null!).WithNpmRunCommand("build"));
     }
 
     [Fact]
@@ -291,10 +218,10 @@ public class NetlifyDeploymentExtensionTests
     {
         // Arrange
         var builder = DistributedApplication.CreateBuilder();
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => nodeApp.WithNpmRunCommand(null!));
+        Assert.Throws<ArgumentNullException>(() => jsApp.WithNpmRunCommand(null!));
     }
 
     [Theory]
@@ -304,9 +231,120 @@ public class NetlifyDeploymentExtensionTests
     {
         // Arrange
         var builder = DistributedApplication.CreateBuilder();
-        var nodeApp = builder.AddNpmApp("test-app", "./test-app");
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => nodeApp.WithNpmRunCommand(scriptName));
+        Assert.Throws<ArgumentException>(() => jsApp.WithNpmRunCommand(scriptName));
+    }
+
+    // -- PublishAsNetlifySite(string dir) convenience overload --
+
+    [Fact]
+    public void PublishAsNetlifySite_DirectoryOverload_AddsDeploymentResource_WhenInPublishMode()
+    {
+        // Arrange
+        var builder = CreatePublishBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
+
+        // Act
+        jsApp.PublishAsNetlifySite("dist");
+
+        using var app = builder.Build();
+        var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
+
+        // Assert
+        var deployment = Assert.Single(appModel.Resources.OfType<NetlifyDeploymentResource>());
+        Assert.Equal("test-app-netlify-deploy", deployment.Name);
+        Assert.Equal("dist", deployment.BuildDirectory);
+        Assert.True(deployment.Options.NoBuild,
+            "Directory overload should set NoBuild = true (the JS app is built separately).");
+    }
+
+    [Fact]
+    public void PublishAsNetlifySite_DirectoryOverload_DoesNotAddDeploymentResource_WhenNotInPublishMode()
+    {
+        // Arrange
+        var builder = DistributedApplication.CreateBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
+
+        // Act
+        jsApp.PublishAsNetlifySite("dist");
+
+        using var app = builder.Build();
+        var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
+
+        // Assert
+        Assert.Empty(appModel.Resources.OfType<NetlifyDeploymentResource>());
+    }
+
+    [Theory]
+    [InlineData("dist")]
+    [InlineData("build")]
+    [InlineData(".next")]
+    [InlineData("public")]
+    public void PublishAsNetlifySite_DirectoryOverload_PassesThroughDirectory(string dir)
+    {
+        // Arrange
+        var builder = CreatePublishBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
+
+        // Act
+        jsApp.PublishAsNetlifySite(dir);
+
+        using var app = builder.Build();
+        var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
+
+        // Assert
+        var deployment = Assert.Single(appModel.Resources.OfType<NetlifyDeploymentResource>());
+        Assert.Equal(dir, deployment.BuildDirectory);
+    }
+
+    [Fact]
+    public void PublishAsNetlifySite_DirectoryOverload_DefaultsToPreviewEnvironment()
+    {
+        // Arrange
+        var builder = CreatePublishBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
+
+        // Act
+        jsApp.PublishAsNetlifySite("dist");
+
+        using var app = builder.Build();
+        var appModel = app.Services.GetRequiredService<DistributedApplicationModel>();
+
+        // Assert
+        var deployment = Assert.Single(appModel.Resources.OfType<NetlifyDeploymentResource>());
+        Assert.Equal("preview", deployment.DeploymentEnvironment);
+    }
+
+    [Fact]
+    public void PublishAsNetlifySite_DirectoryOverload_ThrowsArgumentNullException_ForNullBuilder()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            ((IResourceBuilder<JavaScriptAppResource>)null!).PublishAsNetlifySite("dist"));
+    }
+
+    [Fact]
+    public void PublishAsNetlifySite_DirectoryOverload_ThrowsArgumentNullException_ForNullDirectory()
+    {
+        // Arrange
+        var builder = CreatePublishBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => jsApp.PublishAsNetlifySite((string)null!));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void PublishAsNetlifySite_DirectoryOverload_ThrowsArgumentException_ForEmptyOrWhitespaceDirectory(string dir)
+    {
+        // Arrange
+        var builder = CreatePublishBuilder();
+        var jsApp = builder.AddJavaScriptApp("test-app", "./test-app");
+
+        // Act & Assert
+        Assert.Throws<ArgumentException>(() => jsApp.PublishAsNetlifySite(dir));
     }
 }

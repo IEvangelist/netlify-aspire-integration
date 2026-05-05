@@ -1,0 +1,24 @@
+/* Custom styles layered on top of Starlight's defaults. */
+
+:root {
+  --sl-font: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Slightly tighter hero spacing. */
+.hero {
+  padding-block: 2.5rem 2rem;
+}
+
+/* Brand accents — Aspire-ish blue. */
+:root[data-theme="dark"] {
+  --sl-color-accent-low: #19283e;
+  --sl-color-accent: #4f7cff;
+  --sl-color-accent-high: #b8c8ff;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #dde6ff;
+  --sl-color-accent: #2752d8;
+  --sl-color-accent-high: #0f1f4a;
+}

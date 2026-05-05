@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.1.0">
+<Project Sdk="Aspire.AppHost.Sdk/13.2.4">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,17 +6,16 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <NoWarn>$(NoWarn);ASPIREPUBLISHERS001;ASPIREPIPELINES001;ASPIREINTERACTION001;ASPIRECOMPUTE001</NoWarn>
-    <UserSecretsId>c1ffed2e-24d0-4182-addf-e70ce56c225e</UserSecretsId>
+    <UserSecretsId>quickstart-apphost-csharp</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.AppHost" />
     <PackageReference Include="Aspire.Hosting.JavaScript" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.JavaScript.Extensions" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aspire.Hosting.Netlify\Aspire.Hosting.Netlify.csproj" IsAspireProjectResource="false" />
+    <ProjectReference Include="..\..\src\Aspire.Hosting.Netlify\Aspire.Hosting.Netlify.csproj" IsAspireProjectResource="false" />
   </ItemGroup>
 
 </Project>

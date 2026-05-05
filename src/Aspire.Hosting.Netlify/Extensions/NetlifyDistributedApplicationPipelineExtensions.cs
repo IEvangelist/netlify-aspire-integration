@@ -7,10 +7,12 @@ public static class NetlifyDistributedApplicationPipelineExtensions
 {
     /// <summary>
     /// Adds the Netlify deployment pipeline to the distributed application pipeline.
-    /// Pairs with <see cref="JavaScriptHostingExtensions.PublishAsNetlifySite"/> to deploy Node.js apps to Netlify.
+    /// Pairs with <see cref="JavaScriptHostingExtensions.PublishAsNetlifySite(IResourceBuilder{JavaScript.JavaScriptAppResource}, NetlifyDeployOptions, IResourceBuilder{ApplicationModel.ParameterResource})"/>
+    /// to deploy JavaScript apps to Netlify.
     /// </summary>
     /// <param name="pipeline">The distributed application pipeline.</param>
     /// <returns>The updated distributed application pipeline.</returns>
+    [AspireExport(MethodName = "addNetlifyDeployPipeline", Description = "Registers the Netlify deployment pipeline steps (CLI check, install, authenticate, deploy).")]
     public static IDistributedApplicationPipeline AddNetlifyDeployPipeline(
         this IDistributedApplicationPipeline pipeline)
     {

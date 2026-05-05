@@ -1,3 +1,3 @@
 {
-  "appHostPath": "../src/Netlify.AppHost/Netlify.AppHost.csproj"
+  "appHostPath": "../samples/AllFrameworks.AppHost/AllFrameworks.AppHost.csproj"
 }

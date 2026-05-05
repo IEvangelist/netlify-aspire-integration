@@ -7,6 +7,7 @@ namespace Aspire.Hosting;
 /// Options for deploying to Netlify using the Netlify CLI.
 /// For more information, see <see href="https://cli.netlify.com/commands/deploy/">Netlify CLI deploy command documentation</see>.
 /// </summary>
+[AspireDto]
 public sealed class NetlifyDeployOptions
 {
     /// <summary>
@@ -134,8 +135,8 @@ public sealed class NetlifyDeployOptions
 
         if (!string.IsNullOrWhiteSpace(CreateSite))
         {
-            args.AddRange(["--create-site"]);
-            redactedArgs.AddRange(["--create-site"]);
+            args.AddRange(["--create-site", CreateSite]);
+            redactedArgs.AddRange(["--create-site", CreateSite]);
         }
 
         if (!string.IsNullOrWhiteSpace(Filter))
@@ -156,13 +157,12 @@ public sealed class NetlifyDeployOptions
             redactedArgs.Add("--json");
         }
 
-        if (string.IsNullOrWhiteSpace(Message))
-        {
-            Message = $"'aspire deploy {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC'";
-        }
+        var deployMessage = string.IsNullOrWhiteSpace(Message)
+            ? $"'aspire deploy {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm:ss} UTC'"
+            : Message;
 
-        args.AddRange(["--message", Message]);
-        redactedArgs.AddRange(["--message", Message]);
+        args.AddRange(["--message", deployMessage]);
+        redactedArgs.AddRange(["--message", deployMessage]);
 
         if (NoBuild is true)
         {

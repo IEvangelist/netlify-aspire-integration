@@ -9,6 +9,7 @@ namespace Aspire.Hosting.ApplicationModel;
 /// <param name="name">The name of the resource.</param>
 /// <param name="workingDirectory">The working directory to use for the command.</param>
 /// <param name="scriptName">The npm script name to run.</param>
+[AspireExport(ExposeProperties = true)]
 public class NpmCommandResource(string name, string workingDirectory, string scriptName)
     : ExecutableResource(name, "npm", workingDirectory)
 {

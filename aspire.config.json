@@ -1,0 +1,5 @@
+{
+  "appHost": {
+    "path": "samples/AllFrameworks.AppHost/AllFrameworks.AppHost.csproj"
+  }
+}
