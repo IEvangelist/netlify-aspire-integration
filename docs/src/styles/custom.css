@@ -855,11 +855,20 @@ starlight-theme-select .caret {
 /* ------------------------------------------------------------------ */
 
 .sl-markdown-content table {
+  width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--sl-color-hairline);
+  margin: 1.25rem 0;
+}
+.sl-markdown-content thead th,
+.sl-markdown-content tbody td {
+  padding: 0.7rem 1rem;
+  border: 0;
+  vertical-align: top;
+  line-height: 1.55;
 }
 .sl-markdown-content thead th {
   background: var(--surface-2);
@@ -868,9 +877,14 @@ starlight-theme-select .caret {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--sl-color-gray-2);
+  text-align: left;
+  border-bottom: 1px solid var(--sl-color-hairline);
 }
 .sl-markdown-content tbody tr:nth-child(even) td {
   background: var(--surface-1);
+}
+.sl-markdown-content tbody tr:hover td {
+  background: rgb(var(--ember-rgb) / 0.05);
 }
 
 /* ------------------------------------------------------------------ */
