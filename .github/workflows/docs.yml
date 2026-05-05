@@ -60,7 +60,7 @@ jobs:
 
       - name: Install docs site dependencies
         working-directory: docs
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Build docs site (Astro + Starlight)
         working-directory: docs
