@@ -55,7 +55,7 @@ If exports still don't appear, make sure the version pinned in your
 The pipeline emits a warning when the auth resolution detects two sources of
 truth. Check the dashboard's pipeline log for a line like
 `"Both an authToken parameter and NETLIFY_AUTH_TOKEN are set..."` — that's a
-heads-up, not a failure. The parameter wins per [precedence](./auth.md).
+heads-up, not a failure. The parameter wins per [precedence](/netlify-aspire-integration/guides/auth/).
 
 ## Where state lives
 

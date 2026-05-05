@@ -40,7 +40,7 @@ surface.
 
 ## See also
 
-- [Quickstart](./quickstart.mdx) — C# and TypeScript walkthrough.
-- [Configuration](./configuration.md)
+- [Quickstart](/netlify-aspire-integration/guides/quickstart/) — C# and TypeScript walkthrough.
+- [Configuration](/netlify-aspire-integration/guides/configuration/)
 - [Aspire.dev — multi-language architecture](https://aspire.dev/architecture/multi-language-architecture/)
 - [Aspire.dev — multi-language integration authoring](https://aspire.dev/extensibility/multi-language-integration-authoring/)

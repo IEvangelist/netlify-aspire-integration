@@ -67,6 +67,6 @@ builder.Build().Run();
 
 ## Next steps
 
-- [Quickstart](./quickstart.md) — C# and TypeScript walkthrough with tabs.
-- [Configuration](./configuration.md) — every option on `NetlifyDeployOptions`.
+- [Quickstart](/netlify-aspire-integration/guides/quickstart/) — C# and TypeScript walkthrough with tabs.
+- [Configuration](/netlify-aspire-integration/guides/configuration/) — every option on `NetlifyDeployOptions`.
 

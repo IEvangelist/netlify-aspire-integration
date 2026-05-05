@@ -13,14 +13,14 @@ release in the 13.x line).
 - The library and AppHosts use the new
   [Aspire Type System](https://aspire.dev/architecture/multi-language-architecture/)
   attributes so a TypeScript AppHost gets a generated `publishAsNetlifySite(...)`
-  surface. See [Multi-language](../guides/multi-language.md).
+  surface. See [Multi-language](/netlify-aspire-integration/guides/multi-language/).
 - A directory-only `PublishAsNetlifySite("dist", authToken)` overload is now
   available alongside the canonical `NetlifyDeployOptions` overload.
 - The repo's framework demos moved from `src/<framework>/` to
   `samples/<framework>/`. The AppHost was renamed from `Netlify.AppHost` to
   `AllFrameworks.AppHost` to reflect what it actually demonstrates. A new
   `Quickstart.AppHost` showcases the directory-only overload.
-- NuGet.org publishing now uses [OIDC Trusted Publishing](../guides/ci-cd.md);
+- NuGet.org publishing now uses [OIDC Trusted Publishing](/netlify-aspire-integration/guides/ci-cd/);
   no `NUGET_API_KEY` secret is required.
 
 ## Behaviour changes (intentional)
@@ -58,5 +58,5 @@ If you want to take advantage of the directory-only overload:
 
 - [What's new in Aspire 13.2](https://aspire.dev/whats-new/aspire-13-2/)
 - [Aspire Type System](https://aspire.dev/architecture/multi-language-architecture/)
-- [Configuration](../guides/configuration.md)
-- [Authentication](../guides/auth.md)
+- [Configuration](/netlify-aspire-integration/guides/configuration/)
+- [Authentication](/netlify-aspire-integration/guides/auth/)

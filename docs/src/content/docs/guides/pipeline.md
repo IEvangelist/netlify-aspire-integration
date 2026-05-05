@@ -11,7 +11,7 @@ once per deploy run:
    resolved on `PATH`. After install, the npm-global bin directory is prepended
    to the current process's `PATH` so subsequent steps find the binary.
 2. **Authenticate with Netlify** — resolves the auth token using the documented
-   [precedence](./auth.md). If the token is empty, runs `ntl login` once.
+   [precedence](/netlify-aspire-integration/guides/auth/). If the token is empty, runs `ntl login` once.
 3. **Resolve / create site** — looks up the Netlify site ID via `--site` or
    creates a new one with `--create-site <name>` when `CreateSite` is set.
 4. **Deploy** — invokes `netlify deploy` with the configured arguments.
@@ -40,6 +40,6 @@ builder.Pipeline
 
 ## See also
 
-- [Configuration](./configuration.md)
-- [Authentication](./auth.md)
-- [Troubleshooting](./troubleshooting.md)
+- [Configuration](/netlify-aspire-integration/guides/configuration/)
+- [Authentication](/netlify-aspire-integration/guides/auth/)
+- [Troubleshooting](/netlify-aspire-integration/guides/troubleshooting/)

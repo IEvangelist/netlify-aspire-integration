@@ -46,5 +46,5 @@ runs.
 
 ## See also
 
-- [Authentication](./auth.md)
-- [Deploy pipeline](./pipeline.md)
+- [Authentication](/netlify-aspire-integration/guides/auth/)
+- [Deploy pipeline](/netlify-aspire-integration/guides/pipeline/)

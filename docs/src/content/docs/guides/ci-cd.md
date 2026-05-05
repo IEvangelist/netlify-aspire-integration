@@ -95,5 +95,5 @@ jobs:
 ## See also
 
 - [NuGet Trusted Publishing docs](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing)
-- [Versioning](./versioning.md) — how MinVer drives the published version
+- [Versioning](/netlify-aspire-integration/guides/versioning/) — how MinVer drives the published version
   from git tags.

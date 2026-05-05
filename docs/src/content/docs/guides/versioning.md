@@ -26,7 +26,7 @@ git push origin v1.0.0
 ```
 
 The `publish-nuget.yml` workflow runs on every published release and pushes the
-resulting package to NuGet.org via [Trusted Publishing](./ci-cd.md).
+resulting package to NuGet.org via [Trusted Publishing](/netlify-aspire-integration/guides/ci-cd/).
 
 ## Pre-release labels
 
@@ -65,6 +65,6 @@ MinVer is configured in `src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.cspro
 
 ## See also
 
-- [CI/CD](./ci-cd.md) — the publishing workflow that consumes this version.
+- [CI/CD](/netlify-aspire-integration/guides/ci-cd/) — the publishing workflow that consumes this version.
 - [MinVer docs](https://github.com/adamralph/minver)
 - [Semantic versioning](https://semver.org)

@@ -58,6 +58,9 @@ jobs:
       - name: Build API reference (DocFX)
         run: docfx build api-reference/docfx.json
 
+      - name: Fix DocFX breadcrumb 404s
+        run: node tools/fix-docfx-breadcrumbs.mjs api-reference/_site
+
       - name: Install docs site dependencies
         working-directory: docs
         run: npm ci
