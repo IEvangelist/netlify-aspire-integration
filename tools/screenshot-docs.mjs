@@ -10,7 +10,7 @@ mkdirSync(outDir, { recursive: true });
 const base = process.argv[2] ?? "https://ievangelist.github.io/netlify-aspire-integration";
 const targets = [
   ["home", "/"],
-  ["quickstart-csharp", "/guides/quickstart-csharp/"],
+  ["quickstart", "/guides/quickstart/"],
   ["api", "/api/"],
   ["frameworks-angular", "/frameworks/angular/"],
   ["guides-install", "/guides/install/"],

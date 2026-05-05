@@ -3,17 +3,35 @@ title: Astro
 description: Wire up an Astro static site for Netlify deploys via Aspire.Hosting.Netlify.
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 The Astro sample under [`samples/astro`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/astro)
 uses Astro's static site generator. `npm run build` writes prerendered assets to
 `dist/`, which the integration deploys directly.
 
 ## AppHost wiring
 
+<Tabs syncKey="lang">
+  <TabItem label="C#" icon="seti:c-sharp">
+
 ```csharp
 builder.AddJavaScriptApp("astro", "../astro")
     .WithHttpEndpoint(targetPort: 4321, env: "PORT")
     .PublishAsNetlifySite("dist", authToken);
 ```
+
+  </TabItem>
+  <TabItem label="TypeScript" icon="seti:typescript">
+
+```ts
+builder
+  .addJavaScriptApp("astro", "../astro")
+  .withHttpEndpoint({ targetPort: 4321, env: "PORT" })
+  .publishAsNetlifySite({ dir: "dist", noBuild: true }, authToken);
+```
+
+  </TabItem>
+</Tabs>
 
 Astro is the simplest fit for the directory-only `PublishAsNetlifySite("dist")`
 overload — its `dist/` folder is already a static site bundle ready to deploy.
@@ -37,5 +55,5 @@ aspire deploy --apphost samples/Quickstart.AppHost/Quickstart.AppHost.csproj
 ## See also
 
 - [Astro docs](https://docs.astro.build)
-- [C# Quickstart](../guides/quickstart-csharp.md)
+- [Quickstart](../guides/quickstart.mdx)
 - [Configuration](../guides/configuration.md)

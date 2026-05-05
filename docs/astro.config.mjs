@@ -10,7 +10,7 @@ export default defineConfig({
     starlight({
       title: "Aspire.Hosting.Netlify",
       description:
-        "Deploy any JavaScript frontend to Netlify with three lines of C#. A .NET Aspire integration with first-class deploy pipeline support and multi-language (TypeScript) AppHost compatibility.",
+        "Deploy any JavaScript frontend to Netlify with three lines of C#. An Aspire integration with first-class deploy pipeline support and multi-language (TypeScript) AppHost compatibility.",
       logo: { src: "./src/assets/logo.svg", replacesTitle: false },
       favicon: "/favicon.svg",
       social: [
@@ -32,8 +32,7 @@ export default defineConfig({
           label: "Guides",
           items: [
             { label: "Install", link: "/guides/install/" },
-            { label: "Quickstart (C#)", link: "/guides/quickstart-csharp/" },
-            { label: "Quickstart (TypeScript)", link: "/guides/quickstart-typescript/" },
+            { label: "Quickstart", link: "/guides/quickstart/" },
             { label: "Configuration", link: "/guides/configuration/" },
             { label: "Authentication", link: "/guides/auth/" },
             { label: "Deploy pipeline", link: "/guides/pipeline/" },

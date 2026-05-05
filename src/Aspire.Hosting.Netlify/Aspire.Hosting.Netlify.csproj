@@ -14,7 +14,7 @@
     <!-- NuGet Package Metadata -->
     <PackageId>Aspire.Hosting.Netlify</PackageId>
     <Title>Aspire Hosting Integration for Netlify</Title>
-    <Description>A .NET Aspire hosting integration for deploying web applications to Netlify</Description>
+    <Description>An Aspire hosting integration for deploying web applications to Netlify</Description>
     <Authors>IEvangelist</Authors>
     <Company>IEvangelist</Company>
     <PackageTags>aspire;netlify;hosting;deployment;webdev</PackageTags>

@@ -3,11 +3,16 @@ title: Next.js
 description: Wire up a Next.js static export for Netlify deploys via Aspire.Hosting.Netlify.
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 The Next.js sample under [`samples/next`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/next)
 uses Next's static export (`output: 'export'` in `next.config.js`). `npm run build`
 writes a fully static bundle to `out/`.
 
 ## AppHost wiring
+
+<Tabs syncKey="lang">
+  <TabItem label="C#" icon="seti:c-sharp">
 
 ```csharp
 builder.AddJavaScriptApp("next", "../next")
@@ -21,6 +26,26 @@ builder.AddJavaScriptApp("next", "../next")
         },
         authToken: authToken);
 ```
+
+  </TabItem>
+  <TabItem label="TypeScript" icon="seti:typescript">
+
+```ts
+builder
+  .addJavaScriptApp("next", "../next")
+  .withHttpEndpoint({ targetPort: 3000, env: "PORT" })
+  .publishAsNetlifySite(
+    {
+      dir: "out",
+      noBuild: true,
+      site: "<your-site-id>",
+    },
+    authToken,
+  );
+```
+
+  </TabItem>
+</Tabs>
 
 :::caution
 Server-rendered Next routes aren't supported by this directory-deploy flow.

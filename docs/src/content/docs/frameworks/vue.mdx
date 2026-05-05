@@ -3,10 +3,15 @@ title: Vue
 description: Wire up a Vite + Vue SPA for Netlify deploys via Aspire.Hosting.Netlify.
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 The Vue sample under [`samples/vue`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/vue)
 is a Vite + Vue 3 SPA. `npm run build` writes a static bundle to `dist/`.
 
 ## AppHost wiring
+
+<Tabs syncKey="lang">
+  <TabItem label="C#" icon="seti:c-sharp">
 
 ```csharp
 builder.AddJavaScriptApp("vue", "../vue")
@@ -20,6 +25,26 @@ builder.AddJavaScriptApp("vue", "../vue")
         },
         authToken: authToken);
 ```
+
+  </TabItem>
+  <TabItem label="TypeScript" icon="seti:typescript">
+
+```ts
+builder
+  .addJavaScriptApp("vue", "../vue")
+  .withHttpEndpoint({ targetPort: 5174, env: "PORT" })
+  .publishAsNetlifySite(
+    {
+      dir: "dist",
+      noBuild: true,
+      site: "<your-site-id>",
+    },
+    authToken,
+  );
+```
+
+  </TabItem>
+</Tabs>
 
 Vue Router users should drop a Netlify `_redirects` file containing
 `/*  /index.html  200` into `samples/vue/public/` so client-side routes survive

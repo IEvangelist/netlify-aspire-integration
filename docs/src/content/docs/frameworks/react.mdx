@@ -3,11 +3,16 @@ title: React
 description: Wire up a Vite + React SPA for Netlify deploys via Aspire.Hosting.Netlify.
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 The React sample under [`samples/react`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/react)
 is a Vite + React + TypeScript SPA. `npm run build` writes a static bundle to
 `dist/`.
 
 ## AppHost wiring
+
+<Tabs syncKey="lang">
+  <TabItem label="C#" icon="seti:c-sharp">
 
 ```csharp
 builder.AddJavaScriptApp("react", "../react")
@@ -21,6 +26,26 @@ builder.AddJavaScriptApp("react", "../react")
         },
         authToken: authToken);
 ```
+
+  </TabItem>
+  <TabItem label="TypeScript" icon="seti:typescript">
+
+```ts
+builder
+  .addJavaScriptApp("react", "../react")
+  .withHttpEndpoint({ targetPort: 5173, env: "PORT" })
+  .publishAsNetlifySite(
+    {
+      dir: "dist",
+      noBuild: true,
+      site: "<your-site-id>",
+    },
+    authToken,
+  );
+```
+
+  </TabItem>
+</Tabs>
 
 For a single-page app you usually want a Netlify `_redirects` file containing
 `/*  /index.html  200` so client-side routing works on hard refreshes — drop it

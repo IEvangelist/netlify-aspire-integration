@@ -25,19 +25,26 @@ The legacy "Aspire workload" is **obsolete** in Aspire 13.x. Do not install it.
 
 ## Add the package
 
+The Aspire CLI knows how to add hosting integrations to either a C# or a
+TypeScript AppHost — use that instead of `dotnet add package` so the right
+integration metadata flows into your AppHost project.
+
 ```sh
-dotnet add package Aspire.Hosting.Netlify
+aspire add Aspire.Hosting.Netlify
 ```
 
-If you're starting from scratch, scaffold an Aspire AppHost first:
+If you're starting from scratch, scaffold an AppHost first:
 
 ```sh
 mkdir MyAppHost && cd MyAppHost
 aspire init
-dotnet add package Aspire.Hosting.Netlify
-dotnet add package Aspire.Hosting.JavaScript
-dotnet add package CommunityToolkit.Aspire.Hosting.JavaScript.Extensions
+aspire add Aspire.Hosting.Netlify
+aspire add Aspire.Hosting.JavaScript
 ```
+
+For a TypeScript AppHost, pass `--language typescript` to `aspire init`.
+`aspire add` regenerates the `.modules/` surface so the integration's exports
+become available to your `apphost.ts`.
 
 ## Verify
 
@@ -60,5 +67,6 @@ builder.Build().Run();
 
 ## Next steps
 
-- [C# Quickstart](./quickstart-csharp.md)
-- [TypeScript Quickstart](./quickstart-typescript.md)
+- [Quickstart](./quickstart.md) — C# and TypeScript walkthrough with tabs.
+- [Configuration](./configuration.md) — every option on `NetlifyDeployOptions`.
+

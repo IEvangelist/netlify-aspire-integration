@@ -7,7 +7,7 @@
 
 > **Deploy any JavaScript frontend to Netlify with three lines of C#.**
 >
-> A first-party-feeling [.NET Aspire](https://aspire.dev) integration that turns
+> A first-party-feeling [Aspire](https://aspire.dev) integration that turns
 > `aspire deploy` into a one-command Netlify deploy — for Angular, Astro, Next.js,
 > React, Svelte, Vue, and anything else `AddJavaScriptApp` understands.
 

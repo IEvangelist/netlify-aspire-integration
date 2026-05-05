@@ -240,18 +240,27 @@ site-search button:hover {
   box-shadow: 0 0 0 3px rgb(var(--ember-rgb) / 0.12);
 }
 site-search kbd {
+  display: inline-flex;
+  align-items: center;
   font-family: var(--sl-font-mono);
+  font-size: 0.72rem;
+  line-height: 1;
   background: var(--surface-2);
   border: 1px solid var(--sl-color-hairline);
   color: var(--sl-color-gray-2);
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.4rem;
+  box-shadow: inset 0 -1px 0 var(--sl-color-hairline-shade);
+  letter-spacing: 0.02em;
 }
 
 /* ------------------------------------------------------------------ */
 /* 4. Splash hero                                                     */
 /* ------------------------------------------------------------------ */
 
+/* Splash hero — tighter top, room below for the terminal block */
 .hero {
-  padding-block: 4rem 2.5rem;
+  padding-block: 3rem 1.5rem;
 }
 
 .hero h1 {
@@ -661,6 +670,13 @@ main .sl-markdown-content a:not(.iconcard):not(.button):not(.site-title):hover {
   letter-spacing: -0.02em;
   margin-block-start: 2.5rem;
 }
+/* Don't double-pad the first heading on a page (it already has top spacing from
+ * the article header / page chrome). Also keeps splash pages tight under the
+ * hero. */
+.sl-markdown-content > h2:first-child,
+.sl-markdown-content > :first-child h2:first-child {
+  margin-block-start: 1rem;
+}
 .sl-markdown-content h2::before {
   content: "";
   display: block;
@@ -679,6 +695,23 @@ main .sl-markdown-content a:not(.iconcard):not(.button):not(.site-title):hover {
   font-family: var(--sl-font);
   font-weight: 600;
   letter-spacing: -0.01em;
+  margin-block-start: 1.75rem;
+}
+
+/* Inline kbd in body content (e.g., guides, troubleshooting) — match search */
+.sl-markdown-content kbd {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--sl-font-mono);
+  font-size: 0.78em;
+  line-height: 1;
+  background: var(--surface-2);
+  border: 1px solid var(--sl-color-hairline);
+  color: var(--sl-color-gray-1);
+  border-radius: 0.35rem;
+  padding: 0.2rem 0.4rem;
+  box-shadow: inset 0 -1px 0 var(--sl-color-hairline-shade);
+  letter-spacing: 0.02em;
 }
 
 /* ------------------------------------------------------------------ */

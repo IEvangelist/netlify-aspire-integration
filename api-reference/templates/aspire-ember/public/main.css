@@ -1,0 +1,498 @@
+/* ============================================================================
+ * Aspire.Hosting.Netlify — DocFX "aspire-ember" template overrides.
+ *
+ * Brings the API reference visually in line with the Astro/Starlight docs
+ * site (Twilight + Ember palette). Layered on top of DocFX modern template,
+ * which uses Bootstrap 5 with `data-bs-theme="dark|light"` on <html>.
+ *
+ * Strategy:
+ *   1. Override Bootstrap CSS variables (--bs-*) for both themes.
+ *   2. Inject Geist + Geist Mono via Google Fonts.
+ *   3. Add ember-tinted accents to nav, sidebar, code, kbd, links.
+ *   4. Avoid hard-coded layout rules — DocFX is responsible for layout.
+ * ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap");
+
+/* ----------------------------------------------------------------------- */
+/* 1. Brand tokens shared across both themes                               */
+/* ----------------------------------------------------------------------- */
+:root {
+  --ember-rgb: 255 132 78;
+  --aurora-rgb: 56 224 196;
+  --plum-rgb: 196 102 220;
+  --gold-rgb: 255 197 87;
+
+  --aspire-font-sans:
+    "Geist", "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --aspire-font-mono:
+    "Geist Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, monospace;
+}
+
+/* ----------------------------------------------------------------------- */
+/* 2. Dark theme tokens (matches docs site)                                */
+/* ----------------------------------------------------------------------- */
+html[data-bs-theme="dark"] {
+  --bs-body-bg: oklch(0.155 0.025 280);
+  --bs-body-color: oklch(0.92 0.015 280);
+  --bs-body-color-rgb: 235, 232, 245;
+  --bs-emphasis-color: oklch(0.985 0.005 280);
+  --bs-emphasis-color-rgb: 251, 250, 254;
+  --bs-secondary-bg: oklch(0.22 0.03 285);
+  --bs-tertiary-bg: oklch(0.18 0.025 285);
+  --bs-secondary-color: oklch(0.66 0.03 280);
+  --bs-tertiary-color: oklch(0.5 0.04 280);
+  --bs-border-color: oklch(1 0 0 / 0.08);
+  --bs-border-color-translucent: oklch(1 0 0 / 0.05);
+  --bs-link-color: rgb(var(--ember-rgb));
+  --bs-link-color-rgb: 255, 132, 78;
+  --bs-link-hover-color: oklch(0.92 0.18 60);
+  --bs-link-hover-color-rgb: 255, 175, 110;
+  --bs-primary: rgb(var(--ember-rgb));
+  --bs-primary-rgb: 255, 132, 78;
+  --bs-code-color: rgb(var(--gold-rgb));
+  --bs-highlight-bg: oklch(0.28 0.04 290 / 0.4);
+
+  --aspire-surface-1: oklch(0.18 0.025 285);
+  --aspire-surface-2: oklch(0.22 0.03 285);
+  --aspire-surface-3: oklch(0.26 0.035 285);
+  --aspire-grid-color: oklch(1 0 0 / 0.04);
+}
+
+/* ----------------------------------------------------------------------- */
+/* 3. Light theme tokens                                                   */
+/* ----------------------------------------------------------------------- */
+html[data-bs-theme="light"] {
+  --bs-body-bg: oklch(0.98 0.005 280);
+  --bs-body-color: oklch(0.22 0.025 280);
+  --bs-emphasis-color: oklch(0.18 0.025 280);
+  --bs-secondary-bg: oklch(0.94 0.012 280);
+  --bs-tertiary-bg: oklch(0.97 0.008 280);
+  --bs-secondary-color: oklch(0.46 0.03 280);
+  --bs-tertiary-color: oklch(0.62 0.03 280);
+  --bs-border-color: oklch(0.2 0.02 280 / 0.12);
+  --bs-border-color-translucent: oklch(0.2 0.02 280 / 0.06);
+  --bs-link-color: oklch(0.55 0.2 50);
+  --bs-link-color-rgb: 191, 92, 30;
+  --bs-link-hover-color: oklch(0.42 0.21 50);
+  --bs-link-hover-color-rgb: 161, 70, 18;
+  --bs-primary: oklch(0.55 0.2 50);
+  --bs-code-color: oklch(0.45 0.18 50);
+
+  --aspire-surface-1: oklch(0.97 0.008 280);
+  --aspire-surface-2: oklch(0.94 0.012 280);
+  --aspire-surface-3: oklch(0.9 0.018 280);
+  --aspire-grid-color: oklch(0 0 0 / 0.04);
+}
+
+/* ----------------------------------------------------------------------- */
+/* 4. Page chrome (typography + dot grid)                                  */
+/* ----------------------------------------------------------------------- */
+html,
+body {
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  font-family: var(--aspire-font-sans);
+  font-feature-settings: "ss01", "ss02";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-image: radial-gradient(
+    var(--aspire-grid-color) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(45% 30% at 8% 0%, rgb(var(--ember-rgb) / 0.16), transparent 70%),
+    radial-gradient(40% 28% at 100% 12%, rgb(var(--aurora-rgb) / 0.12), transparent 75%),
+    radial-gradient(60% 40% at 50% 100%, rgb(var(--plum-rgb) / 0.08), transparent 70%);
+  filter: blur(20px) saturate(1.05);
+}
+
+html[data-bs-theme="light"] body::before {
+  background:
+    radial-gradient(45% 30% at 8% 0%, rgb(var(--ember-rgb) / 0.08), transparent 70%),
+    radial-gradient(40% 28% at 100% 12%, rgb(var(--aurora-rgb) / 0.06), transparent 75%),
+    radial-gradient(60% 40% at 50% 100%, rgb(var(--plum-rgb) / 0.04), transparent 70%);
+}
+
+/* ----------------------------------------------------------------------- */
+/* 5. Top navbar — match docs site header                                  */
+/* ----------------------------------------------------------------------- */
+header.bd-header,
+.navbar {
+  background: rgb(from var(--bs-body-bg) r g b / 0.85) !important;
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid var(--bs-border-color);
+}
+
+.navbar-brand {
+  font-family: var(--aspire-font-mono);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar-brand img,
+#logo {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 0 8px rgb(var(--ember-rgb) / 0.4));
+}
+
+.navbar-nav .nav-link {
+  font-family: var(--aspire-font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+}
+.navbar-nav .nav-link.active,
+.navbar-nav .nav-link:hover {
+  color: rgb(var(--ember-rgb)) !important;
+}
+
+/* Search input in navbar */
+input[type="search"],
+.bd-search input,
+#search-query {
+  background: var(--aspire-surface-1) !important;
+  border: 1px solid var(--bs-border-color) !important;
+  color: var(--bs-body-color) !important;
+  border-radius: 0.6rem !important;
+  font-family: var(--aspire-font-sans);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+input[type="search"]:focus,
+.bd-search input:focus,
+#search-query:focus {
+  border-color: rgb(var(--ember-rgb) / 0.5) !important;
+  box-shadow: 0 0 0 3px rgb(var(--ember-rgb) / 0.15) !important;
+  outline: 0;
+}
+
+/* Theme toggle */
+#theme-picker .btn,
+.bd-mode .btn {
+  border: 1px solid var(--bs-border-color);
+  color: var(--bs-body-color);
+}
+#theme-picker .btn:hover {
+  border-color: rgb(var(--ember-rgb) / 0.5);
+  color: rgb(var(--ember-rgb));
+}
+
+/* ----------------------------------------------------------------------- */
+/* 6. Sidebar / TOC — IDE-feel                                              */
+/* ----------------------------------------------------------------------- */
+nav.toc,
+.sidefilter,
+#toc {
+  font-family: var(--aspire-font-sans);
+  border-right: 1px solid var(--bs-border-color);
+}
+
+nav.toc .nav-link,
+#toc a {
+  font-size: 0.875rem;
+  border-radius: 0.4rem;
+  padding: 0.35rem 0.6rem;
+  color: var(--bs-body-color);
+  transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+nav.toc .nav-link:hover,
+#toc a:hover {
+  background: rgb(var(--ember-rgb) / 0.08);
+  color: rgb(var(--ember-rgb));
+  transform: translateX(2px);
+}
+
+nav.toc .nav-link.active,
+#toc a.active,
+nav.toc .nav-link.in-active-path {
+  background: linear-gradient(
+    90deg,
+    rgb(var(--ember-rgb) / 0.18),
+    rgb(var(--ember-rgb) / 0.05)
+  );
+  box-shadow: inset 2px 0 0 rgb(var(--ember-rgb));
+  color: rgb(var(--ember-rgb));
+  font-weight: 600;
+}
+
+/* Section labels in TOC */
+nav.toc .nav-item > strong,
+.toc-filter input {
+  font-family: var(--aspire-font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.7rem;
+  color: var(--bs-secondary-color);
+}
+
+/* In-page TOC ("Affix" right rail) */
+#affix .nav-link,
+.affix .nav-link {
+  font-size: 0.82rem;
+  border-left: 2px solid transparent;
+  padding-left: 0.6rem;
+  color: var(--bs-secondary-color);
+}
+#affix .nav-link.active,
+.affix .nav-link.active {
+  border-left-color: rgb(var(--ember-rgb));
+  color: rgb(var(--ember-rgb));
+}
+
+/* ----------------------------------------------------------------------- */
+/* 7. Headings — match Starlight's gradient bar kicker                     */
+/* ----------------------------------------------------------------------- */
+article h1,
+article h2,
+article h3 {
+  font-family: var(--aspire-font-sans);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+article h1 {
+  font-size: 2rem;
+}
+
+article h2 {
+  font-size: 1.5rem;
+  margin-block-start: 2.25rem;
+}
+
+article h2::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 2px;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--ember-rgb)),
+    rgb(var(--plum-rgb))
+  );
+  border-radius: 2px;
+}
+
+article h3 {
+  font-size: 1.2rem;
+  margin-block-start: 1.5rem;
+}
+
+article h4 {
+  font-family: var(--aspire-font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  color: var(--bs-secondary-color);
+  margin-block-start: 1.25rem;
+}
+
+/* Member name headings (DocFX uses .decalaration / .api etc) */
+.decalaration h4,
+.api .decalaration {
+  font-family: var(--aspire-font-mono);
+  background: var(--aspire-surface-1);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+}
+
+/* ----------------------------------------------------------------------- */
+/* 8. Body links                                                            */
+/* ----------------------------------------------------------------------- */
+article a:not(.btn):not(.nav-link):not(.navbar-brand) {
+  color: rgb(var(--ember-rgb));
+  text-decoration-color: rgb(var(--ember-rgb) / 0.4);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 200ms ease, color 200ms ease;
+}
+article a:not(.btn):not(.nav-link):not(.navbar-brand):hover {
+  text-decoration-color: rgb(var(--ember-rgb));
+  color: oklch(0.92 0.18 60);
+}
+
+html[data-bs-theme="light"]
+  article a:not(.btn):not(.nav-link):not(.navbar-brand) {
+  color: oklch(0.55 0.2 50);
+  text-decoration-color: oklch(0.55 0.2 50 / 0.4);
+}
+
+/* ----------------------------------------------------------------------- */
+/* 9. Code blocks + inline code                                             */
+/* ----------------------------------------------------------------------- */
+code,
+pre,
+kbd,
+samp,
+.font-monospace {
+  font-family: var(--aspire-font-mono);
+  font-feature-settings: "calt" 0;
+}
+
+article :not(pre) > code,
+article :not(pre) > p > code {
+  background: var(--aspire-surface-1);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.4rem;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.86em;
+  color: var(--bs-code-color);
+}
+
+pre {
+  background: var(--aspire-surface-1) !important;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 8px 24px oklch(0 0 0 / 0.25);
+  font-size: 0.86rem;
+}
+
+html[data-bs-theme="light"] pre {
+  box-shadow: 0 8px 24px oklch(0 0 0 / 0.05);
+}
+
+pre > code {
+  background: transparent !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+/* ----------------------------------------------------------------------- */
+/* 10. <kbd> — match docs site search-bar style                             */
+/* ----------------------------------------------------------------------- */
+kbd {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--aspire-font-mono);
+  font-size: 0.75rem;
+  background: var(--aspire-surface-2);
+  color: var(--bs-body-color);
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.4rem;
+  box-shadow: inset 0 -1px 0 var(--bs-border-color);
+}
+
+/* ----------------------------------------------------------------------- */
+/* 11. Tables                                                               */
+/* ----------------------------------------------------------------------- */
+article table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--bs-border-color);
+  width: 100%;
+}
+
+article table thead th {
+  background: var(--aspire-surface-2);
+  font-family: var(--aspire-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--bs-body-color);
+  border-bottom: 1px solid var(--bs-border-color);
+  padding: 0.6rem 0.85rem;
+}
+
+article table tbody td {
+  padding: 0.55rem 0.85rem;
+  border-top: 1px solid var(--bs-border-color);
+}
+
+article table tbody tr:nth-child(even) td {
+  background: var(--aspire-surface-1);
+}
+
+/* ----------------------------------------------------------------------- */
+/* 12. Buttons                                                              */
+/* ----------------------------------------------------------------------- */
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    rgb(var(--ember-rgb)) 0%,
+    rgb(var(--plum-rgb)) 100%
+  );
+  border: 0;
+  color: oklch(0.12 0.02 280);
+  font-weight: 600;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  filter: brightness(1.08);
+  color: oklch(0.12 0.02 280);
+}
+
+.btn-outline-primary {
+  border-color: rgb(var(--ember-rgb) / 0.5);
+  color: rgb(var(--ember-rgb));
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background: rgb(var(--ember-rgb) / 0.12);
+  border-color: rgb(var(--ember-rgb));
+  color: rgb(var(--ember-rgb));
+}
+
+/* ----------------------------------------------------------------------- */
+/* 13. Alerts / blockquotes                                                 */
+/* ----------------------------------------------------------------------- */
+blockquote,
+.alert {
+  border-radius: 8px;
+  background: var(--aspire-surface-1);
+  border: 1px solid var(--bs-border-color);
+  border-left: 4px solid rgb(var(--ember-rgb));
+  padding: 1rem 1.15rem;
+  color: var(--bs-body-color);
+}
+
+/* ----------------------------------------------------------------------- */
+/* 14. Footer                                                               */
+/* ----------------------------------------------------------------------- */
+footer,
+.footer {
+  background: rgb(from var(--bs-body-bg) r g b / 0.6);
+  border-top: 1px solid var(--bs-border-color);
+  color: var(--bs-secondary-color);
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: rgb(var(--ember-rgb));
+}
+
+/* ----------------------------------------------------------------------- */
+/* 15. Reduced-motion guard                                                 */
+/* ----------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

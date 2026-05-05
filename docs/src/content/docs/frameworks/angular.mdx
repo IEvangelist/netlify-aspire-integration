@@ -3,11 +3,16 @@ title: Angular
 description: Wire up an Angular CLI app for Netlify deploys via Aspire.Hosting.Netlify.
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 The Angular sample under [`samples/angular`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/angular)
 is a standard Angular CLI app whose `ng build` output (`dist/angular/browser/`)
 is deployed as a static site to Netlify.
 
 ## AppHost wiring
+
+<Tabs syncKey="lang">
+  <TabItem label="C#" icon="seti:c-sharp">
 
 ```csharp
 builder.AddJavaScriptApp("angular", "../angular", "start")
@@ -21,6 +26,26 @@ builder.AddJavaScriptApp("angular", "../angular", "start")
         },
         authToken: authToken);
 ```
+
+  </TabItem>
+  <TabItem label="TypeScript" icon="seti:typescript">
+
+```ts
+builder
+  .addJavaScriptApp("angular", "../angular", "start")
+  .withHttpEndpoint({ targetPort: 4200, env: "PORT" })
+  .publishAsNetlifySite(
+    {
+      dir: "dist/angular/browser",
+      noBuild: true,
+      site: "<your-site-id>",
+    },
+    authToken,
+  );
+```
+
+  </TabItem>
+</Tabs>
 
 Angular's browser builder writes to `dist/<projectName>/browser/`, so `Dir` must
 include the project name segment. The `"start"` script is what Aspire invokes to

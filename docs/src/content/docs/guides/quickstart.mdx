@@ -1,0 +1,153 @@
+---
+title: Quickstart
+description: Get a Netlify deploy running through Aspire in under a minute, from a C# or TypeScript AppHost.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+This guide is dual-language. Pick the AppHost flavour you want and the rest of
+the page will follow your choice.
+
+## 1. Scaffold an AppHost
+
+<Tabs syncKey="lang">
+  <TabItem label="C#" icon="seti:c-sharp">
+
+```sh
+mkdir MyAppHost && cd MyAppHost
+aspire init
+aspire add Aspire.Hosting.Netlify
+aspire add Aspire.Hosting.JavaScript
+```
+
+`aspire init` drops a minimal C# AppHost project. `aspire add` adds the
+hosting integrations (and updates the AppHost's `.csproj`).
+
+  </TabItem>
+  <TabItem label="TypeScript" icon="seti:typescript">
+
+```sh
+mkdir MyAppHost && cd MyAppHost
+aspire init --language typescript
+aspire add Aspire.Hosting.Netlify
+aspire add Aspire.Hosting.JavaScript
+```
+
+`aspire init --language typescript` drops `apphost.ts`,
+`aspire.config.json`, `package.json`, `tsconfig.json`, and a `.modules/`
+folder for generated TypeScript surface bindings. `aspire add` registers
+each integration in `aspire.config.json` and regenerates `.modules/`.
+
+  </TabItem>
+</Tabs>
+
+## 2. Wire up your frontend
+
+Drop your built static frontend (e.g. an Astro `dist/` folder) next to the
+AppHost, then point at it:
+
+<Tabs syncKey="lang">
+  <TabItem label="C#" icon="seti:c-sharp">
+
+```csharp
+using Aspire.Hosting;
+using Aspire.Hosting.JavaScript;
+
+var builder = DistributedApplication.CreateBuilder(args);
+
+// Optional: bind an auth token from configuration / user secrets.
+var authToken = builder.AddParameterFromConfiguration(
+    "netlify-token", "NETLIFY_AUTH_TOKEN", secret: true);
+
+builder.Pipeline.AddNetlifyDeployPipeline();
+
+builder.AddJavaScriptApp("astro", "../astro")
+    .PublishAsNetlifySite("dist", authToken);
+
+builder.Build().Run();
+```
+
+The single-argument overload of `PublishAsNetlifySite` is shorthand for
+`new NetlifyDeployOptions { Dir = "dist", NoBuild = true }`. Use the full
+`NetlifyDeployOptions` form when you need a `Site`, `Message`, or
+`Production` flag.
+
+  </TabItem>
+  <TabItem label="TypeScript" icon="seti:typescript">
+
+```ts
+// apphost.ts
+import { Aspire } from "./.modules/aspire";
+
+const builder = Aspire.createBuilder();
+
+const authToken = builder.addParameterFromConfiguration(
+  "netlify-token", "NETLIFY_AUTH_TOKEN", { secret: true });
+
+builder.pipeline.addNetlifyDeployPipeline();
+
+builder.addJavaScriptApp("astro", "../astro")
+  .publishAsNetlifySite({ dir: "dist", noBuild: true }, authToken);
+
+builder.build().run();
+```
+
+Aspire 13.2 introduced the
+[Aspire Type System](https://aspire.dev/architecture/multi-language-architecture/),
+which projects this integration's `[AspireExport]`-annotated surface into
+TypeScript through `.modules/aspire.ts`. The `publishAsNetlifySite`,
+`addNetlifyDeployPipeline`, `withNpmCommand`, and `withNpmRunCommand`
+functions are generated automatically.
+
+  </TabItem>
+</Tabs>
+
+## 3. Run locally
+
+```sh
+aspire run
+```
+
+Aspire starts your frontend's dev server alongside the dashboard. Browse to the
+dashboard URL printed in the terminal to inspect the resource tree.
+
+## 4. Deploy
+
+```sh
+aspire deploy
+```
+
+The pipeline:
+
+1. Resolves the Netlify CLI (auto-installs if missing).
+2. Resolves your auth token (parameter > env var > `ntl login`).
+3. Resolves the Netlify site ID (or creates a new site).
+4. Runs `netlify deploy ...` and records the result.
+
+See [Configuration](./configuration.md) for the full list of options, and
+[Authentication](./auth.md) for the precedence rules.
+
+## Working samples
+
+Both flavours have a runnable sample in the repo. Clone and run:
+
+<Tabs syncKey="lang">
+  <TabItem label="C#" icon="seti:c-sharp">
+
+[`samples/Quickstart.AppHost`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/Quickstart.AppHost)
+
+```sh
+aspire run --apphost samples/Quickstart.AppHost/Quickstart.AppHost.csproj
+```
+
+  </TabItem>
+  <TabItem label="TypeScript" icon="seti:typescript">
+
+[`samples/Quickstart.AppHost.TypeScript`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/Quickstart.AppHost.TypeScript)
+
+```sh
+aspire run --apphost samples/Quickstart.AppHost.TypeScript/apphost.ts
+```
+
+  </TabItem>
+</Tabs>

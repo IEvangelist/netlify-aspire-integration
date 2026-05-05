@@ -1,19 +1,18 @@
 ---
 title: Aspire.Hosting.Netlify
 description: >-
-  Deploy any JavaScript frontend to Netlify with three lines of C#. A .NET
-  Aspire integration with first-class deploy pipeline support and multi-language
+  Deploy any JavaScript frontend to Netlify with three lines of C#. An Aspire
+  integration with first-class deploy pipeline support and multi-language
   (TypeScript) AppHost compatibility.
 template: splash
+prev: false
+next: false
 hero:
-  title: Ship JavaScript to Netlify, the .NET Aspire way.
-  tagline: >-
-    A first-party-feeling Aspire integration that turns `aspire deploy` into
-    a single command for Angular, Astro, Next.js, React, Svelte, Vue — and
-    anything else `AddJavaScriptApp` understands.
+  title: Ship JavaScript to Netlify, the Aspire way.
+  tagline: A first-party-feeling Aspire integration. One command — aspire deploy — for Angular, Astro, Next.js, React, Svelte, and Vue. Works from C# or TypeScript AppHosts.
   actions:
-    - text: Quickstart (C#)
-      link: /netlify-aspire-integration/guides/quickstart-csharp/
+    - text: Quickstart
+      link: /netlify-aspire-integration/guides/quickstart/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
@@ -52,7 +51,7 @@ $ aspire deploy
   { value: "2", label: "AppHost languages" }
 ]} />
 
-## Three lines of C\#
+## Three-line setup
 
 <Tabs syncKey="lang">
   <TabItem label="C#" icon="seti:c-sharp">
@@ -90,25 +89,25 @@ builder.build().run();
     icon="rocket"
     title="Pipeline-aware"
     href="/netlify-aspire-integration/guides/pipeline/"
-    desc="Hooks into Aspire's deploy pipeline so `aspire deploy` is the only command — no shell scripts, no bespoke Actions." />
+    desc="Hooks into Aspire's deploy pipeline so aspire deploy is the only command — no shell scripts, no bespoke Actions." />
   <IconCard
     icon="layers"
     tint="aurora"
     title="Multi-language AppHost"
     href="/netlify-aspire-integration/guides/multi-language/"
-    desc="Annotated with the Aspire Type System so a TypeScript AppHost gets fully-typed `publishAsNetlifySite(...)` exports." />
+    desc="Annotated with the Aspire Type System so a TypeScript AppHost gets fully-typed publishAsNetlifySite(...) exports." />
   <IconCard
     icon="shield"
     tint="aurora"
     title="Secret-safe auth"
     href="/netlify-aspire-integration/guides/auth/"
-    desc="Token resolves via parameter → env → `ntl login`. Site IDs and tokens are redacted from logs." />
+    desc="Token resolves via parameter → env → ntl login. Site IDs and tokens are redacted from logs." />
   <IconCard
     icon="puzzle"
     tint="plum"
     title="Six framework demos"
     href="/netlify-aspire-integration/frameworks/angular/"
-    desc="Angular, Astro, Next.js, React, Svelte, Vue — all wired up and runnable in the repo under `samples/`." />
+    desc="Angular, Astro, Next.js, React, Svelte, Vue — all wired up and runnable in the repo under samples/." />
   <IconCard
     icon="lock"
     title="OIDC-published"
@@ -119,7 +118,7 @@ builder.build().run();
     tint="plum"
     title="MinVer-driven semver"
     href="/netlify-aspire-integration/guides/versioning/"
-    desc="Versions come straight from git tags. No `Version.props`, no manual bumps, no drift." />
+    desc="Versions come straight from git tags. No Version.props, no manual bumps, no drift." />
 </div>
 
 ## Pick your path
@@ -127,43 +126,44 @@ builder.build().run();
 <div class="card-grid sl-flex" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.85rem;margin-block:1.5rem;">
   <IconCard
     icon="rocket"
-    title="C# Quickstart"
-    href="/netlify-aspire-integration/guides/quickstart-csharp/"
-    desc="Drop the integration into a fresh C# AppHost." />
-  <IconCard
-    icon="terminal"
-    tint="aurora"
-    title="TypeScript Quickstart"
-    href="/netlify-aspire-integration/guides/quickstart-typescript/"
-    desc="Use the multi-language Aspire Type System surface." />
+    title="Quickstart"
+    href="/netlify-aspire-integration/guides/quickstart/"
+    desc="Drop the integration into a fresh AppHost — C# or TypeScript." />
   <IconCard
     icon="settings"
+    tint="aurora"
     title="Configuration"
     href="/netlify-aspire-integration/guides/configuration/"
     desc="Every option on NetlifyDeployOptions, with examples." />
   <IconCard
     icon="key"
-    tint="aurora"
     title="Authentication"
     href="/netlify-aspire-integration/guides/auth/"
-    desc="Token precedence, secret binding, and `ntl login`." />
+    desc="Token precedence, secret binding, and ntl login." />
   <IconCard
     icon="cloud"
+    tint="aurora"
     title="Deploy pipeline"
     href="/netlify-aspire-integration/guides/pipeline/"
-    desc="What `AddNetlifyDeployPipeline` actually does, step by step." />
+    desc="What AddNetlifyDeployPipeline actually does, step by step." />
   <IconCard
     icon="layers"
     tint="plum"
     title="Multi-language"
     href="/netlify-aspire-integration/guides/multi-language/"
-    desc="How `[AspireExport]` and the Type System come together." />
+    desc="How [AspireExport] and the Type System come together." />
   <IconCard
     icon="shield"
-    tint="aurora"
     title="CI/CD"
     href="/netlify-aspire-integration/guides/ci-cd/"
-    desc="OIDC publishing, Aspire Deploy pipelines, GitHub Actions." />
+    desc="OIDC publishing, Aspire deploy pipelines, GitHub Actions." />
+  <IconCard
+    icon="code"
+    tint="aurora"
+    title="API reference"
+    href="/netlify-aspire-integration/api/"
+    desc="The full Aspire.Hosting.Netlify .NET API surface."
+    external />
   <IconCard
     icon="question"
     tint="plum"
@@ -175,7 +175,8 @@ builder.build().run();
 ## Install
 
 ```sh
-dotnet add package Aspire.Hosting.Netlify
+aspire add Aspire.Hosting.Netlify
 ```
 
 [Full install guide →](/netlify-aspire-integration/guides/install/)
+
