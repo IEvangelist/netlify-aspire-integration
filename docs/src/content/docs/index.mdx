@@ -33,7 +33,7 @@ import StatRow from '../../components/StatRow.astro';
 
 <TerminalBlock path="~/aspire-app" shell="zsh">
 
-```sh
+```sh frame="none"
 $ aspire deploy
    info: ◆  netlify-deploy(astro): resolving auth token…
    info: ◆  netlify-deploy(astro): resolving site id…
@@ -54,7 +54,7 @@ $ aspire deploy
 ## Three-line setup
 
 <Tabs syncKey="lang">
-  <TabItem label="C#" icon="seti:c-sharp">
+  <TabItem label="C#">
 ```csharp
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -66,7 +66,7 @@ builder.AddJavaScriptApp("astro", "../astro")
 builder.Build().Run();
 ```
   </TabItem>
-  <TabItem label="TypeScript" icon="seti:typescript">
+  <TabItem label="TypeScript">
 ```ts
 import { Aspire } from "./.modules/aspire";
 

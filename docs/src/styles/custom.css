@@ -412,6 +412,20 @@ site-search kbd {
   background: transparent !important;
   border: 0;
 }
+/* Suppress Expressive Code's auto-injected fake-terminal chrome inside our
+ * outer TerminalBlock — we already render a macOS title bar around it. */
+.terminal__body .expressive-code .frame.is-terminal::before,
+.terminal__body .expressive-code .frame.is-terminal .header,
+.terminal__body .expressive-code .frame .copy {
+  display: none !important;
+}
+.terminal__body .expressive-code .frame {
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+.terminal__body .expressive-code pre {
+  padding-block-start: 0 !important;
+}
 
 /* ------------------------------------------------------------------ */
 /* 6. StatRow                                                         */
@@ -431,11 +445,12 @@ site-search kbd {
 .statrow__item {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  padding: 1rem 1.25rem;
+  gap: 0.5rem;
+  padding: 1.35rem 1.25rem 1.15rem;
   background: var(--surface-1);
 }
 .statrow__value {
+  margin: 0;
   font-family: var(--sl-font-mono);
   font-size: 1.6rem;
   font-weight: 700;
@@ -448,7 +463,8 @@ site-search kbd {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  line-height: 1;
+  line-height: 1.05;
+  padding-block-start: 0.15rem;
 }
 .statrow__label {
   font-size: 0.78rem;
@@ -731,6 +747,64 @@ starlight-tabs [role="tab"] {
 starlight-tabs [role="tab"][aria-selected="true"] {
   color: rgb(var(--ember-rgb));
   border-bottom-color: rgb(var(--ember-rgb));
+}
+/* Hide any tab icons (e.g. seti:c-sharp) — labels alone are enough. */
+starlight-tabs [role="tab"] svg.icon,
+starlight-tabs [role="tab"] [class*="seti"] {
+  display: none !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* 13b. Theme toggle — icon-only                                       */
+/* ------------------------------------------------------------------ */
+
+starlight-theme-select {
+  display: inline-flex;
+  align-items: center;
+}
+starlight-theme-select label {
+  --sl-select-width: 0 !important;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--sl-color-text);
+  transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
+}
+starlight-theme-select label:hover {
+  border-color: rgb(var(--ember-rgb) / 0.55);
+  background: rgb(var(--ember-rgb) / 0.08);
+  color: rgb(var(--ember-rgb));
+}
+starlight-theme-select .label-icon {
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+/* The native select stays clickable but visually invisible — the OS-rendered
+ * dropdown still shows readable Light/Dark/Auto options when opened. */
+starlight-theme-select select {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+}
+starlight-theme-select .caret {
+  display: none !important;
 }
 
 /* ------------------------------------------------------------------ */

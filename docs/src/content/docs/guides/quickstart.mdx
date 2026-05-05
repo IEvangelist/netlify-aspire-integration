@@ -11,7 +11,7 @@ the page will follow your choice.
 ## 1. Scaffold an AppHost
 
 <Tabs syncKey="lang">
-  <TabItem label="C#" icon="seti:c-sharp">
+  <TabItem label="C#">
 
 ```sh
 mkdir MyAppHost && cd MyAppHost
@@ -24,7 +24,7 @@ aspire add Aspire.Hosting.JavaScript
 hosting integrations (and updates the AppHost's `.csproj`).
 
   </TabItem>
-  <TabItem label="TypeScript" icon="seti:typescript">
+  <TabItem label="TypeScript">
 
 ```sh
 mkdir MyAppHost && cd MyAppHost
@@ -47,7 +47,7 @@ Drop your built static frontend (e.g. an Astro `dist/` folder) next to the
 AppHost, then point at it:
 
 <Tabs syncKey="lang">
-  <TabItem label="C#" icon="seti:c-sharp">
+  <TabItem label="C#">
 
 ```csharp
 using Aspire.Hosting;
@@ -73,7 +73,7 @@ The single-argument overload of `PublishAsNetlifySite` is shorthand for
 `Production` flag.
 
   </TabItem>
-  <TabItem label="TypeScript" icon="seti:typescript">
+  <TabItem label="TypeScript">
 
 ```ts
 // apphost.ts
@@ -132,7 +132,7 @@ See [Configuration](/netlify-aspire-integration/guides/configuration/) for the f
 Both flavours have a runnable sample in the repo. Clone and run:
 
 <Tabs syncKey="lang">
-  <TabItem label="C#" icon="seti:c-sharp">
+  <TabItem label="C#">
 
 [`samples/Quickstart.AppHost`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/Quickstart.AppHost)
 
@@ -141,7 +141,7 @@ aspire run --apphost samples/Quickstart.AppHost/Quickstart.AppHost.csproj
 ```
 
   </TabItem>
-  <TabItem label="TypeScript" icon="seti:typescript">
+  <TabItem label="TypeScript">
 
 [`samples/Quickstart.AppHost.TypeScript`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/Quickstart.AppHost.TypeScript)
 
