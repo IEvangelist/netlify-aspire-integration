@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Aspire.Hosting.Netlify\Aspire.Hosting.Netlify.csproj" />
+    <ProjectReference Include="..\IEvangelist.Aspire.Hosting.Netlify\IEvangelist.Aspire.Hosting.Netlify.csproj" />
   </ItemGroup>
 
   <ItemGroup>

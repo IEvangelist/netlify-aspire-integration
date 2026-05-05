@@ -12,7 +12,7 @@
     <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
     
     <!-- NuGet Package Metadata -->
-    <PackageId>Aspire.Hosting.Netlify</PackageId>
+    <PackageId>IEvangelist.Aspire.Hosting.Netlify</PackageId>
     <Title>Aspire Hosting Integration for Netlify</Title>
     <Description>An Aspire hosting integration for deploying web applications to Netlify</Description>
     <Authors>IEvangelist</Authors>
@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="Aspire.Hosting.Netlify.Tests" />
+    <InternalsVisibleTo Include="IEvangelist.Aspire.Hosting.Netlify.Tests" />
   </ItemGroup>
 
   <ItemGroup>

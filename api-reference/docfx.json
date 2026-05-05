@@ -3,8 +3,8 @@
     {
       "src": [
         {
-          "src": "../src/Aspire.Hosting.Netlify",
-          "files": [ "Aspire.Hosting.Netlify.csproj" ]
+          "src": "../src/IEvangelist.Aspire.Hosting.Netlify",
+          "files": [ "IEvangelist.Aspire.Hosting.Netlify.csproj" ]
         }
       ],
       "dest": ".",

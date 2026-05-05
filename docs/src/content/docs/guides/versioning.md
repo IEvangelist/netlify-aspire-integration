@@ -45,7 +45,7 @@ minver
 
 ## Configuration
 
-MinVer is configured in `src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj`:
+MinVer is configured in `src/IEvangelist.Aspire.Hosting.Netlify/IEvangelist.Aspire.Hosting.Netlify.csproj`:
 
 ```xml
 <PropertyGroup>

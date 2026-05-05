@@ -1,6 +1,8 @@
 # 🚀 Aspire.Hosting.Netlify
 
-[![NuGet](https://img.shields.io/nuget/v/Aspire.Hosting.Netlify.svg?logo=nuget&label=NuGet)](https://www.nuget.org/packages/Aspire.Hosting.Netlify)
+> Published to NuGet as **`IEvangelist.Aspire.Hosting.Netlify`** — the `Aspire.*` prefix is reserved by Microsoft, so this community integration ships under the `IEvangelist.*` prefix.
+
+[![NuGet](https://img.shields.io/nuget/v/IEvangelist.Aspire.Hosting.Netlify.svg?logo=nuget&label=NuGet)](https://www.nuget.org/packages/IEvangelist.Aspire.Hosting.Netlify)
 [![PR Validation](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/pr-validation.yml)
 [![Publish NuGet Package](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/publish-nuget.yml/badge.svg)](https://github.com/IEvangelist/netlify-aspire-integration/actions/workflows/publish-nuget.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -18,7 +20,7 @@
 ## Quickstart
 
 ```sh
-dotnet add package Aspire.Hosting.Netlify
+dotnet add package IEvangelist.Aspire.Hosting.Netlify
 dotnet add package Aspire.Hosting.JavaScript
 dotnet add package CommunityToolkit.Aspire.Hosting.JavaScript.Extensions
 ```
@@ -64,7 +66,7 @@ The full docs site lives at
 **<https://ievangelist.github.io/netlify-aspire-integration/>** and is
 self-updating: every push to `main` rebuilds it from the markdown under
 [`docs/`](docs/) and the C# XML doc comments under
-[`src/Aspire.Hosting.Netlify/`](src/Aspire.Hosting.Netlify/).
+[`src/IEvangelist.Aspire.Hosting.Netlify/`](src/IEvangelist.Aspire.Hosting.Netlify/).
 
 | | |
 | --- | --- |
@@ -92,8 +94,8 @@ aspire run --apphost samples/AllFrameworks.AppHost/AllFrameworks.AppHost.csproj
 
 Issues and PRs welcome on [GitHub](https://github.com/IEvangelist/netlify-aspire-integration).
 The codebase is straightforward: the integration lives in
-[`src/Aspire.Hosting.Netlify/`](src/Aspire.Hosting.Netlify/), tests in
-[`src/Aspire.Hosting.Netlify.Tests/`](src/Aspire.Hosting.Netlify.Tests/), samples
+[`src/IEvangelist.Aspire.Hosting.Netlify/`](src/IEvangelist.Aspire.Hosting.Netlify/), tests in
+[`src/IEvangelist.Aspire.Hosting.Netlify.Tests/`](src/IEvangelist.Aspire.Hosting.Netlify.Tests/), samples
 in [`samples/`](samples/), and docs in [`docs/`](docs/).
 
 ```sh

@@ -66,7 +66,7 @@ jobs:
         with:
           dotnet-version: '10.0.x'
           dotnet-quality: 'preview'
-      - run: dotnet pack src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj -c Release -o ./artifacts
+      - run: dotnet pack src/IEvangelist.Aspire.Hosting.Netlify/IEvangelist.Aspire.Hosting.Netlify.csproj -c Release -o ./artifacts
 
       - name: NuGet login (OIDC → short-lived API key)
         id: nuget-login

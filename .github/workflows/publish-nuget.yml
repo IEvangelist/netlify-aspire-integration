@@ -18,7 +18,7 @@ jobs:
     # to exchange the OIDC token for a short-lived API key.
     environment:
       name: production
-      url: https://www.nuget.org/packages/Aspire.Hosting.Netlify
+      url: https://www.nuget.org/packages/IEvangelist.Aspire.Hosting.Netlify
 
     steps:
     - name: Checkout code
@@ -52,7 +52,7 @@ jobs:
 
     - name: Pack NuGet package
       run: |
-        dotnet pack src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj \
+        dotnet pack src/IEvangelist.Aspire.Hosting.Netlify/IEvangelist.Aspire.Hosting.Netlify.csproj \
           --configuration Release \
           --no-build \
           --output ./artifacts
@@ -91,7 +91,7 @@ jobs:
     - name: Success notification
       if: success()
       run: |
-        echo "✅ Successfully published Aspire.Hosting.Netlify to NuGet.org"
-        echo "Package URL: https://www.nuget.org/packages/Aspire.Hosting.Netlify"
+        echo "✅ Successfully published IEvangelist.Aspire.Hosting.Netlify to NuGet.org"
+        echo "Package URL: https://www.nuget.org/packages/IEvangelist.Aspire.Hosting.Netlify"
         echo "Version determined by MinVer from git tags"
 

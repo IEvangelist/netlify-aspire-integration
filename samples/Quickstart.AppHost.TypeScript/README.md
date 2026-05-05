@@ -27,7 +27,7 @@ This pulls down the `Aspire.Hosting.Netlify` integration referenced from
 > {
 >   "appHost": { "path": "./apphost.ts" },
 >   "integrations": [
->     { "path": "../../src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj" }
+>     { "path": "../../src/IEvangelist.Aspire.Hosting.Netlify/IEvangelist.Aspire.Hosting.Netlify.csproj" }
 >   ]
 > }
 > ```

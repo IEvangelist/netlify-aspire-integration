@@ -3,7 +3,9 @@ title: Install
 description: Install Aspire.Hosting.Netlify and its prerequisites.
 ---
 
-`Aspire.Hosting.Netlify` is published to NuGet.org and targets `net10.0` with a
+`Aspire.Hosting.Netlify` is published to NuGet.org as
+**`IEvangelist.Aspire.Hosting.Netlify`** (the `Aspire.*` prefix is reserved by
+Microsoft) and targets `net10.0` with a
 floating dependency on `Aspire.Hosting` 13.2.x.
 
 ## Prerequisites
@@ -30,7 +32,7 @@ TypeScript AppHost — use that instead of `dotnet add package` so the right
 integration metadata flows into your AppHost project.
 
 ```sh
-aspire add Aspire.Hosting.Netlify
+aspire add IEvangelist.Aspire.Hosting.Netlify
 ```
 
 If you're starting from scratch, scaffold an AppHost first:
@@ -38,7 +40,7 @@ If you're starting from scratch, scaffold an AppHost first:
 ```sh
 mkdir MyAppHost && cd MyAppHost
 aspire init
-aspire add Aspire.Hosting.Netlify
+aspire add IEvangelist.Aspire.Hosting.Netlify
 aspire add Aspire.Hosting.JavaScript
 ```
 

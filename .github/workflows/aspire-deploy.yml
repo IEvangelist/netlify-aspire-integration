@@ -204,7 +204,7 @@ jobs:
         # Extract URLs using a simpler approach. The library emits step headers like
         # "🚀 Deploy to Netlify — angular" followed by completion messages containing
         # "—URL: https://..." and "—Logs: https://...". See
-        # src/Aspire.Hosting.Netlify/Pipelines/NetlifyDeploymentPipelineSteps.cs:GetDeploymentCompletionMessage.
+        # src/IEvangelist.Aspire.Hosting.Netlify/Pipelines/NetlifyDeploymentPipelineSteps.cs:GetDeploymentCompletionMessage.
         grep -E "🚀 Deploy to Netlify —|—URL:" deploy.log | \
         awk '
           /🚀 Deploy to Netlify —/ {

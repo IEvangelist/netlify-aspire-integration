@@ -1,6 +1,6 @@
 # Samples
 
-Hands-on samples for [`Aspire.Hosting.Netlify`](../src/Aspire.Hosting.Netlify) — pick
+Hands-on samples for [`Aspire.Hosting.Netlify`](../src/IEvangelist.Aspire.Hosting.Netlify) — pick
 a starting point that fits how you want to learn.
 
 ## Pick a starting point

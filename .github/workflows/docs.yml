@@ -6,7 +6,7 @@ on:
     paths:
       - 'docs/**'
       - 'api-reference/**'
-      - 'src/Aspire.Hosting.Netlify/**'
+      - 'src/IEvangelist.Aspire.Hosting.Netlify/**'
       - '.github/workflows/docs.yml'
   release:
     types: [published]
@@ -46,7 +46,7 @@ jobs:
       - name: Restore + build library (for API metadata)
         run: |
           dotnet restore
-          dotnet build src/Aspire.Hosting.Netlify/Aspire.Hosting.Netlify.csproj \
+          dotnet build src/IEvangelist.Aspire.Hosting.Netlify/IEvangelist.Aspire.Hosting.Netlify.csproj \
             -c Release --no-restore
 
       - name: Install DocFX

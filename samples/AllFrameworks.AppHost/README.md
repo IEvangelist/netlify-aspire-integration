@@ -2,7 +2,7 @@
 
 A single Aspire AppHost that boots and deploys six frontend frameworks side by side:
 Angular, Astro, Next.js, React, Svelte, and Vue. Each is wired up with
-[`PublishAsNetlifySite`](../../src/Aspire.Hosting.Netlify/Extensions/JavaScriptHostingExtensions.cs)
+[`PublishAsNetlifySite`](../../src/IEvangelist.Aspire.Hosting.Netlify/Extensions/JavaScriptHostingExtensions.cs)
 using the full `NetlifyDeployOptions` form so the corresponding Netlify `Site` IDs
 stay explicit.
 

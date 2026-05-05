@@ -2,7 +2,7 @@
 
 A minimal C# AppHost that boots a single Astro site and shows off the
 `PublishAsNetlifySite("dist", authToken)` convenience overload added in
-[`Aspire.Hosting.Netlify`](../../src/Aspire.Hosting.Netlify).
+[`Aspire.Hosting.Netlify`](../../src/IEvangelist.Aspire.Hosting.Netlify).
 
 ## Run locally
 
