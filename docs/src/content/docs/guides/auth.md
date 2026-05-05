@@ -21,10 +21,21 @@ emits a warning naming the affected deployment.
 
 ## Configure with user secrets
 
+Use the [`aspire secret`](https://aspire.dev/reference/cli/commands/aspire-secret/)
+command from the directory containing your AppHost. The CLI auto-discovers the
+AppHost project (or pass `--apphost <path>` to be explicit) and persists the
+value in the standard user-secrets store.
+
 ```sh
-cd src/MyAppHost
-dotnet user-secrets init
-dotnet user-secrets set "Parameters:netlify-token" "$(cat ~/.config/netlify/auth)"
+aspire secret set Parameters:netlify-token "$(cat ~/.config/netlify/auth)"
+```
+
+Inspect or remove a stored value at any time:
+
+```sh
+aspire secret list
+aspire secret get Parameters:netlify-token
+aspire secret delete Parameters:netlify-token
 ```
 
 ```csharp
