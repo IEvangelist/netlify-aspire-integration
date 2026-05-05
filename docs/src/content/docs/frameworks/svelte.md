@@ -40,4 +40,4 @@ aspire deploy --apphost samples/AllFrameworks.AppHost/AllFrameworks.AppHost.cspr
 ## See also
 
 - [Svelte docs](https://svelte.dev)
-- [Configuration](/guides/configuration/)
+- [Configuration](../guides/configuration.md)

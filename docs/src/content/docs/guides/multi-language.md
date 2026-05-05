@@ -40,7 +40,7 @@ surface.
 
 ## See also
 
-- [TypeScript Quickstart](/guides/quickstart-typescript/)
-- [Configuration](/guides/configuration/)
+- [TypeScript Quickstart](./quickstart-typescript.md)
+- [Configuration](./configuration.md)
 - [Aspire.dev — multi-language architecture](https://aspire.dev/architecture/multi-language-architecture/)
 - [Aspire.dev — multi-language integration authoring](https://aspire.dev/extensibility/multi-language-integration-authoring/)

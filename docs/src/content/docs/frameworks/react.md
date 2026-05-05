@@ -39,4 +39,4 @@ aspire deploy --apphost samples/AllFrameworks.AppHost/AllFrameworks.AppHost.cspr
 ## See also
 
 - [Vite docs](https://vite.dev)
-- [Configuration](/guides/configuration/)
+- [Configuration](../guides/configuration.md)

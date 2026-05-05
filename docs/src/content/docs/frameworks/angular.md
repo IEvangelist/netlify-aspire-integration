@@ -39,5 +39,5 @@ aspire deploy --apphost samples/AllFrameworks.AppHost/AllFrameworks.AppHost.cspr
 ## See also
 
 - [Angular CLI docs](https://angular.dev/tools/cli)
-- [Configuration](/guides/configuration/)
-- [Authentication](/guides/auth/)
+- [Configuration](../guides/configuration.md)
+- [Authentication](../guides/auth.md)

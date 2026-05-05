@@ -38,4 +38,4 @@ aspire deploy --apphost samples/AllFrameworks.AppHost/AllFrameworks.AppHost.cspr
 ## See also
 
 - [Vue docs](https://vuejs.org)
-- [Configuration](/guides/configuration/)
+- [Configuration](../guides/configuration.md)

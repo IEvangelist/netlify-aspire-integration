@@ -37,5 +37,5 @@ aspire deploy --apphost samples/Quickstart.AppHost/Quickstart.AppHost.csproj
 ## See also
 
 - [Astro docs](https://docs.astro.build)
-- [C# Quickstart](/guides/quickstart-csharp/)
-- [Configuration](/guides/configuration/)
+- [C# Quickstart](../guides/quickstart-csharp.md)
+- [Configuration](../guides/configuration.md)

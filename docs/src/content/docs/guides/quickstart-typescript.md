@@ -74,11 +74,11 @@ aspire run
 aspire deploy
 ```
 
-The behaviour matches the [C# quickstart](/guides/quickstart-csharp/) — same
+The behaviour matches the [C# quickstart](./quickstart-csharp.md) — same
 pipeline, same auth resolution, same Netlify CLI integration.
 
 ## See also
 
-- [Multi-language](/guides/multi-language/) — how the ATS surface is generated.
+- [Multi-language](./multi-language.md) — how the ATS surface is generated.
 - [`samples/Quickstart.AppHost.TypeScript`](https://github.com/IEvangelist/netlify-aspire-integration/tree/main/samples/Quickstart.AppHost.TypeScript)
   — a runnable TypeScript AppHost wired up against this integration.

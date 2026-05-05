@@ -60,5 +60,5 @@ builder.Build().Run();
 
 ## Next steps
 
-- [C# Quickstart](/guides/quickstart-csharp/)
-- [TypeScript Quickstart](/guides/quickstart-typescript/)
+- [C# Quickstart](./quickstart-csharp.md)
+- [TypeScript Quickstart](./quickstart-typescript.md)

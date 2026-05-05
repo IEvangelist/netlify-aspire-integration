@@ -41,4 +41,4 @@ aspire deploy --apphost samples/AllFrameworks.AppHost/AllFrameworks.AppHost.cspr
 ## See also
 
 - [Next.js static export docs](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
-- [Configuration](/guides/configuration/)
+- [Configuration](../guides/configuration.md)

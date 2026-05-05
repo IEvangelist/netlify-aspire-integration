@@ -15,7 +15,7 @@ hero:
     file: ../../assets/logo.svg
   actions:
     - text: Get started in 30 seconds
-      link: /guides/quickstart-csharp/
+      link: /netlify-aspire-integration/guides/quickstart-csharp/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
@@ -23,18 +23,18 @@ hero:
       icon: external
       variant: minimal
     - text: API reference
-      link: /api/
+      link: /netlify-aspire-integration/api/
       variant: minimal
       attrs:
         target: _self
 ---
 
-import { Card, CardGrid, LinkCard, Tabs, TabItem, Code } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## Three lines of C#
 
 <Tabs>
-  <TabItem label="C#">
+  <TabItem label="C#" icon="seti:c-sharp">
 ```csharp
 var builder = DistributedApplication.CreateBuilder(args);
 
@@ -46,7 +46,7 @@ builder.AddJavaScriptApp("astro", "../astro")
 builder.Build().Run();
 ```
   </TabItem>
-  <TabItem label="TypeScript">
+  <TabItem label="TypeScript" icon="seti:typescript">
 ```ts
 import { Aspire } from "./.modules/aspire";
 
@@ -84,37 +84,66 @@ resolves your auth token, and ships your build to Netlify.
     so a TypeScript AppHost gets fully-typed `publishAsNetlifySite(...)`,
     `withNpmCommand`, and `withNpmRunCommand` exports.
   </Card>
-  <Card title="Secret-safe auth" icon="approve-check">
+  <Card title="Secret-safe auth" icon="approve-check-circle">
     Auth token resolves from a parameter, then `NETLIFY_AUTH_TOKEN`, then
     interactive `ntl login`. Site IDs and tokens are redacted from logs.
   </Card>
   <Card title="Six framework demos" icon="puzzle">
-    [Angular](/frameworks/angular/), [Astro](/frameworks/astro/),
-    [Next.js](/frameworks/next/), [React](/frameworks/react/),
-    [Svelte](/frameworks/svelte/), and [Vue](/frameworks/vue/) — all wired up
-    in the repo under `samples/`.
+    [Angular](/netlify-aspire-integration/frameworks/angular/),
+    [Astro](/netlify-aspire-integration/frameworks/astro/),
+    [Next.js](/netlify-aspire-integration/frameworks/next/),
+    [React](/netlify-aspire-integration/frameworks/react/),
+    [Svelte](/netlify-aspire-integration/frameworks/svelte/), and
+    [Vue](/netlify-aspire-integration/frameworks/vue/) — all wired up in the
+    repo under `samples/`.
   </Card>
   <Card title="OIDC-published" icon="seti:lock">
     No long-lived NuGet API key. Releases are published via
-    [Trusted Publishing](/guides/ci-cd/) on every tagged release.
+    [Trusted Publishing](/netlify-aspire-integration/guides/ci-cd/) on every
+    tagged release.
   </Card>
   <Card title="MinVer-driven semver" icon="setting">
     Versions come straight from git tags via
-    [MinVer](/guides/versioning/) — no `Version.props`, no manual bumps.
+    [MinVer](/netlify-aspire-integration/guides/versioning/) — no
+    `Version.props`, no manual bumps.
   </Card>
 </CardGrid>
 
 ## Pick your path
 
 <CardGrid>
-  <LinkCard title="C# Quickstart" href="/guides/quickstart-csharp/" description="Drop the integration into a fresh C# AppHost." />
-  <LinkCard title="TypeScript Quickstart" href="/guides/quickstart-typescript/" description="Use the multi-language Aspire Type System surface." />
-  <LinkCard title="Configuration" href="/guides/configuration/" description="Every option on NetlifyDeployOptions." />
-  <LinkCard title="Authentication" href="/guides/auth/" description="Token precedence, secrets, and ntl login." />
-  <LinkCard title="Deploy pipeline" href="/guides/pipeline/" description="What AddNetlifyDeployPipeline actually does." />
-  <LinkCard title="Multi-language" href="/guides/multi-language/" description="How the [AspireExport] surface works." />
-  <LinkCard title="CI/CD" href="/guides/ci-cd/" description="OIDC publishing, Aspire Deploy, GitHub Actions." />
-  <LinkCard title="Troubleshooting" href="/guides/troubleshooting/" description="Common failure modes and fixes." />
+  <LinkCard
+    title="C# Quickstart"
+    href="/netlify-aspire-integration/guides/quickstart-csharp/"
+    description="Drop the integration into a fresh C# AppHost." />
+  <LinkCard
+    title="TypeScript Quickstart"
+    href="/netlify-aspire-integration/guides/quickstart-typescript/"
+    description="Use the multi-language Aspire Type System surface." />
+  <LinkCard
+    title="Configuration"
+    href="/netlify-aspire-integration/guides/configuration/"
+    description="Every option on NetlifyDeployOptions." />
+  <LinkCard
+    title="Authentication"
+    href="/netlify-aspire-integration/guides/auth/"
+    description="Token precedence, secrets, and ntl login." />
+  <LinkCard
+    title="Deploy pipeline"
+    href="/netlify-aspire-integration/guides/pipeline/"
+    description="What AddNetlifyDeployPipeline actually does." />
+  <LinkCard
+    title="Multi-language"
+    href="/netlify-aspire-integration/guides/multi-language/"
+    description="How the [AspireExport] surface works." />
+  <LinkCard
+    title="CI/CD"
+    href="/netlify-aspire-integration/guides/ci-cd/"
+    description="OIDC publishing, Aspire Deploy, GitHub Actions." />
+  <LinkCard
+    title="Troubleshooting"
+    href="/netlify-aspire-integration/guides/troubleshooting/"
+    description="Common failure modes and fixes." />
 </CardGrid>
 
 ## Install
@@ -123,4 +152,6 @@ resolves your auth token, and ships your build to Netlify.
 dotnet add package Aspire.Hosting.Netlify
 ```
 
-[Full install guide →](/guides/install/)
+[Full install guide →](/netlify-aspire-integration/guides/install/)
+
+

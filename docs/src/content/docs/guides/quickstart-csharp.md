@@ -63,8 +63,8 @@ The pipeline:
 3. Resolves the Netlify site ID (or creates a new site).
 4. Runs `netlify deploy ...` and records the result.
 
-See [Configuration](/guides/configuration/) for the full list of options, and
-[Authentication](/guides/auth/) for the precedence rules.
+See [Configuration](./configuration.md) for the full list of options, and
+[Authentication](./auth.md) for the precedence rules.
 
 ## Working sample
 

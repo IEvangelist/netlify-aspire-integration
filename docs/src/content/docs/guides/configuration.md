@@ -46,5 +46,5 @@ runs.
 
 ## See also
 
-- [Authentication](/guides/auth/)
-- [Deploy pipeline](/guides/pipeline/)
+- [Authentication](./auth.md)
+- [Deploy pipeline](./pipeline.md)
