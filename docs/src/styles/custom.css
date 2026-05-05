@@ -818,8 +818,10 @@ starlight-theme-select .label-icon {
   height: 1rem;
   --sl-icon-size: 1rem;
 }
-/* The native select stays clickable but visually invisible — the OS-rendered
- * dropdown still shows readable Light/Dark/Auto options when opened. */
+/* The native select stays clickable but visually invisible. A head-injected
+ * script intercepts mousedown / Enter / Space to cycle through the options
+ * (auto → light → dark → auto) instead of opening the OS dropdown picker.
+ * Starlight's existing change-event handler still applies the theme + icon. */
 starlight-theme-select select {
   position: absolute;
   inset: 0;

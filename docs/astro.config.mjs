@@ -77,6 +77,46 @@ export default defineConfig({
           tag: "meta",
           attrs: { name: "theme-color", content: "#0b0a14" },
         },
+        {
+          tag: "script",
+          content: `
+(() => {
+  const cycle = (sel) => {
+    const opts = Array.from(sel.options).map((o) => o.value);
+    if (opts.length === 0) return;
+    const i = opts.indexOf(sel.value);
+    sel.value = opts[(i + 1) % opts.length];
+    sel.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+  const findSel = (t) =>
+    t && t.closest ? t.closest('starlight-theme-select select') : null;
+  document.addEventListener(
+    'mousedown',
+    (e) => {
+      const sel = findSel(e.target);
+      if (!sel) return;
+      e.preventDefault();
+      e.stopPropagation();
+      cycle(sel);
+    },
+    true,
+  );
+  document.addEventListener(
+    'keydown',
+    (e) => {
+      const sel = findSel(e.target);
+      if (!sel) return;
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault();
+        e.stopPropagation();
+        cycle(sel);
+      }
+    },
+    true,
+  );
+})();
+          `.trim(),
+        },
       ],
     }),
   ],
