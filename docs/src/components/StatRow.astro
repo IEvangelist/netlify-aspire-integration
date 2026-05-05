@@ -1,0 +1,17 @@
+---
+// StatRow.astro — bold "by-the-numbers" row used in the splash hero.
+// Each stat is { value, label }.
+
+interface Stat { value: string; label: string; }
+interface Props { stats: Stat[]; }
+const { stats } = Astro.props;
+---
+
+<dl class="statrow" role="list">
+  {stats.map((s) => (
+    <div class="statrow__item" role="listitem">
+      <dt class="statrow__value">{s.value}</dt>
+      <dd class="statrow__label">{s.label}</dd>
+    </div>
+  ))}
+</dl>

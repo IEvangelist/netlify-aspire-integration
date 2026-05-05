@@ -6,15 +6,13 @@ description: >-
   (TypeScript) AppHost compatibility.
 template: splash
 hero:
-  title: Deploy frontends to Netlify with .NET Aspire
+  title: Ship JavaScript to Netlify, the .NET Aspire way.
   tagline: >-
-    A first-party-feeling Aspire integration that turns `aspire deploy` into a
-    one-command Netlify deploy — for Angular, Astro, Next.js, React, Svelte,
-    Vue, and anything else `AddJavaScriptApp` understands.
-  image:
-    file: ../../assets/logo.svg
+    A first-party-feeling Aspire integration that turns `aspire deploy` into
+    a single command for Angular, Astro, Next.js, React, Svelte, Vue — and
+    anything else `AddJavaScriptApp` understands.
   actions:
-    - text: Get started in 30 seconds
+    - text: Quickstart (C#)
       link: /netlify-aspire-integration/guides/quickstart-csharp/
       icon: right-arrow
       variant: primary
@@ -29,11 +27,34 @@ hero:
         target: _self
 ---
 
-import { Card, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import IconCard from '../../components/IconCard.astro';
+import TerminalBlock from '../../components/TerminalBlock.astro';
+import StatRow from '../../components/StatRow.astro';
 
-## Three lines of C#
+<TerminalBlock path="~/aspire-app" shell="zsh">
 
-<Tabs>
+```sh
+$ aspire deploy
+   info: ◆  netlify-deploy(astro): resolving auth token…
+   info: ◆  netlify-deploy(astro): resolving site id…
+   info: ◆  netlify-deploy(astro): netlify deploy --prod --dir dist
+   info: ✓  Deployed to https://your-app.netlify.app
+   info: ✓  pipeline: 1 site, 0 errors, 4.2s
+```
+
+</TerminalBlock>
+
+<StatRow stats={[
+  { value: "1", label: "command to deploy" },
+  { value: "0", label: "long-lived secrets" },
+  { value: "6", label: "frameworks ready" },
+  { value: "2", label: "AppHost languages" }
+]} />
+
+## Three lines of C\#
+
+<Tabs syncKey="lang">
   <TabItem label="C#" icon="seti:c-sharp">
 ```csharp
 var builder = DistributedApplication.CreateBuilder(args);
@@ -62,89 +83,94 @@ builder.build().run();
   </TabItem>
 </Tabs>
 
-Then:
-
-```sh
-aspire deploy
-```
-
-That's it. The pipeline finds the Netlify CLI (auto-installs if needed),
-resolves your auth token, and ships your build to Netlify.
-
 ## Why this integration?
 
-<CardGrid>
-  <Card title="Pipeline-aware" icon="rocket">
-    Hooks into Aspire's deploy pipeline. `aspire deploy` is the one command —
-    no bespoke shell scripts, no hand-rolled GitHub Actions.
-  </Card>
-  <Card title="Multi-language" icon="translate">
-    Annotated with the
-    [Aspire Type System](https://aspire.dev/architecture/multi-language-architecture/)
-    so a TypeScript AppHost gets fully-typed `publishAsNetlifySite(...)`,
-    `withNpmCommand`, and `withNpmRunCommand` exports.
-  </Card>
-  <Card title="Secret-safe auth" icon="approve-check-circle">
-    Auth token resolves from a parameter, then `NETLIFY_AUTH_TOKEN`, then
-    interactive `ntl login`. Site IDs and tokens are redacted from logs.
-  </Card>
-  <Card title="Six framework demos" icon="puzzle">
-    [Angular](/netlify-aspire-integration/frameworks/angular/),
-    [Astro](/netlify-aspire-integration/frameworks/astro/),
-    [Next.js](/netlify-aspire-integration/frameworks/next/),
-    [React](/netlify-aspire-integration/frameworks/react/),
-    [Svelte](/netlify-aspire-integration/frameworks/svelte/), and
-    [Vue](/netlify-aspire-integration/frameworks/vue/) — all wired up in the
-    repo under `samples/`.
-  </Card>
-  <Card title="OIDC-published" icon="seti:lock">
-    No long-lived NuGet API key. Releases are published via
-    [Trusted Publishing](/netlify-aspire-integration/guides/ci-cd/) on every
-    tagged release.
-  </Card>
-  <Card title="MinVer-driven semver" icon="setting">
-    Versions come straight from git tags via
-    [MinVer](/netlify-aspire-integration/guides/versioning/) — no
-    `Version.props`, no manual bumps.
-  </Card>
-</CardGrid>
+<div class="card-grid sl-flex" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.85rem;margin-block:1.5rem;">
+  <IconCard
+    icon="rocket"
+    title="Pipeline-aware"
+    href="/netlify-aspire-integration/guides/pipeline/"
+    desc="Hooks into Aspire's deploy pipeline so `aspire deploy` is the only command — no shell scripts, no bespoke Actions." />
+  <IconCard
+    icon="layers"
+    tint="aurora"
+    title="Multi-language AppHost"
+    href="/netlify-aspire-integration/guides/multi-language/"
+    desc="Annotated with the Aspire Type System so a TypeScript AppHost gets fully-typed `publishAsNetlifySite(...)` exports." />
+  <IconCard
+    icon="shield"
+    tint="aurora"
+    title="Secret-safe auth"
+    href="/netlify-aspire-integration/guides/auth/"
+    desc="Token resolves via parameter → env → `ntl login`. Site IDs and tokens are redacted from logs." />
+  <IconCard
+    icon="puzzle"
+    tint="plum"
+    title="Six framework demos"
+    href="/netlify-aspire-integration/frameworks/angular/"
+    desc="Angular, Astro, Next.js, React, Svelte, Vue — all wired up and runnable in the repo under `samples/`." />
+  <IconCard
+    icon="lock"
+    title="OIDC-published"
+    href="/netlify-aspire-integration/guides/ci-cd/"
+    desc="No long-lived NuGet API key. Releases ship via Trusted Publishing on every tagged release." />
+  <IconCard
+    icon="tag"
+    tint="plum"
+    title="MinVer-driven semver"
+    href="/netlify-aspire-integration/guides/versioning/"
+    desc="Versions come straight from git tags. No `Version.props`, no manual bumps, no drift." />
+</div>
 
 ## Pick your path
 
-<CardGrid>
-  <LinkCard
+<div class="card-grid sl-flex" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.85rem;margin-block:1.5rem;">
+  <IconCard
+    icon="rocket"
     title="C# Quickstart"
     href="/netlify-aspire-integration/guides/quickstart-csharp/"
-    description="Drop the integration into a fresh C# AppHost." />
-  <LinkCard
+    desc="Drop the integration into a fresh C# AppHost." />
+  <IconCard
+    icon="terminal"
+    tint="aurora"
     title="TypeScript Quickstart"
     href="/netlify-aspire-integration/guides/quickstart-typescript/"
-    description="Use the multi-language Aspire Type System surface." />
-  <LinkCard
+    desc="Use the multi-language Aspire Type System surface." />
+  <IconCard
+    icon="settings"
     title="Configuration"
     href="/netlify-aspire-integration/guides/configuration/"
-    description="Every option on NetlifyDeployOptions." />
-  <LinkCard
+    desc="Every option on NetlifyDeployOptions, with examples." />
+  <IconCard
+    icon="key"
+    tint="aurora"
     title="Authentication"
     href="/netlify-aspire-integration/guides/auth/"
-    description="Token precedence, secrets, and ntl login." />
-  <LinkCard
+    desc="Token precedence, secret binding, and `ntl login`." />
+  <IconCard
+    icon="cloud"
     title="Deploy pipeline"
     href="/netlify-aspire-integration/guides/pipeline/"
-    description="What AddNetlifyDeployPipeline actually does." />
-  <LinkCard
+    desc="What `AddNetlifyDeployPipeline` actually does, step by step." />
+  <IconCard
+    icon="layers"
+    tint="plum"
     title="Multi-language"
     href="/netlify-aspire-integration/guides/multi-language/"
-    description="How the [AspireExport] surface works." />
-  <LinkCard
+    desc="How `[AspireExport]` and the Type System come together." />
+  <IconCard
+    icon="shield"
+    tint="aurora"
     title="CI/CD"
     href="/netlify-aspire-integration/guides/ci-cd/"
-    description="OIDC publishing, Aspire Deploy, GitHub Actions." />
-  <LinkCard
+    desc="OIDC publishing, Aspire Deploy pipelines, GitHub Actions." />
+  <IconCard
+    icon="question"
+    tint="plum"
     title="Troubleshooting"
     href="/netlify-aspire-integration/guides/troubleshooting/"
-    description="Common failure modes and fixes." />
-</CardGrid>
+    desc="Common failure modes and how to fix them." />
+</div>
 
 ## Install
 
@@ -153,5 +179,3 @@ dotnet add package Aspire.Hosting.Netlify
 ```
 
 [Full install guide →](/netlify-aspire-integration/guides/install/)
-
-

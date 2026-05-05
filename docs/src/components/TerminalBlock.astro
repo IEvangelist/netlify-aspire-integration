@@ -1,0 +1,30 @@
+---
+// TerminalBlock.astro — opinionated fake-terminal frame for the hero/demos.
+// Renders a macOS-style title bar with traffic-light dots and a mono path,
+// then arbitrary children inside a code area. Children should be a Markdown
+// fenced block or any inline content.
+
+interface Props {
+  /** Path/title shown in the title bar. */
+  path?: string;
+  /** Tab label, e.g. "zsh". */
+  shell?: string;
+}
+
+const { path = "~/aspire-app", shell = "zsh" } = Astro.props;
+---
+
+<figure class="terminal" role="figure" aria-label={`Terminal — ${path}`}>
+  <header class="terminal__bar" aria-hidden="true">
+    <span class="terminal__dots">
+      <span class="terminal__dot terminal__dot--r"></span>
+      <span class="terminal__dot terminal__dot--y"></span>
+      <span class="terminal__dot terminal__dot--g"></span>
+    </span>
+    <span class="terminal__path">{path}</span>
+    <span class="terminal__shell">{shell}</span>
+  </header>
+  <div class="terminal__body">
+    <slot />
+  </div>
+</figure>

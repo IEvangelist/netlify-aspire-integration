@@ -1,0 +1,14 @@
+{
+  "name": "@aspire-hosting-netlify/tools",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Maintenance scripts for the Aspire.Hosting.Netlify repo (Playwright screenshot suite, docs link fixer).",
+  "scripts": {
+    "screenshot": "node screenshot-docs.mjs",
+    "screenshot:local": "node screenshot-docs.mjs http://127.0.0.1:4321/netlify-aspire-integration"
+  },
+  "devDependencies": {
+    "playwright": "^1.59.1"
+  }
+}

@@ -1,11 +1,44 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="14" fill="url(#g)"/>
-  <path d="M14 40 L24 22 L34 40 Z" fill="#fff" opacity="0.95"/>
-  <path d="M30 40 L40 22 L50 40 Z" fill="#fff" opacity="0.7"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Aspire.Hosting.Netlify">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#2752d8"/>
-      <stop offset="1" stop-color="#19c8a8"/>
+    <linearGradient id="ahn-ember" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"  stop-color="#FFB454"/>
+      <stop offset="55%" stop-color="#FF6B6B"/>
+      <stop offset="100%" stop-color="#C44569"/>
     </linearGradient>
+    <linearGradient id="ahn-aurora" x1="0" y1="64" x2="64" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"  stop-color="#0AD0B0"/>
+      <stop offset="100%" stop-color="#3DDCFF"/>
+    </linearGradient>
+    <linearGradient id="ahn-stroke" x1="0" y1="0" x2="0" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.65)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.10)"/>
+    </linearGradient>
+    <filter id="ahn-glow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="1.6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
   </defs>
+
+  <!-- Hex deploy crystal (rotated cube vibe) -->
+  <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z"
+        fill="url(#ahn-ember)" stroke="url(#ahn-stroke)" stroke-width="1.25"/>
+
+  <!-- Inner facet (top) — gives 3D edge -->
+  <path d="M32 4 L56 18 L32 32 L8 18 Z"
+        fill="rgba(255,255,255,0.14)"/>
+
+  <!-- Inner facet (right) — depth -->
+  <path d="M56 18 L56 46 L32 60 L32 32 Z"
+        fill="rgba(0,0,0,0.18)"/>
+
+  <!-- Aurora beam: code-to-cloud trace, runs left → right through the hex -->
+  <path d="M14 38 Q 32 18, 50 38"
+        stroke="url(#ahn-aurora)" stroke-width="2.25" stroke-linecap="round" fill="none" opacity="0.95"/>
+
+  <!-- Spark at trace start (Aspire spark) -->
+  <circle cx="14" cy="38" r="2.4" fill="#3DDCFF" filter="url(#ahn-glow)"/>
+
+  <!-- CLI > glyph at trace end (deploy target / arrow) -->
+  <path d="M44 33 L52 38 L44 43"
+        stroke="white" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </svg>

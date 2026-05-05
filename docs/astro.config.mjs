@@ -1,15 +1,11 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import tailwindcss from "@tailwindcss/vite";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://ievangelist.github.io",
   base: "/netlify-aspire-integration",
-  vite: {
-    plugins: [tailwindcss()],
-  },
   integrations: [
     starlight({
       title: "Aspire.Hosting.Netlify",
@@ -73,15 +69,17 @@ export default defineConfig({
       ],
       customCss: [
         "@fontsource-variable/inter/index.css",
-        "./src/styles/global.css",
+        "@fontsource-variable/geist/index.css",
+        "@fontsource-variable/geist-mono/index.css",
         "./src/styles/custom.css",
       ],
       head: [
         {
           tag: "meta",
-          attrs: { name: "theme-color", content: "#0b0d12" },
+          attrs: { name: "theme-color", content: "#0b0a14" },
         },
       ],
     }),
   ],
 });
+
