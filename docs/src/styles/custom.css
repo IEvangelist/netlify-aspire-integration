@@ -643,7 +643,7 @@ site-search kbd {
 }
 
 /* ------------------------------------------------------------------ */
-/* 6c. FlowSteps — 3-step ribbon                                      */
+/* 6c. FlowSteps — vertical Compose → Publish → Deploy stack          */
 /* ------------------------------------------------------------------ */
 
 .flow {
@@ -651,14 +651,13 @@ site-search kbd {
   margin: 1.25rem 0 2rem !important;
   padding: 0;
   display: flex;
+  flex-direction: column;
   align-items: stretch;
-  gap: 1.4rem;
+  gap: 1.6rem;
 }
 
 .flow__step {
   position: relative;
-  flex: 1 1 0;
-  min-width: 0;
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-areas:
@@ -725,11 +724,13 @@ site-search kbd {
   align-self: start;
 }
 
+/* Chevron sits centred below each step (rotated 90deg from its base
+ * "right-pointing" orientation) so the vertical sequence reads top-to-bottom. */
 .flow__chev {
   position: absolute;
-  right: -1.15rem;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  bottom: -1.15rem;
+  transform: translateX(-50%) rotate(90deg);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -739,19 +740,6 @@ site-search kbd {
   width: 22px;
   height: 22px;
   z-index: 1;
-}
-
-@media (max-width: 880px) {
-  .flow {
-    flex-direction: column;
-    gap: 1.6rem;
-  }
-  .flow__chev {
-    right: 50%;
-    top: auto;
-    bottom: -1.15rem;
-    transform: translateX(50%) rotate(90deg);
-  }
 }
 
 /* Splash install note (replaces the bare paragraph + parenthetical). */
@@ -1047,11 +1035,12 @@ starlight-tabs [role="tab"] {
   letter-spacing: 0.01em;
   padding: 0.55rem 0.9rem;
   color: var(--sl-color-gray-3);
-  /* Reserve a 2px border so the layout doesn't jump when the tab becomes
-   * selected; transparent until selected. The negative margin overlaps the
-   * 1px tablist hairline so the active underline reads as a single solid bar. */
+  /* Reserve a 2px transparent border so the layout doesn't shift when the
+   * tab becomes selected. The underline sits flush above the tablist's 1px
+   * hairline (no negative margin) so the .tablist-wrapper overflow:hidden —
+   * which we set to suppress a Windows-only spurious vertical scrollbar —
+   * does not clip the indicator. */
   border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
   transition: color 160ms ease, border-color 160ms ease;
 }
 starlight-tabs [role="tab"]:hover {
