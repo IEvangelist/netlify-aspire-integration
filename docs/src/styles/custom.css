@@ -779,47 +779,6 @@ site-search kbd {
   }
 }
 
-/* ------------------------------------------------------------------ */
-/* 6d. H2 inline icon chips on the splash page                        */
-/* ------------------------------------------------------------------ */
-
-.h2-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 9px;
-  margin-right: 0.6rem;
-  vertical-align: -0.4rem;
-  background: linear-gradient(
-    135deg,
-    rgb(var(--ember-rgb) / 0.18),
-    rgb(var(--plum-rgb) / 0.08)
-  );
-  border: 1px solid rgb(var(--ember-rgb) / 0.28);
-  color: rgb(var(--ember-rgb));
-}
-.h2-icon--aurora {
-  background: linear-gradient(135deg, rgb(var(--aurora-rgb) / 0.18), rgb(var(--ember-rgb) / 0.06));
-  border-color: rgb(var(--aurora-rgb) / 0.32);
-  color: rgb(var(--aurora-rgb));
-}
-.h2-icon--plum {
-  background: linear-gradient(135deg, rgb(var(--plum-rgb) / 0.18), rgb(var(--ember-rgb) / 0.06));
-  border-color: rgb(var(--plum-rgb) / 0.32);
-  color: rgb(var(--plum-rgb));
-}
-
-/* The splash hero already strips the gradient kicker bar from h2; with the
- * inline chip we don't want any margin imbalance either. */
-body:has(.hero) .sl-markdown-content h2 {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0;
-}
-
 /* Splash install note (replaces the bare paragraph + parenthetical). */
 .install-note {
   margin-top: 0.85rem !important;
