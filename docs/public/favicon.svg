@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-label="Aspire.Hosting.Netlify">
   <defs>
-    <linearGradient id="ahn-ember" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"  stop-color="#FFB454"/>
-      <stop offset="55%" stop-color="#FF6B6B"/>
-      <stop offset="100%" stop-color="#C44569"/>
+    <linearGradient id="ahn-bay" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"  stop-color="#5EE6D4"/>
+      <stop offset="55%" stop-color="#00C7B7"/>
+      <stop offset="100%" stop-color="#0E8E84"/>
     </linearGradient>
     <linearGradient id="ahn-aurora" x1="0" y1="64" x2="64" y2="0" gradientUnits="userSpaceOnUse">
       <stop offset="0%"  stop-color="#0AD0B0"/>
@@ -21,7 +21,7 @@
 
   <!-- Hex deploy crystal (rotated cube vibe) -->
   <path d="M32 4 L56 18 L56 46 L32 60 L8 46 L8 18 Z"
-        fill="url(#ahn-ember)" stroke="url(#ahn-stroke)" stroke-width="1.25"/>
+        fill="url(#ahn-bay)" stroke="url(#ahn-stroke)" stroke-width="1.25"/>
 
   <!-- Inner facet (top) — gives 3D edge -->
   <path d="M32 4 L56 18 L32 32 L8 18 Z"

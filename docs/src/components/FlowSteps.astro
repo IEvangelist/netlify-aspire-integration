@@ -17,8 +17,8 @@ interface Step {
   desc: string;
   /** Iconify name from the lucide collection (without the `lucide:` prefix). */
   icon: string;
-  /** Optional accent: ember | aurora | plum. */
-  tint?: "ember" | "aurora" | "plum";
+  /** Optional accent: bay | aurora | plum. */
+  tint?: "bay" | "aurora" | "plum";
 }
 
 const STEPS: Step[] = [
@@ -26,7 +26,7 @@ const STEPS: Step[] = [
     title: "Compose",
     desc: "Wire your AppHost in C# or TypeScript. AddNetlifyDeployPipeline + PublishAsNetlifySite.",
     icon: "layers",
-    tint: "ember",
+    tint: "bay",
   },
   {
     title: "Publish",
@@ -45,7 +45,7 @@ const STEPS: Step[] = [
 
 <ol class="flow" role="list">
   {STEPS.map((s, i) => (
-    <li class={`flow__step flow__step--${s.tint ?? "ember"}`}>
+    <li class={`flow__step flow__step--${s.tint ?? "bay"}`}>
       <span class="flow__icon" aria-hidden="true">
         <Icon name={`lucide:${s.icon}`} width={22} height={22} />
       </span>

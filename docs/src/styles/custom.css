@@ -1,11 +1,12 @@
 /* ============================================================================
- * Aspire.Hosting.Netlify — "Twilight + Ember" docs theme.
+ * Aspire.Hosting.Netlify — "Twilight + Bay" docs theme.
  *
  * Design language:
  *   - Deep ink twilight background with subtle dot grid (designer-tool feel,
  *     not video-game mist).
- *   - Warm ember + cool aurora dual-accent system (warm/cool pairing is
- *     deliberately distinctive vs. mono-cyan SaaS docs sites).
+ *   - Netlify bay teal primary + cool aurora mint secondary (cool/cool
+ *     pairing on a deep twilight ground gives the docs a calm, technical
+ *     feel that's deliberately distinct from typical mono-cyan SaaS docs).
  *   - Geist Sans for display, Inter for body, Geist Mono for code/badges.
  *   - Custom IconCard, TerminalBlock and StatRow components paired with
  *     bespoke styling for the splash hero.
@@ -31,10 +32,10 @@
     Menlo, Monaco, Consolas, monospace;
 
   /* Brand RGB triplets (use with rgb(var(--x) / alpha)). */
-  --ember-rgb: 255 132 78;     /* warm orange */
-  --aurora-rgb: 56 224 196;    /* cool teal   */
-  --plum-rgb: 196 102 220;     /* magenta     */
-  --gold-rgb: 255 197 87;      /* hover lift  */
+  --bay-rgb: 0 199 183;        /* Netlify primary #00C7B7 */
+  --aurora-rgb: 56 224 196;    /* mint secondary          */
+  --plum-rgb: 196 102 220;     /* magenta                 */
+  --gold-rgb: 255 197 87;      /* hover lift              */
 
   /* Surface tokens (used in light/dark blocks below) */
   --sl-content-width: 50rem;
@@ -52,7 +53,7 @@
   /* Text */
   --sl-color-white: oklch(0.985 0.005 280);
   --sl-color-text: oklch(0.92 0.015 280);
-  --sl-color-text-accent: oklch(0.86 0.16 60);
+  --sl-color-text-accent: oklch(0.82 0.13 184);
 
   /* Grayscale */
   --sl-color-gray-1: oklch(0.92 0.015 280);
@@ -64,10 +65,10 @@
   --sl-color-gray-7: oklch(0.18 0.03 285);
   --sl-color-black: oklch(0.12 0.02 280);
 
-  /* Accent — ember (warm) */
-  --sl-color-accent-low: oklch(0.32 0.12 50);
-  --sl-color-accent: oklch(0.78 0.18 50);
-  --sl-color-accent-high: oklch(0.88 0.15 60);
+  /* Accent — bay (Netlify teal #00C7B7 ≈ oklch(0.74 0.13 184)) */
+  --sl-color-accent-low: oklch(0.30 0.08 184);
+  --sl-color-accent: oklch(0.74 0.14 184);
+  --sl-color-accent-high: oklch(0.86 0.13 184);
 
   --sl-color-hairline: oklch(1 0 0 / 0.08);
   --sl-color-hairline-shade: oklch(1 0 0 / 0.05);
@@ -89,7 +90,7 @@
 
   --sl-color-white: oklch(0.18 0.025 280);
   --sl-color-text: oklch(0.22 0.025 280);
-  --sl-color-text-accent: oklch(0.55 0.2 50);
+  --sl-color-text-accent: oklch(0.50 0.13 184);
 
   --sl-color-gray-1: oklch(0.22 0.025 280);
   --sl-color-gray-2: oklch(0.32 0.025 280);
@@ -100,9 +101,9 @@
   --sl-color-gray-7: oklch(0.94 0.012 280);
   --sl-color-black: oklch(0.99 0.005 280);
 
-  --sl-color-accent-low: oklch(0.92 0.08 50);
-  --sl-color-accent: oklch(0.62 0.21 50);
-  --sl-color-accent-high: oklch(0.42 0.21 50);
+  --sl-color-accent-low: oklch(0.92 0.06 184);
+  --sl-color-accent: oklch(0.55 0.14 184);
+  --sl-color-accent-high: oklch(0.40 0.13 184);
 
   --sl-color-hairline: oklch(0.2 0.02 280 / 0.1);
   --sl-color-hairline-shade: oklch(0.2 0.02 280 / 0.06);
@@ -135,7 +136,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Soft ember glow behind the header, anchored top-left (decorative). */
+/* Soft bay glow behind the header, anchored top-left (decorative). */
 body::before {
   /* IMPORTANT: must NOT cover any layout — keep z-index strictly negative
    * AND use position:fixed with pointer-events:none; we only render this
@@ -148,7 +149,7 @@ body::before {
   pointer-events: none;
   z-index: -1;
   background:
-    radial-gradient(45% 30% at 8% 0%, rgb(var(--ember-rgb) / 0.18), transparent 70%),
+    radial-gradient(45% 30% at 8% 0%, rgb(var(--bay-rgb) / 0.18), transparent 70%),
     radial-gradient(40% 28% at 100% 12%, rgb(var(--aurora-rgb) / 0.14), transparent 75%),
     radial-gradient(60% 40% at 50% 100%, rgb(var(--plum-rgb) / 0.10), transparent 70%);
   filter: blur(20px) saturate(1.05);
@@ -156,7 +157,7 @@ body::before {
 
 :root[data-theme="light"] body::before {
   background:
-    radial-gradient(45% 30% at 8% 0%, rgb(var(--ember-rgb) / 0.10), transparent 70%),
+    radial-gradient(45% 30% at 8% 0%, rgb(var(--bay-rgb) / 0.10), transparent 70%),
     radial-gradient(40% 28% at 100% 12%, rgb(var(--aurora-rgb) / 0.08), transparent 75%),
     radial-gradient(60% 40% at 50% 100%, rgb(var(--plum-rgb) / 0.06), transparent 70%);
 }
@@ -175,7 +176,7 @@ header.header {
   border-bottom: 1px solid var(--sl-color-hairline);
 }
 
-/* Site title — wordmark in mono with ember underline accent */
+/* Site title — wordmark in mono with bay underline accent */
 .site-title span {
   font-family: var(--sl-font-mono);
   font-weight: 600;
@@ -185,7 +186,7 @@ header.header {
     90deg,
     var(--sl-color-white) 0%,
     var(--sl-color-white) 60%,
-    rgb(var(--ember-rgb)) 100%
+    rgb(var(--bay-rgb)) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -205,7 +206,7 @@ header.header {
 }
 
 .sidebar a:hover {
-  background: rgb(var(--ember-rgb) / 0.08);
+  background: rgb(var(--bay-rgb) / 0.08);
   color: var(--sl-color-text-accent);
   transform: translateX(2px);
 }
@@ -213,10 +214,10 @@ header.header {
 .sidebar a[aria-current="page"] {
   background: linear-gradient(
     90deg,
-    rgb(var(--ember-rgb) / 0.18),
-    rgb(var(--ember-rgb) / 0.05)
+    rgb(var(--bay-rgb) / 0.18),
+    rgb(var(--bay-rgb) / 0.05)
   );
-  box-shadow: inset 2px 0 0 rgb(var(--ember-rgb));
+  box-shadow: inset 2px 0 0 rgb(var(--bay-rgb));
   color: var(--sl-color-text-accent);
   font-weight: 600;
 }
@@ -239,8 +240,8 @@ site-search button {
   transition: box-shadow 160ms ease, border-color 160ms ease;
 }
 site-search button:hover {
-  border-color: rgb(var(--ember-rgb) / 0.5);
-  box-shadow: 0 0 0 3px rgb(var(--ember-rgb) / 0.12);
+  border-color: rgb(var(--bay-rgb) / 0.5);
+  box-shadow: 0 0 0 3px rgb(var(--bay-rgb) / 0.12);
 }
 site-search kbd {
   display: inline-flex;
@@ -276,7 +277,7 @@ site-search kbd {
     180deg,
     var(--sl-color-white) 0%,
     var(--sl-color-white) 55%,
-    rgb(var(--ember-rgb)) 100%
+    rgb(var(--bay-rgb)) 100%
   );
   -webkit-background-clip: text;
   background-clip: text;
@@ -294,7 +295,7 @@ site-search kbd {
 .hero .actions a.button[data-variant="primary"] {
   background: linear-gradient(
     135deg,
-    rgb(var(--ember-rgb)) 0%,
+    rgb(var(--bay-rgb)) 0%,
     rgb(var(--plum-rgb)) 100%
   );
   border: 0;
@@ -302,15 +303,15 @@ site-search kbd {
   font-weight: 600;
   letter-spacing: -0.005em;
   box-shadow:
-    0 0 0 1px rgb(var(--ember-rgb) / 0.4),
-    0 6px 20px rgb(var(--ember-rgb) / 0.3);
+    0 0 0 1px rgb(var(--bay-rgb) / 0.4),
+    0 6px 20px rgb(var(--bay-rgb) / 0.3);
   transition: transform 200ms ease, box-shadow 200ms ease;
 }
 .hero .actions a.button[data-variant="primary"]:hover {
   transform: translateY(-1px);
   box-shadow:
-    0 0 0 1px rgb(var(--ember-rgb) / 0.6),
-    0 10px 28px rgb(var(--ember-rgb) / 0.45),
+    0 0 0 1px rgb(var(--bay-rgb) / 0.6),
+    0 10px 28px rgb(var(--bay-rgb) / 0.45),
     0 0 40px rgb(var(--plum-rgb) / 0.3);
 }
 
@@ -360,7 +361,7 @@ site-search kbd {
   pointer-events: none;
   background: linear-gradient(
     135deg,
-    rgb(var(--ember-rgb) / 0.25),
+    rgb(var(--bay-rgb) / 0.25),
     transparent 35%,
     transparent 65%,
     rgb(var(--aurora-rgb) / 0.18)
@@ -476,8 +477,8 @@ site-search kbd {
   font-size: 1.85rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  /* Per-cell tint applied below; base falls back to ember. */
-  color: rgb(var(--accent-rgb, var(--ember-rgb)));
+  /* Per-cell tint applied below; base falls back to bay. */
+  color: rgb(var(--accent-rgb, var(--bay-rgb)));
   line-height: 1;
 }
 .statrow__label {
@@ -500,14 +501,14 @@ site-search kbd {
   border-radius: 10px;
   background: linear-gradient(
     135deg,
-    rgb(var(--accent-rgb, var(--ember-rgb)) / 0.18),
-    rgb(var(--accent-rgb, var(--ember-rgb)) / 0.06)
+    rgb(var(--accent-rgb, var(--bay-rgb)) / 0.18),
+    rgb(var(--accent-rgb, var(--bay-rgb)) / 0.06)
   );
-  border: 1px solid rgb(var(--accent-rgb, var(--ember-rgb)) / 0.32);
-  color: rgb(var(--accent-rgb, var(--ember-rgb)));
+  border: 1px solid rgb(var(--accent-rgb, var(--bay-rgb)) / 0.32);
+  color: rgb(var(--accent-rgb, var(--bay-rgb)));
 }
 /* Per-cell accent — drives both the icon chip and the value color. */
-.statrow__item:nth-child(1) { --accent-rgb: var(--ember-rgb); }
+.statrow__item:nth-child(1) { --accent-rgb: var(--bay-rgb); }
 .statrow__item:nth-child(2) { --accent-rgb: var(--aurora-rgb); }
 .statrow__item:nth-child(3) { --accent-rgb: var(--plum-rgb); }
 .statrow__item:nth-child(4) { --accent-rgb: var(--gold-rgb); }
@@ -524,7 +525,7 @@ site-search kbd {
   padding: 1rem 1.25rem;
   background: linear-gradient(
     180deg,
-    rgb(var(--ember-rgb) / 0.04),
+    rgb(var(--bay-rgb) / 0.04),
     transparent 70%
   ),
   var(--surface-1);
@@ -678,10 +679,10 @@ site-search kbd {
 }
 .flow__step:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 24px -14px rgb(var(--ember-rgb) / 0.35);
+  box-shadow: 0 8px 24px -14px rgb(var(--bay-rgb) / 0.35);
 }
 
-.flow__step--ember  { --accent-rgb: var(--ember-rgb); }
+.flow__step--bay  { --accent-rgb: var(--bay-rgb); }
 .flow__step--aurora { --accent-rgb: var(--aurora-rgb); }
 .flow__step--plum   { --accent-rgb: var(--plum-rgb); }
 
@@ -701,7 +702,7 @@ site-search kbd {
   background: linear-gradient(
     135deg,
     rgb(var(--accent-rgb) / 0.18),
-    rgb(var(--ember-rgb) / 0.06)
+    rgb(var(--bay-rgb) / 0.06)
   );
   border: 1px solid rgb(var(--accent-rgb) / 0.28);
 }
@@ -763,7 +764,7 @@ site-search kbd {
 /* ------------------------------------------------------------------ */
 
 .iconcard {
-  --c1: var(--ember-rgb);
+  --c1: var(--bay-rgb);
   --c2: var(--aurora-rgb);
   --c3: var(--plum-rgb);
 
@@ -841,8 +842,8 @@ site-search kbd {
   border: 1px solid rgb(var(--c1) / 0.3);
   flex-shrink: 0;
 }
-.iconcard--aurora .iconcard__icon { background: linear-gradient(135deg, rgb(var(--aurora-rgb) / 0.2), rgb(var(--ember-rgb) / 0.1)); color: rgb(var(--aurora-rgb)); border-color: rgb(var(--aurora-rgb) / 0.35); }
-.iconcard--plum   .iconcard__icon { background: linear-gradient(135deg, rgb(var(--plum-rgb) / 0.2), rgb(var(--ember-rgb) / 0.1));   color: rgb(var(--plum-rgb));   border-color: rgb(var(--plum-rgb) / 0.35); }
+.iconcard--aurora .iconcard__icon { background: linear-gradient(135deg, rgb(var(--aurora-rgb) / 0.2), rgb(var(--bay-rgb) / 0.1)); color: rgb(var(--aurora-rgb)); border-color: rgb(var(--aurora-rgb) / 0.35); }
+.iconcard--plum   .iconcard__icon { background: linear-gradient(135deg, rgb(var(--plum-rgb) / 0.2), rgb(var(--bay-rgb) / 0.1));   color: rgb(var(--plum-rgb));   border-color: rgb(var(--plum-rgb) / 0.35); }
 
 .iconcard__body {
   display: flex;
@@ -870,7 +871,7 @@ site-search kbd {
 .iconcard:focus-visible .iconcard__chev {
   opacity: 1;
   transform: translateX(3px);
-  color: rgb(var(--ember-rgb));
+  color: rgb(var(--bay-rgb));
 }
 
 .iconcard__desc {
@@ -932,7 +933,7 @@ site-search kbd {
   border-left: 4px solid var(--sl-color-asides);
 }
 .starlight-aside--note    { --sl-color-asides: rgb(var(--aurora-rgb)); }
-.starlight-aside--tip     { --sl-color-asides: rgb(var(--ember-rgb)); }
+.starlight-aside--tip     { --sl-color-asides: rgb(var(--bay-rgb)); }
 .starlight-aside--caution { --sl-color-asides: rgb(var(--gold-rgb)); }
 .starlight-aside--danger  { --sl-color-asides: oklch(0.65 0.22 25); }
 
@@ -949,18 +950,18 @@ site-search kbd {
 /* ------------------------------------------------------------------ */
 
 /* Excludes tabs ([role="tab"]) so Starlight's <Tabs> rendering — which uses
- * <a role="tab"> elements inside .sl-markdown-content — is not painted ember
+ * <a role="tab"> elements inside .sl-markdown-content — is not painted bay
  * by this generic markdown link rule (specificity 0,4,2 was beating both
  * Starlight's own tab color and our tab override below). */
 main .sl-markdown-content a:not(.iconcard):not(.button):not(.site-title):not([role="tab"]) {
-  color: rgb(var(--ember-rgb));
-  text-decoration-color: rgb(var(--ember-rgb) / 0.4);
+  color: rgb(var(--bay-rgb));
+  text-decoration-color: rgb(var(--bay-rgb) / 0.4);
   text-underline-offset: 3px;
   transition: text-decoration-color 200ms ease, color 200ms ease;
 }
 main .sl-markdown-content a:not(.iconcard):not(.button):not(.site-title):not([role="tab"]):hover {
-  text-decoration-color: rgb(var(--ember-rgb));
-  color: oklch(0.92 0.18 60);
+  text-decoration-color: rgb(var(--bay-rgb));
+  color: oklch(0.88 0.16 184);
 }
 
 /* ------------------------------------------------------------------ */
@@ -989,7 +990,7 @@ main .sl-markdown-content a:not(.iconcard):not(.button):not(.site-title):not([ro
   margin-bottom: 0.5rem;
   background: linear-gradient(
     90deg,
-    rgb(var(--ember-rgb)),
+    rgb(var(--bay-rgb)),
     rgb(var(--plum-rgb))
   );
   border-radius: 2px;
@@ -1072,8 +1073,8 @@ starlight-tabs [role="tab"]:hover {
   color: var(--sl-color-white);
 }
 starlight-tabs [role="tab"][aria-selected="true"] {
-  color: rgb(var(--ember-rgb));
-  border-bottom-color: rgb(var(--ember-rgb));
+  color: rgb(var(--bay-rgb));
+  border-bottom-color: rgb(var(--bay-rgb));
 }
 /* Hide any tab icons (e.g. seti:c-sharp) — labels alone are enough. */
 starlight-tabs [role="tab"] svg.icon,
@@ -1103,9 +1104,9 @@ starlight-theme-select label {
   transition: border-color 200ms ease, background 200ms ease, color 200ms ease;
 }
 starlight-theme-select label:hover {
-  border-color: rgb(var(--ember-rgb) / 0.55);
-  background: rgb(var(--ember-rgb) / 0.08);
-  color: rgb(var(--ember-rgb));
+  border-color: rgb(var(--bay-rgb) / 0.55);
+  background: rgb(var(--bay-rgb) / 0.08);
+  color: rgb(var(--bay-rgb));
 }
 starlight-theme-select .label-icon {
   pointer-events: none;
@@ -1148,7 +1149,7 @@ starlight-theme-select .caret {
 .site-title img {
   width: 28px;
   height: 28px;
-  filter: drop-shadow(0 0 8px rgb(var(--ember-rgb) / 0.4));
+  filter: drop-shadow(0 0 8px rgb(var(--bay-rgb) / 0.4));
 }
 
 /* ------------------------------------------------------------------ */
@@ -1185,11 +1186,11 @@ starlight-theme-select .caret {
   background: var(--surface-1);
 }
 .sl-markdown-content tbody tr:hover td {
-  background: rgb(var(--ember-rgb) / 0.05);
+  background: rgb(var(--bay-rgb) / 0.05);
 }
 
 /* ------------------------------------------------------------------ */
-/* 16. Pagination footer — chevron tinted ember                        */
+/* 16. Pagination footer — chevron tinted bay                          */
 /* ------------------------------------------------------------------ */
 
 .pagination-links a {
@@ -1199,7 +1200,7 @@ starlight-theme-select .caret {
   transition: border-color 200ms ease, transform 200ms ease;
 }
 .pagination-links a:hover {
-  border-color: rgb(var(--ember-rgb) / 0.5);
+  border-color: rgb(var(--bay-rgb) / 0.5);
   transform: translateY(-1px);
 }
 
@@ -1235,7 +1236,7 @@ body:has(.hero) .pagination-links {
   opacity: 1;
 }
 .sidebar a[aria-current="page"][data-icon]::before {
-  background-color: rgb(var(--ember-rgb));
+  background-color: rgb(var(--bay-rgb));
 }
 /* Framework brand glyphs are filled solids (simple-icons) rather than outline
  * strokes, so the inner brand detail (Next.js "N" cutout, Vue inner-V, React
@@ -1293,7 +1294,7 @@ body:has(.hero) .pagination-links {
 }
 /* Framework icons — official simple-icons brand glyphs, rendered as monochrome
  * mask-images. Color is driven by the parent .sidebar a[data-icon]::before
- * background-color rule (currentColor by default → ember when active). Source:
+ * background-color rule (currentColor by default → bay when active). Source:
  * @iconify-json/simple-icons. */
 .sidebar a[data-icon="angular"] {
   --si: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='black' d='M16.712 17.711H7.288l-1.204 2.916L12 24l5.916-3.373zM14.692 0l7.832 16.855l.814-12.856zM9.308 0L.662 3.999l.814 12.856zm-.405 13.93h6.198L12 6.396z'/></svg>");
