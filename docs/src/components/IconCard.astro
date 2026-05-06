@@ -37,10 +37,11 @@ interface Props {
   /** Render the link as an external (target=_blank) link. */
   external?: boolean;
   /**
-   * Optional accent color hint: 'bay' | 'aurora' | 'plum'. Tints the icon
-   * and the hover stroke. Defaults to a multi-stop gradient.
+   * Optional accent color hint: 'bay' | 'aurora' | 'plum' | 'gold' | 'coral'.
+   * Tints the icon, the gradient hover edge, and the hover chevron. When
+   * omitted, the card falls back to the bay→aurora→plum default gradient.
    */
-  tint?: "bay" | "aurora" | "plum";
+  tint?: "bay" | "aurora" | "plum" | "gold" | "coral";
 }
 
 const { icon, title, href, desc, external = false, tint } = Astro.props;

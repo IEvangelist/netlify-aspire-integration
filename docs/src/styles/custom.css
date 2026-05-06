@@ -35,7 +35,8 @@
   --bay-rgb: 0 199 183;        /* Netlify primary #00C7B7 */
   --aurora-rgb: 56 224 196;    /* mint secondary          */
   --plum-rgb: 196 102 220;     /* magenta                 */
-  --gold-rgb: 255 197 87;      /* hover lift              */
+  --gold-rgb: 255 197 87;      /* amber warm              */
+  --coral-rgb: 255 122 89;     /* coral warm              */
 
   /* Surface tokens (used in light/dark blocks below) */
   --sl-content-width: 50rem;
@@ -508,8 +509,8 @@ site-search kbd {
   color: rgb(var(--accent-rgb, var(--bay-rgb)));
 }
 /* Per-cell accent — drives both the icon chip and the value color. */
-.statrow__item:nth-child(1) { --accent-rgb: var(--bay-rgb); }
-.statrow__item:nth-child(2) { --accent-rgb: var(--aurora-rgb); }
+.statrow__item:nth-child(1) { --accent-rgb: var(--coral-rgb); }
+.statrow__item:nth-child(2) { --accent-rgb: var(--bay-rgb); }
 .statrow__item:nth-child(3) { --accent-rgb: var(--plum-rgb); }
 .statrow__item:nth-child(4) { --accent-rgb: var(--gold-rgb); }
 
@@ -682,9 +683,11 @@ site-search kbd {
   box-shadow: 0 8px 24px -14px rgb(var(--bay-rgb) / 0.35);
 }
 
-.flow__step--bay  { --accent-rgb: var(--bay-rgb); }
+.flow__step--bay    { --accent-rgb: var(--bay-rgb); }
 .flow__step--aurora { --accent-rgb: var(--aurora-rgb); }
 .flow__step--plum   { --accent-rgb: var(--plum-rgb); }
+.flow__step--gold   { --accent-rgb: var(--gold-rgb); }
+.flow__step--coral  { --accent-rgb: var(--coral-rgb); }
 
 .flow__step:hover {
   border-color: rgb(var(--accent-rgb) / 0.45);
@@ -844,6 +847,17 @@ site-search kbd {
 }
 .iconcard--aurora .iconcard__icon { background: linear-gradient(135deg, rgb(var(--aurora-rgb) / 0.2), rgb(var(--bay-rgb) / 0.1)); color: rgb(var(--aurora-rgb)); border-color: rgb(var(--aurora-rgb) / 0.35); }
 .iconcard--plum   .iconcard__icon { background: linear-gradient(135deg, rgb(var(--plum-rgb) / 0.2), rgb(var(--bay-rgb) / 0.1));   color: rgb(var(--plum-rgb));   border-color: rgb(var(--plum-rgb) / 0.35); }
+.iconcard--gold   .iconcard__icon { background: linear-gradient(135deg, rgb(var(--gold-rgb) / 0.2), rgb(var(--coral-rgb) / 0.1));  color: rgb(var(--gold-rgb));   border-color: rgb(var(--gold-rgb) / 0.35); }
+.iconcard--coral  .iconcard__icon { background: linear-gradient(135deg, rgb(var(--coral-rgb) / 0.2), rgb(var(--gold-rgb) / 0.1)); color: rgb(var(--coral-rgb));  border-color: rgb(var(--coral-rgb) / 0.35); }
+.iconcard--bay    .iconcard__icon { background: linear-gradient(135deg, rgb(var(--bay-rgb) / 0.2), rgb(var(--aurora-rgb) / 0.1)); color: rgb(var(--bay-rgb));    border-color: rgb(var(--bay-rgb) / 0.35); }
+
+/* Per-tint c1/c2/c3 so the gradient edge, hover ring, and chevron all
+ * follow the explicit tint instead of always defaulting to bay teal. */
+.iconcard--aurora { --c1: var(--aurora-rgb); --c2: var(--bay-rgb);   --c3: var(--gold-rgb); }
+.iconcard--plum   { --c1: var(--plum-rgb);   --c2: var(--coral-rgb); --c3: var(--bay-rgb); }
+.iconcard--gold   { --c1: var(--gold-rgb);   --c2: var(--coral-rgb); --c3: var(--plum-rgb); }
+.iconcard--coral  { --c1: var(--coral-rgb);  --c2: var(--gold-rgb);  --c3: var(--plum-rgb); }
+.iconcard--bay    { --c1: var(--bay-rgb);    --c2: var(--aurora-rgb); --c3: var(--plum-rgb); }
 
 .iconcard__body {
   display: flex;
@@ -871,7 +885,7 @@ site-search kbd {
 .iconcard:focus-visible .iconcard__chev {
   opacity: 1;
   transform: translateX(3px);
-  color: rgb(var(--bay-rgb));
+  color: rgb(var(--c1));
 }
 
 .iconcard__desc {

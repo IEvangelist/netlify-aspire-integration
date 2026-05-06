@@ -17,8 +17,8 @@ interface Step {
   desc: string;
   /** Iconify name from the lucide collection (without the `lucide:` prefix). */
   icon: string;
-  /** Optional accent: bay | aurora | plum. */
-  tint?: "bay" | "aurora" | "plum";
+  /** Optional accent: bay | aurora | plum | gold | coral. */
+  tint?: "bay" | "aurora" | "plum" | "gold" | "coral";
 }
 
 const STEPS: Step[] = [
@@ -26,13 +26,13 @@ const STEPS: Step[] = [
     title: "Compose",
     desc: "Wire your AppHost in C# or TypeScript. AddNetlifyDeployPipeline + PublishAsNetlifySite.",
     icon: "layers",
-    tint: "bay",
+    tint: "coral",
   },
   {
     title: "Publish",
     desc: "aspire publish runs Aspire's pipeline; the integration emits a typed Netlify deploy step.",
     icon: "package",
-    tint: "aurora",
+    tint: "bay",
   },
   {
     title: "Deploy",
