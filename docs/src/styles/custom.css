@@ -455,9 +455,11 @@ site-search kbd {
 .statrow__item {
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 1.2rem 1.25rem;
+  text-align: center;
+  gap: 0.55rem;
+  padding: 1.5rem 1.25rem;
   background: var(--surface-1);
   min-height: 100%;
   /* Cancel any Starlight/MDX stack-margin between siblings — every cell
@@ -471,60 +473,44 @@ site-search kbd {
   display: block;
   margin: 0;
   font-family: var(--sl-font-mono);
-  font-size: 1.6rem;
+  font-size: 1.85rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  background: linear-gradient(
-    135deg,
-    rgb(var(--ember-rgb)) 0%,
-    rgb(var(--plum-rgb)) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  line-height: 1.05;
+  /* Per-cell tint applied below; base falls back to ember. */
+  color: rgb(var(--accent-rgb, var(--ember-rgb)));
+  line-height: 1;
 }
 .statrow__label {
   display: block;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--sl-color-gray-3);
   margin: 0;
 }
 
-/* StatRow icons — small chip in the top-left corner of each cell. The icon
- * sits above the value so the value still anchors the cell visually. */
+/* StatRow icons — top-of-cell chip; tint matches the value below it so
+ * each cell reads as one coherent unit. */
 .statrow__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   background: linear-gradient(
     135deg,
-    rgb(var(--ember-rgb) / 0.18),
-    rgb(var(--plum-rgb) / 0.10)
+    rgb(var(--accent-rgb, var(--ember-rgb)) / 0.18),
+    rgb(var(--accent-rgb, var(--ember-rgb)) / 0.06)
   );
-  border: 1px solid rgb(var(--ember-rgb) / 0.28);
-  color: rgb(var(--ember-rgb));
+  border: 1px solid rgb(var(--accent-rgb, var(--ember-rgb)) / 0.32);
+  color: rgb(var(--accent-rgb, var(--ember-rgb)));
 }
-.statrow__item:nth-child(2) .statrow__icon {
-  background: linear-gradient(135deg, rgb(var(--aurora-rgb) / 0.18), rgb(var(--ember-rgb) / 0.08));
-  border-color: rgb(var(--aurora-rgb) / 0.32);
-  color: rgb(var(--aurora-rgb));
-}
-.statrow__item:nth-child(3) .statrow__icon {
-  background: linear-gradient(135deg, rgb(var(--plum-rgb) / 0.18), rgb(var(--ember-rgb) / 0.08));
-  border-color: rgb(var(--plum-rgb) / 0.32);
-  color: rgb(var(--plum-rgb));
-}
-.statrow__item:nth-child(4) .statrow__icon {
-  background: linear-gradient(135deg, rgb(var(--gold-rgb) / 0.18), rgb(var(--ember-rgb) / 0.08));
-  border-color: rgb(var(--gold-rgb) / 0.32);
-  color: rgb(var(--gold-rgb));
-}
+/* Per-cell accent — drives both the icon chip and the value color. */
+.statrow__item:nth-child(1) { --accent-rgb: var(--ember-rgb); }
+.statrow__item:nth-child(2) { --accent-rgb: var(--aurora-rgb); }
+.statrow__item:nth-child(3) { --accent-rgb: var(--plum-rgb); }
+.statrow__item:nth-child(4) { --accent-rgb: var(--gold-rgb); }
 
 /* ------------------------------------------------------------------ */
 /* 6b. FrameworkRow — branded logo strip                              */
@@ -600,13 +586,19 @@ site-search kbd {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: var(--surface-1);
   border: 1px solid var(--sl-color-hairline);
   color: var(--sl-color-gray-2);
+  overflow: hidden;
   transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+.framework__icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
 }
 
 .framework__name {
@@ -1051,6 +1043,15 @@ starlight-tabs [role="tab"] {
   letter-spacing: 0.01em;
   padding: 0.55rem 0.9rem;
   color: var(--sl-color-gray-3);
+  /* Reserve a 2px border so the layout doesn't jump when the tab becomes
+   * selected; transparent until selected. The negative margin overlaps the
+   * 1px tablist hairline so the active underline reads as a single solid bar. */
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+starlight-tabs [role="tab"]:hover {
+  color: var(--sl-color-white);
 }
 starlight-tabs [role="tab"][aria-selected="true"] {
   color: rgb(var(--ember-rgb));

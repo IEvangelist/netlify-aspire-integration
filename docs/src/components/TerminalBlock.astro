@@ -7,11 +7,11 @@
 interface Props {
   /** Path/title shown in the title bar. */
   path?: string;
-  /** Tab label, e.g. "zsh". */
+  /** Tab label, e.g. "Terminal" or "zsh". Defaults to "Terminal". */
   shell?: string;
 }
 
-const { path = "~/aspire-app", shell = "zsh" } = Astro.props;
+const { path = "~/aspire-app", shell = "Terminal" } = Astro.props;
 ---
 
 <figure class="terminal" role="figure" aria-label={`Terminal — ${path}`}>
