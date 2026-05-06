@@ -1,12 +1,14 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import icon from "astro-icon";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://ievangelist.github.io",
   base: "/netlify-aspire-integration",
   integrations: [
+    icon(),
     starlight({
       title: "Aspire.Hosting.Netlify",
       description:

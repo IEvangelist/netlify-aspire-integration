@@ -668,10 +668,10 @@ site-search kbd {
   flex: 1 1 0;
   min-width: 0;
   display: grid;
-  grid-template-columns: auto auto 1fr;
+  grid-template-columns: auto 1fr;
   grid-template-areas:
-    "num icon title"
-    "num icon desc";
+    "icon title"
+    "icon desc";
   align-items: center;
   column-gap: 0.85rem;
   row-gap: 0.15rem;
@@ -695,30 +695,13 @@ site-search kbd {
   border-color: rgb(var(--accent-rgb) / 0.45);
 }
 
-.flow__num {
-  grid-area: num;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  font-family: var(--sl-font-mono);
-  font-weight: 700;
-  font-size: 0.85rem;
-  color: rgb(var(--accent-rgb));
-  background: rgb(var(--accent-rgb) / 0.12);
-  border: 1px solid rgb(var(--accent-rgb) / 0.32);
-  letter-spacing: 0;
-}
-
 .flow__icon {
   grid-area: icon;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   color: rgb(var(--accent-rgb));
   background: linear-gradient(
