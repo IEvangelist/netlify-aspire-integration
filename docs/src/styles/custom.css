@@ -622,9 +622,12 @@ site-search kbd {
   border-color: rgb(var(--brand-rgb) / 0.35);
 }
 
-/* Make the dark Next.js wordmark legible in dark theme. */
+/* Make the dark Next.js wordmark legible in dark theme. The component sets
+ * `style="--brand-rgb: 15 15 15"` inline on the <a>, and inline styles beat
+ * external CSS without `!important`, so we need it here to flip the icon
+ * to off-white instead of near-invisible near-black. */
 :root[data-theme="dark"] .framework[aria-label="Next.js"] {
-  --brand-rgb: 240 240 240;
+  --brand-rgb: 240 240 240 !important;
 }
 
 @media (max-width: 560px) {
@@ -999,6 +1002,17 @@ main .sl-markdown-content a:not(.iconcard):not(.button):not(.site-title):not([ro
   margin-block-start: 1.75rem;
 }
 
+/* Give the autolink anchor icon (the chain glyph that appears next to a
+ * heading on hover) more breathing room from the heading text. Starlight
+ * defaults to 0.25em which reads cramped at our heading scale; bump to
+ * 0.6em. The padding-inline-end + negative margin-inline-start trick that
+ * Starlight uses to keep the icon on the same line is driven by
+ * --sl-anchor-icon-space (icon size + gap), so increasing the gap also
+ * widens the reserved end-of-line slot automatically. */
+.sl-markdown-content .sl-heading-wrapper {
+  --sl-anchor-icon-gap: 0.6em;
+}
+
 /* Inline kbd in body content (e.g., guides, troubleshooting) — match search */
 .sl-markdown-content kbd {
   display: inline-flex;
@@ -1021,6 +1035,17 @@ main .sl-markdown-content a:not(.iconcard):not(.button):not(.site-title):not([ro
 
 starlight-tabs [role="tablist"] {
   border-bottom: 1px solid var(--sl-color-hairline);
+}
+/* Starlight's Tabs.astro applies `margin-bottom: -2px` to `<li class="tab">`
+ * (the wrapper around each tab anchor) so the anchor's 2px bottom border
+ * overlaps the tablist's 2px border for a flush indicator. We ship a 1px
+ * tablist hairline instead, and combined with `.tablist-wrapper { overflow-y:
+ * hidden }` (set below to suppress a Windows-only spurious vertical
+ * scrollbar) the negative margin pushes the active underline 1px past the
+ * clip edge and it disappears. Zero out the margin so the tab anchor's
+ * border-bottom is fully inside the wrapper. */
+starlight-tabs .tab {
+  margin-bottom: 0;
 }
 /* Starlight's .tablist-wrapper sets overflow: auto for narrow-viewport horizontal
  * scrolling, but our 1px tablist border-bottom pushes scrollHeight 1px past
