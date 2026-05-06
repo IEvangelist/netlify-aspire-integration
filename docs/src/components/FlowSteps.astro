@@ -1,0 +1,73 @@
+---
+// FlowSteps.astro — 3-step "how it works" flow for the splash page.
+// Renders Compose → Publish → Deploy as a horizontal ribbon with a numbered
+// chip + icon per step and a chevron between them. Stacks on small screens.
+
+interface Step {
+  n: string;
+  title: string;
+  desc: string;
+  icon: keyof typeof ICONS;
+  /** Optional accent: ember | aurora | plum. */
+  tint?: "ember" | "aurora" | "plum";
+}
+
+const STEPS: Step[] = [
+  {
+    n: "1",
+    title: "Compose",
+    desc: "Wire your AppHost in C# or TypeScript. AddNetlifyDeployPipeline + PublishAsNetlifySite.",
+    icon: "layers",
+    tint: "ember",
+  },
+  {
+    n: "2",
+    title: "Publish",
+    desc: "aspire publish runs Aspire's pipeline; the integration emits a typed Netlify deploy step.",
+    icon: "package",
+    tint: "aurora",
+  },
+  {
+    n: "3",
+    title: "Deploy",
+    desc: "aspire deploy resolves auth, runs netlify deploy --prod, streams logs into Aspire.",
+    icon: "rocket",
+    tint: "plum",
+  },
+];
+
+const ICONS = {
+  layers:
+    '<path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m6.08 9.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.51-1.6"/><path d="m6.08 14.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.51-1.6"/>',
+  package:
+    '<path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/>',
+  rocket:
+    '<path d="M4.5 16.5c-1.5 1.5-2 5-2 5s3.5-.5 5-2c.85-.85.85-2.15 0-3-.85-.85-2.15-.85-3 0Z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+} as const;
+---
+
+<ol class="flow" role="list">
+  {STEPS.map((s, i) => (
+    <li class={`flow__step flow__step--${s.tint ?? "ember"}`}>
+      <span class="flow__num" aria-hidden="true">{s.n}</span>
+      <span class="flow__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none"
+             stroke="currentColor" stroke-width="1.75"
+             stroke-linecap="round" stroke-linejoin="round" set:html={ICONS[s.icon]} />
+      </span>
+      <span class="flow__body">
+        <span class="flow__title">{s.title}</span>
+        <span class="flow__desc">{s.desc}</span>
+      </span>
+      {i < STEPS.length - 1 && (
+        <span class="flow__chev" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none"
+               stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </span>
+      )}
+    </li>
+  ))}
+</ol>

@@ -493,6 +493,337 @@ site-search kbd {
   margin: 0;
 }
 
+/* StatRow icons — small chip in the top-left corner of each cell. The icon
+ * sits above the value so the value still anchors the cell visually. */
+.statrow__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--ember-rgb) / 0.18),
+    rgb(var(--plum-rgb) / 0.10)
+  );
+  border: 1px solid rgb(var(--ember-rgb) / 0.28);
+  color: rgb(var(--ember-rgb));
+}
+.statrow__item:nth-child(2) .statrow__icon {
+  background: linear-gradient(135deg, rgb(var(--aurora-rgb) / 0.18), rgb(var(--ember-rgb) / 0.08));
+  border-color: rgb(var(--aurora-rgb) / 0.32);
+  color: rgb(var(--aurora-rgb));
+}
+.statrow__item:nth-child(3) .statrow__icon {
+  background: linear-gradient(135deg, rgb(var(--plum-rgb) / 0.18), rgb(var(--ember-rgb) / 0.08));
+  border-color: rgb(var(--plum-rgb) / 0.32);
+  color: rgb(var(--plum-rgb));
+}
+.statrow__item:nth-child(4) .statrow__icon {
+  background: linear-gradient(135deg, rgb(var(--gold-rgb) / 0.18), rgb(var(--ember-rgb) / 0.08));
+  border-color: rgb(var(--gold-rgb) / 0.32);
+  color: rgb(var(--gold-rgb));
+}
+
+/* ------------------------------------------------------------------ */
+/* 6b. FrameworkRow — branded logo strip                              */
+/* ------------------------------------------------------------------ */
+
+.frameworks {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin: 0.5rem 0 2rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(
+    180deg,
+    rgb(var(--ember-rgb) / 0.04),
+    transparent 70%
+  ),
+  var(--surface-1);
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 12px;
+  flex-wrap: wrap;
+}
+
+.frameworks__lead {
+  font-family: var(--sl-font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--sl-color-gray-3);
+  white-space: nowrap;
+  padding: 0 0.5rem 0 0.25rem;
+  border-right: 1px solid var(--sl-color-hairline);
+  margin-right: 0.25rem;
+}
+
+.frameworks__list {
+  list-style: none;
+  margin: 0 !important;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  flex: 1 1 auto;
+}
+
+.frameworks__item {
+  margin: 0 !important;
+  padding: 0;
+}
+
+.framework {
+  --brand-rgb: var(--sl-color-gray-2);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.85rem 0.45rem 0.55rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--sl-color-gray-2);
+  text-decoration: none !important;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.framework__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-1);
+  border: 1px solid var(--sl-color-hairline);
+  color: var(--sl-color-gray-2);
+  transition: background 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.framework__name {
+  white-space: nowrap;
+}
+
+.framework:hover,
+.framework:focus-visible {
+  color: rgb(var(--brand-rgb));
+  border-color: rgb(var(--brand-rgb) / 0.5);
+  background: rgb(var(--brand-rgb) / 0.06);
+  transform: translateY(-1px);
+  box-shadow:
+    0 8px 18px -10px rgb(var(--brand-rgb) / 0.45),
+    0 0 0 1px rgb(var(--brand-rgb) / 0.18);
+}
+.framework:hover .framework__chip,
+.framework:focus-visible .framework__chip {
+  color: rgb(var(--brand-rgb));
+  background: rgb(var(--brand-rgb) / 0.10);
+  border-color: rgb(var(--brand-rgb) / 0.35);
+}
+
+/* Make the dark Next.js wordmark legible in dark theme. */
+:root[data-theme="dark"] .framework[aria-label="Next.js"] {
+  --brand-rgb: 240 240 240;
+}
+
+@media (max-width: 560px) {
+  .frameworks {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .frameworks__lead {
+    border-right: none;
+    border-bottom: 1px solid var(--sl-color-hairline);
+    padding: 0 0 0.5rem;
+    margin: 0;
+    width: 100%;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 6c. FlowSteps — 3-step ribbon                                      */
+/* ------------------------------------------------------------------ */
+
+.flow {
+  list-style: none;
+  margin: 1.25rem 0 2rem !important;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr;
+  align-items: stretch;
+  gap: 0;
+}
+
+.flow__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-template-areas:
+    "num icon title"
+    "num icon desc";
+  align-items: center;
+  column-gap: 0.85rem;
+  row-gap: 0.15rem;
+  padding: 1rem 1.1rem;
+  background: var(--surface-1);
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 14px;
+  margin: 0 !important;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+.flow__step:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px -14px rgb(var(--ember-rgb) / 0.35);
+}
+
+.flow__step--ember  { --accent-rgb: var(--ember-rgb); }
+.flow__step--aurora { --accent-rgb: var(--aurora-rgb); }
+.flow__step--plum   { --accent-rgb: var(--plum-rgb); }
+
+.flow__step:hover {
+  border-color: rgb(var(--accent-rgb) / 0.45);
+}
+
+.flow__num {
+  grid-area: num;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  font-family: var(--sl-font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: rgb(var(--accent-rgb));
+  background: rgb(var(--accent-rgb) / 0.12);
+  border: 1px solid rgb(var(--accent-rgb) / 0.32);
+  letter-spacing: 0;
+}
+
+.flow__icon {
+  grid-area: icon;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  color: rgb(var(--accent-rgb));
+  background: linear-gradient(
+    135deg,
+    rgb(var(--accent-rgb) / 0.18),
+    rgb(var(--ember-rgb) / 0.06)
+  );
+  border: 1px solid rgb(var(--accent-rgb) / 0.28);
+}
+
+.flow__body {
+  display: contents;
+}
+
+.flow__title {
+  grid-area: title;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--sl-color-white);
+  letter-spacing: -0.01em;
+  align-self: end;
+}
+
+.flow__desc {
+  grid-area: desc;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--sl-color-gray-3);
+  align-self: start;
+}
+
+.flow__chev {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sl-color-gray-4);
+  padding: 0 0.35rem;
+  align-self: center;
+}
+
+@media (max-width: 880px) {
+  .flow {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .flow__chev {
+    transform: rotate(90deg);
+    justify-self: center;
+    padding: 0.25rem 0;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 6d. H2 inline icon chips on the splash page                        */
+/* ------------------------------------------------------------------ */
+
+.h2-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  margin-right: 0.6rem;
+  vertical-align: -0.4rem;
+  background: linear-gradient(
+    135deg,
+    rgb(var(--ember-rgb) / 0.18),
+    rgb(var(--plum-rgb) / 0.08)
+  );
+  border: 1px solid rgb(var(--ember-rgb) / 0.28);
+  color: rgb(var(--ember-rgb));
+}
+.h2-icon--aurora {
+  background: linear-gradient(135deg, rgb(var(--aurora-rgb) / 0.18), rgb(var(--ember-rgb) / 0.06));
+  border-color: rgb(var(--aurora-rgb) / 0.32);
+  color: rgb(var(--aurora-rgb));
+}
+.h2-icon--plum {
+  background: linear-gradient(135deg, rgb(var(--plum-rgb) / 0.18), rgb(var(--ember-rgb) / 0.06));
+  border-color: rgb(var(--plum-rgb) / 0.32);
+  color: rgb(var(--plum-rgb));
+}
+
+/* The splash hero already strips the gradient kicker bar from h2; with the
+ * inline chip we don't want any margin imbalance either. */
+body:has(.hero) .sl-markdown-content h2 {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+/* Splash install note (replaces the bare paragraph + parenthetical). */
+.install-note {
+  margin-top: 0.85rem !important;
+  font-size: 0.88rem;
+  color: var(--sl-color-gray-3);
+}
+.install-note code {
+  background: var(--sl-color-bg-inline-code);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
 /* ------------------------------------------------------------------ */
 /* 7. IconCard                                                        */
 /* ------------------------------------------------------------------ */
